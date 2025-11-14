@@ -1,0 +1,12 @@
+{
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "/event/evening-november-25",
+        "permanent": false
+      }
+    ],
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/" }
+    ]
+  }
