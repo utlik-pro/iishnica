@@ -69,7 +69,7 @@ const EventGrodno = () => {
                 <CalendarIcon className="w-6 h-6 text-green-500 mr-3" />
                 <div className="text-left">
                   <div className="text-xs text-muted-foreground">Дата</div>
-                  <span className="text-lg font-medium text-foreground">28 ноября, четверг</span>
+                  <span className="text-lg font-medium text-foreground">28 ноября, пятница</span>
                 </div>
               </div>
               <div className="flex items-center bg-blue-100/50 px-6 py-3 rounded-full">
