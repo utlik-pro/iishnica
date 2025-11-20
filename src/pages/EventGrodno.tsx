@@ -424,7 +424,7 @@ const EventGrodno = () => {
           <div className="max-w-4xl mx-auto">
             <div className="w-full h-[450px] rounded-lg overflow-hidden shadow-sm border border-purple-100">
               <iframe
-                src="https://yandex.ru/map-widget/v1/?ll=23.828101%2C53.676604&z=17&pt=23.828101,53.676604,pm2rdm"
+                src="https://yandex.ru/map-widget/v1/?ll=23.825594%2C53.711214&z=17&pt=23.825594,53.711214,pm2rdm"
                 width="100%"
                 height="100%"
                 frameBorder="0"
