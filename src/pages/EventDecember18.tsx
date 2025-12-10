@@ -68,17 +68,16 @@ const EventDecember18 = () => {
                 <CalendarIcon className="w-6 h-6 text-green-500 mr-3" />
                 <div className="text-left">
                   <div className="text-xs text-muted-foreground">Дата</div>
-                  <span className="text-lg font-medium text-foreground">18 декабря, среда</span>
+                  <span className="text-lg font-medium text-foreground">18 декабря, четверг</span>
                 </div>
               </div>
               <div className="flex items-center bg-blue-100/50 px-6 py-3 rounded-full">
                 <Clock className="w-6 h-6 text-blue-500 mr-3" />
                 <div className="text-left">
                   <div className="text-xs text-muted-foreground">Время</div>
-                  <span className="text-lg font-medium text-foreground">19:00</span>
+                  <span className="text-lg font-medium text-foreground">18:30</span>
                 </div>
-              </div>
-              <div className="flex items-center bg-purple-100/50 px-6 py-3 rounded-full">
+              </div>              <div className="flex items-center bg-purple-100/50 px-6 py-3 rounded-full">
                 <Wallet className="w-6 h-6 text-purple-500 mr-3" />
                 <div className="text-left">
                   <div className="text-xs text-muted-foreground">Стоимость</div>
