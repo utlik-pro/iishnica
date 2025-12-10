@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import EventDetail from "./pages/EventDetail";
 import EventGrodno from "./pages/EventGrodno";
+import EventDecember18 from "./pages/EventDecember18";
 import { setupInitialData } from "./integrations/supabase/setup";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => {
             <Route path="/admin" element={<Admin />} />
             <Route path="/event/evening-november-25" element={<EventDetail />} />
             <Route path="/event/evening-grodno-november-20" element={<EventGrodno />} />
+            <Route path="/event/december-18" element={<EventDecember18 />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
