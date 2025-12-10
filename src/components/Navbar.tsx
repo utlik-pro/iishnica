@@ -16,7 +16,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3">
           <img
-            src="https://quiz.utlik.pro/mainlogo.png"
+            src="/Main-logo.webp"
             alt="M.AI.N Community Logo"
             className="h-10 w-auto"
           />

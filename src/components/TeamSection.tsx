@@ -39,7 +39,7 @@ const teamMembers: TeamMember[] = [
   },
   {
     name: "Яна Мартыненко",
-    role: "Эксперт по ивентам",
+    role: "Development Manager",
     bio: "СЕО Cozy Crew brand, AI-энтузиаст. Эксперт по публичным выступлениям и организации образовательных ивентов.",
     initials: "ЯМ",
   },

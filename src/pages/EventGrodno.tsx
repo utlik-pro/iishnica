@@ -102,7 +102,7 @@ const EventGrodno = () => {
             <div className="text-center mb-12">
               <div className="flex justify-center mb-6">
                 <img
-                  src="https://quiz.utlik.pro/mainlogo.png"
+                  src="/Main-logo.webp"
                   alt="M.AI.N Community Logo"
                   className="h-20 w-auto"
                 />
