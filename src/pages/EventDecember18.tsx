@@ -18,11 +18,11 @@ const EventDecember18 = () => {
       image: "/zelen.JPEG"
     },
     {
-      name: "Дима Утлик",
-      topic: "M.AI.N community, Utlik.Co",
-      description: "CEO Utlik.Co, глава M.AI.N community и создатель киберсотрудников с ИИ для бизнеса. Ментор в Belhard Academy",
-      avatar: "ДУ",
-      image: "/dimautlik.jpg"
+      name: "Алекс Шкор",
+      topic: "«Принимаем роды у ИИ»",
+      description: "ИИ архитектор, CEO Collective Intelligence Labs",
+      avatar: "АШ",
+      image: "/shkor.jpeg"
     }
   ];
 
@@ -350,28 +350,25 @@ const EventDecember18 = () => {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
-                      {speakers.find(s => s.name === "Дима Утлик")?.image ? (
+                      {speakers.find(s => s.name === "Алекс Шкор")?.image ? (
                         <img
-                          src={speakers.find(s => s.name === "Дима Утлик")?.image}
-                          alt="Дима Утлик"
+                          src={speakers.find(s => s.name === "Алекс Шкор")?.image}
+                          alt="Алекс Шкор"
                           className="h-12 w-12 rounded-full object-cover"
                         />
                       ) : (
                         <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
-                          ДУ
+                          АШ
                         </div>
                       )}
                       <div>
-                        <h3 className="text-xl font-bold">Дима Утлик</h3>
-                        <p className="text-sm text-muted-foreground">CEO Utlik.Co, глава M.AI.N community и создатель киберсотрудников с ИИ для бизнеса</p>
+                        <h3 className="text-xl font-bold">Алекс Шкор</h3>
+                        <p className="text-sm text-muted-foreground">ИИ архитектор, CEO Collective Intelligence Labs</p>
                       </div>
                     </div>
-                    <h4 className="text-lg font-semibold text-primary mb-3">"Полный цикл ИИ в кармане: от кода до видео с помощью 4 инструментов"</h4>
-                    <p className="text-muted-foreground mb-3">
-                      Застряли в бесконечном диалоге с одним ботом? Единый ИИ-помощник — это устаревшая концепция. Будущее — за специализированной экосистемой. Познакомьтесь с ней: Grok для дерзких вопросов, Gemini для сложных задач в области графического дизайна, Claude для кода и Sora для визуализации всего, что придет в голову.
-                    </p>
+                    <h4 className="text-lg font-semibold text-primary mb-3">«Принимаем роды у ИИ»</h4>
                     <p className="text-muted-foreground">
-                      Я разберу, какую задачу какому «специалисту» делегировать, чтобы не терять время и получать идеальный результат с первого раза. Это не лекция, это демо-запуск вашей личной ИИ-фабрики.
+                      Доклад о рождении искусственного интеллекта и его влиянии на будущее технологий.
                     </p>
                   </div>
                 </div>
