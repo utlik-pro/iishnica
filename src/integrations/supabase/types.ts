@@ -9,6 +9,213 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bot_users: {
+        Row: {
+          id: number
+          tg_user_id: number
+          username: string | null
+          first_name: string | null
+          last_name: string | null
+          phone_number: string | null
+          first_seen_at: string
+          points: number
+          warns: number
+          banned: boolean
+          source: string | null
+          utm_source: string | null
+          utm_medium: string | null
+          utm_campaign: string | null
+          referrer: string | null
+        }
+        Insert: {
+          id?: number
+          tg_user_id: number
+          username?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          phone_number?: string | null
+          first_seen_at?: string
+          points?: number
+          warns?: number
+          banned?: boolean
+          source?: string | null
+          utm_source?: string | null
+          utm_medium?: string | null
+          utm_campaign?: string | null
+          referrer?: string | null
+        }
+        Update: {
+          id?: number
+          tg_user_id?: number
+          username?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          phone_number?: string | null
+          first_seen_at?: string
+          points?: number
+          warns?: number
+          banned?: boolean
+          source?: string | null
+          utm_source?: string | null
+          utm_medium?: string | null
+          utm_campaign?: string | null
+          referrer?: string | null
+        }
+        Relationships: []
+      }
+      bot_events: {
+        Row: {
+          id: number
+          title: string
+          description: string | null
+          event_date: string
+          city: string
+          location: string | null
+          location_url: string | null
+          speakers: string | null
+          max_participants: number | null
+          registration_deadline: string | null
+          is_active: boolean
+          created_at: string
+          created_by: number | null
+        }
+        Insert: {
+          id?: number
+          title: string
+          description?: string | null
+          event_date: string
+          city?: string
+          location?: string | null
+          location_url?: string | null
+          speakers?: string | null
+          max_participants?: number | null
+          registration_deadline?: string | null
+          is_active?: boolean
+          created_at?: string
+          created_by?: number | null
+        }
+        Update: {
+          id?: number
+          title?: string
+          description?: string | null
+          event_date?: string
+          city?: string
+          location?: string | null
+          location_url?: string | null
+          speakers?: string | null
+          max_participants?: number | null
+          registration_deadline?: string | null
+          is_active?: boolean
+          created_at?: string
+          created_by?: number | null
+        }
+        Relationships: []
+      }
+      bot_registrations: {
+        Row: {
+          id: number
+          event_id: number
+          user_id: number
+          registered_at: string
+          status: string
+          notes: string | null
+          registration_version: string
+          confirmed: boolean
+          confirmation_requested_at: string | null
+          reminder_sent: boolean
+          reminder_sent_at: string | null
+        }
+        Insert: {
+          id?: number
+          event_id: number
+          user_id: number
+          registered_at?: string
+          status?: string
+          notes?: string | null
+          registration_version?: string
+          confirmed?: boolean
+          confirmation_requested_at?: string | null
+          reminder_sent?: boolean
+          reminder_sent_at?: string | null
+        }
+        Update: {
+          id?: number
+          event_id?: number
+          user_id?: number
+          registered_at?: string
+          status?: string
+          notes?: string | null
+          registration_version?: string
+          confirmed?: boolean
+          confirmation_requested_at?: string | null
+          reminder_sent?: boolean
+          reminder_sent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "bot_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_registrations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "bot_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bot_feedback: {
+        Row: {
+          id: number
+          event_id: number
+          user_id: number
+          speaker1_rating: number | null
+          speaker2_rating: number | null
+          comment: string | null
+          interested_topics: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          event_id: number
+          user_id: number
+          speaker1_rating?: number | null
+          speaker2_rating?: number | null
+          comment?: string | null
+          interested_topics?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          event_id?: number
+          user_id?: number
+          speaker1_rating?: number | null
+          speaker2_rating?: number | null
+          comment?: string | null
+          interested_topics?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_feedback_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "bot_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_feedback_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "bot_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admins: {
         Row: {
           created_at: string

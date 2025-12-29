@@ -9,6 +9,9 @@ import EventsManager from "@/components/admin/EventsManager";
 import SponsorsManager from "@/components/admin/SponsorsManager";
 import LeadsManager from "@/components/admin/LeadsManager";
 import SpeakersManager from "@/components/admin/SpeakersManager";
+import { BotUsersManager } from "@/components/admin/BotUsersManager";
+import { BotRegistrationsManager } from "@/components/admin/BotRegistrationsManager";
+import { BotFeedbackManager } from "@/components/admin/BotFeedbackManager";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -71,11 +74,14 @@ const Admin = () => {
         <h1 className="text-3xl font-bold mb-8">Панель администратора</h1>
         
         <Tabs defaultValue="events" className="w-full">
-          <TabsList className="mb-8">
+          <TabsList className="mb-8 flex-wrap">
             <TabsTrigger value="events">Мероприятия</TabsTrigger>
             <TabsTrigger value="speakers">Спикеры</TabsTrigger>
             <TabsTrigger value="leads">Участники</TabsTrigger>
             <TabsTrigger value="sponsors">Спонсоры</TabsTrigger>
+            <TabsTrigger value="bot-users">Пользователи бота</TabsTrigger>
+            <TabsTrigger value="bot-registrations">Регистрации бота</TabsTrigger>
+            <TabsTrigger value="bot-feedback">Фидбек</TabsTrigger>
           </TabsList>
           
           <TabsContent value="events">
@@ -92,6 +98,18 @@ const Admin = () => {
           
           <TabsContent value="sponsors">
             <SponsorsManager />
+          </TabsContent>
+
+          <TabsContent value="bot-users">
+            <BotUsersManager />
+          </TabsContent>
+
+          <TabsContent value="bot-registrations">
+            <BotRegistrationsManager />
+          </TabsContent>
+
+          <TabsContent value="bot-feedback">
+            <BotFeedbackManager />
           </TabsContent>
         </Tabs>
       </main>
