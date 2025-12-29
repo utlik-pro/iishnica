@@ -15,6 +15,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+interface Location {
+  id: string;
+  name: string;
+  address: string | null;
+  photo_url: string | null;
+  yandex_map_url: string | null;
+  is_active: boolean;
+}
 
 interface Event {
   id: string;
@@ -53,9 +69,11 @@ const EventsManager: React.FC = () => {
   const { toast } = useToast();
   const [events, setEvents] = useState<Event[]>([]);
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
+  const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<string>("");
 
   const [form, setForm] = useState({
     title: "",
@@ -77,6 +95,7 @@ const EventsManager: React.FC = () => {
   useEffect(() => {
     fetchEvents();
     fetchSpeakers();
+    fetchLocations();
   }, []);
 
   const fetchEvents = async () => {
@@ -116,6 +135,38 @@ const EventsManager: React.FC = () => {
     }
   };
 
+  const fetchLocations = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("locations")
+        .select("id, name, address, photo_url, yandex_map_url, is_active")
+        .eq("is_active", true)
+        .order("name");
+
+      if (error) throw error;
+      setLocations(data || []);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
+  };
+
+  const handleLocationSelect = (locationId: string) => {
+    setSelectedLocationId(locationId);
+    if (locationId === "custom") {
+      // Keep existing values for custom input
+      return;
+    }
+    const location = locations.find((l) => l.id === locationId);
+    if (location) {
+      setForm({
+        ...form,
+        location_name: location.name,
+        location_address: location.address || "",
+        yandex_map_url: location.yandex_map_url || "",
+      });
+    }
+  };
+
   const fetchEventSpeakers = async (eventId: string) => {
     try {
       const { data, error } = await supabase
@@ -149,6 +200,7 @@ const EventsManager: React.FC = () => {
       is_published: false,
     });
     setSelectedSpeakers([]);
+    setSelectedLocationId("");
     setOpenDialog(true);
   };
 
@@ -173,6 +225,12 @@ const EventsManager: React.FC = () => {
       telegram_bot_url: event.telegram_bot_url || "https://t.me/maincomby_bot",
       is_published: event.is_published,
     });
+
+    // Try to find matching location
+    const matchingLocation = locations.find(
+      (l) => l.name === event.location_name && l.address === event.location_address
+    );
+    setSelectedLocationId(matchingLocation?.id || "custom");
 
     const eventSpeakers = await fetchEventSpeakers(event.id);
     setSelectedSpeakers(
@@ -508,38 +566,97 @@ const EventsManager: React.FC = () => {
 
             <div className="border-t pt-4">
               <Label className="text-base font-semibold">Локация</Label>
-              <div className="grid grid-cols-2 gap-4 mt-2">
-                <div className="space-y-2">
-                  <Label htmlFor="location_name">Название места</Label>
-                  <Input
-                    id="location_name"
-                    name="location_name"
-                    value={form.location_name}
-                    onChange={handleChange}
-                    placeholder="Пространство Бетон"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location_address">Адрес</Label>
-                  <Input
-                    id="location_address"
-                    name="location_address"
-                    value={form.location_address}
-                    onChange={handleChange}
-                    placeholder="Минск, ул. Кальварийская, 17"
-                  />
-                </div>
-              </div>
               <div className="space-y-2 mt-2">
-                <Label htmlFor="yandex_map_url">Ссылка на Yandex.Карты</Label>
-                <Input
-                  id="yandex_map_url"
-                  name="yandex_map_url"
-                  value={form.yandex_map_url}
-                  onChange={handleChange}
-                  placeholder="https://yandex.by/maps/-/..."
-                />
+                <Label>Выберите локацию</Label>
+                <Select
+                  value={selectedLocationId}
+                  onValueChange={handleLocationSelect}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите локацию или введите вручную" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {locations.map((location) => (
+                      <SelectItem key={location.id} value={location.id}>
+                        <div className="flex items-center gap-2">
+                          {location.photo_url && (
+                            <img
+                              src={location.photo_url}
+                              alt=""
+                              className="w-6 h-6 rounded object-cover"
+                            />
+                          )}
+                          <span>{location.name}</span>
+                          {location.address && (
+                            <span className="text-muted-foreground text-xs">
+                              — {location.address}
+                            </span>
+                          )}
+                        </div>
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="custom">
+                      Ввести вручную...
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+
+              {(selectedLocationId === "custom" || selectedLocationId === "") && (
+                <>
+                  <div className="grid grid-cols-2 gap-4 mt-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="location_name">Название места</Label>
+                      <Input
+                        id="location_name"
+                        name="location_name"
+                        value={form.location_name}
+                        onChange={handleChange}
+                        placeholder="Пространство Бетон"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="location_address">Адрес</Label>
+                      <Input
+                        id="location_address"
+                        name="location_address"
+                        value={form.location_address}
+                        onChange={handleChange}
+                        placeholder="Минск, ул. Кальварийская, 17"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2 mt-2">
+                    <Label htmlFor="yandex_map_url">Ссылка на Yandex.Карты</Label>
+                    <Input
+                      id="yandex_map_url"
+                      name="yandex_map_url"
+                      value={form.yandex_map_url}
+                      onChange={handleChange}
+                      placeholder="https://yandex.by/maps/-/..."
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedLocationId && selectedLocationId !== "custom" && (
+                <div className="mt-3 p-3 bg-muted rounded-lg">
+                  <p className="font-medium">{form.location_name}</p>
+                  {form.location_address && (
+                    <p className="text-sm text-muted-foreground">{form.location_address}</p>
+                  )}
+                  {form.yandex_map_url && (
+                    <a
+                      href={form.yandex_map_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      Открыть на карте
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="border-t pt-4">

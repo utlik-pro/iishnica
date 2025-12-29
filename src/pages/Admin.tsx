@@ -12,6 +12,7 @@ import SpeakersManager from "@/components/admin/SpeakersManager";
 import { BotUsersManager } from "@/components/admin/BotUsersManager";
 import { BotRegistrationsManager } from "@/components/admin/BotRegistrationsManager";
 import { BotFeedbackManager } from "@/components/admin/BotFeedbackManager";
+import { LocationsManager } from "@/components/admin/LocationsManager";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -77,6 +78,7 @@ const Admin = () => {
           <TabsList className="mb-8 flex-wrap">
             <TabsTrigger value="events">Мероприятия</TabsTrigger>
             <TabsTrigger value="speakers">Спикеры</TabsTrigger>
+            <TabsTrigger value="locations">Локации</TabsTrigger>
             <TabsTrigger value="leads">Участники</TabsTrigger>
             <TabsTrigger value="sponsors">Спонсоры</TabsTrigger>
             <TabsTrigger value="bot-users">Пользователи бота</TabsTrigger>
@@ -90,6 +92,10 @@ const Admin = () => {
 
           <TabsContent value="speakers">
             <SpeakersManager />
+          </TabsContent>
+
+          <TabsContent value="locations">
+            <LocationsManager />
           </TabsContent>
 
           <TabsContent value="leads">

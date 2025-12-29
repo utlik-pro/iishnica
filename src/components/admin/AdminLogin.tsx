@@ -101,9 +101,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Вход..." : "Войти"}
             </Button>
-            <div className="text-sm text-center text-muted-foreground mt-2">
-              Тестовые данные: admin / admin
-            </div>
           </form>
         </CardContent>
       </Card>

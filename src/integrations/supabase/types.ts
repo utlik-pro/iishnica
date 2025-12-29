@@ -216,6 +216,39 @@ export type Database = {
           },
         ]
       }
+      locations: {
+        Row: {
+          id: string
+          name: string
+          address: string | null
+          photo_url: string | null
+          yandex_map_url: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          address?: string | null
+          photo_url?: string | null
+          yandex_map_url?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          address?: string | null
+          photo_url?: string | null
+          yandex_map_url?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       admins: {
         Row: {
           created_at: string
