@@ -29,6 +29,7 @@ const Navbar = () => {
           <Link to="#about" onClick={(e) => { e.preventDefault(); handleScrollToSection('about'); }} className="text-sm font-medium hover:text-primary transition-colors">О комьюнити</Link>
           <Link to="#program" onClick={(e) => { e.preventDefault(); handleScrollToSection('program'); }} className="text-sm font-medium hover:text-primary transition-colors">Программа</Link>
           <Link to="#team" onClick={(e) => { e.preventDefault(); handleScrollToSection('team'); }} className="text-sm font-medium hover:text-primary transition-colors">Команда</Link>
+          <Link to="/calendar" className="text-sm font-medium hover:text-primary transition-colors">Календарь</Link>
         </nav>
 
         <div>

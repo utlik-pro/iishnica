@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import Calendar from "./pages/Calendar";
+import EventPage from "./pages/EventPage";
 import EventDetail from "./pages/EventDetail";
 import EventGrodno from "./pages/EventGrodno";
 import EventDecember18 from "./pages/EventDecember18";
@@ -30,6 +32,9 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/event/:id" element={<EventPage />} />
+            {/* Legacy event routes */}
             <Route path="/event/evening-november-25" element={<EventDetail />} />
             <Route path="/event/evening-grodno-november-20" element={<EventGrodno />} />
             <Route path="/event/december-18" element={<EventDecember18 />} />

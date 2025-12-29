@@ -30,6 +30,51 @@ export type Database = {
         }
         Relationships: []
       }
+      event_speakers: {
+        Row: {
+          id: string
+          event_id: string
+          speaker_id: string
+          talk_title: string | null
+          talk_description: string | null
+          order_index: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          speaker_id: string
+          talk_title?: string | null
+          talk_description?: string | null
+          order_index?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          speaker_id?: string
+          talk_title?: string | null
+          talk_description?: string | null
+          order_index?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_speakers_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_speakers_speaker_id_fkey"
+            columns: ["speaker_id"]
+            isOneToOne: false
+            referencedRelation: "speakers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_sponsors: {
         Row: {
           event_id: string | null
@@ -70,11 +115,16 @@ export type Database = {
           description: string | null
           duration_minutes: number
           id: string
+          is_published: boolean
+          location_address: string | null
+          location_name: string | null
           price: number
           registration_info: string | null
           speaker: string | null
+          telegram_bot_url: string | null
           title: string
           updated_at: string
+          yandex_map_url: string | null
         }
         Insert: {
           created_at?: string
@@ -82,11 +132,16 @@ export type Database = {
           description?: string | null
           duration_minutes?: number
           id?: string
+          is_published?: boolean
+          location_address?: string | null
+          location_name?: string | null
           price?: number
           registration_info?: string | null
           speaker?: string | null
+          telegram_bot_url?: string | null
           title: string
           updated_at?: string
+          yandex_map_url?: string | null
         }
         Update: {
           created_at?: string
@@ -94,11 +149,16 @@ export type Database = {
           description?: string | null
           duration_minutes?: number
           id?: string
+          is_published?: boolean
+          location_address?: string | null
+          location_name?: string | null
           price?: number
           registration_info?: string | null
           speaker?: string | null
+          telegram_bot_url?: string | null
           title?: string
           updated_at?: string
+          yandex_map_url?: string | null
         }
         Relationships: []
       }
@@ -135,6 +195,39 @@ export type Database = {
           phone?: string
           status?: Database["public"]["Enums"]["lead_status"]
           ticket_sent?: boolean
+        }
+        Relationships: []
+      }
+      speakers: {
+        Row: {
+          id: string
+          name: string
+          title: string | null
+          description: string | null
+          photo_url: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          title?: string | null
+          description?: string | null
+          photo_url?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          title?: string | null
+          description?: string | null
+          photo_url?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }

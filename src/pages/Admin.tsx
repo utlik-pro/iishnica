@@ -8,6 +8,7 @@ import AdminLogin from "@/components/admin/AdminLogin";
 import EventsManager from "@/components/admin/EventsManager";
 import SponsorsManager from "@/components/admin/SponsorsManager";
 import LeadsManager from "@/components/admin/LeadsManager";
+import SpeakersManager from "@/components/admin/SpeakersManager";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -71,7 +72,8 @@ const Admin = () => {
         
         <Tabs defaultValue="events" className="w-full">
           <TabsList className="mb-8">
-            <TabsTrigger value="events">Завтраки</TabsTrigger>
+            <TabsTrigger value="events">Мероприятия</TabsTrigger>
+            <TabsTrigger value="speakers">Спикеры</TabsTrigger>
             <TabsTrigger value="leads">Участники</TabsTrigger>
             <TabsTrigger value="sponsors">Спонсоры</TabsTrigger>
           </TabsList>
@@ -79,7 +81,11 @@ const Admin = () => {
           <TabsContent value="events">
             <EventsManager />
           </TabsContent>
-          
+
+          <TabsContent value="speakers">
+            <SpeakersManager />
+          </TabsContent>
+
           <TabsContent value="leads">
             <LeadsManager />
           </TabsContent>
