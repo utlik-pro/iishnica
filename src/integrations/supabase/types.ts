@@ -78,6 +78,7 @@ export type Database = {
           is_active: boolean
           created_at: string
           created_by: number | null
+          web_event_id: string | null
         }
         Insert: {
           id?: number
@@ -93,6 +94,7 @@ export type Database = {
           is_active?: boolean
           created_at?: string
           created_by?: number | null
+          web_event_id?: string | null
         }
         Update: {
           id?: number
@@ -108,8 +110,17 @@ export type Database = {
           is_active?: boolean
           created_at?: string
           created_by?: number | null
+          web_event_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bot_events_web_event_id_fkey"
+            columns: ["web_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bot_registrations: {
         Row: {

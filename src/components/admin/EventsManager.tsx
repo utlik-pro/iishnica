@@ -354,9 +354,46 @@ const EventsManager: React.FC = () => {
         if (speakerError) throw speakerError;
       }
 
+      // Sync with bot_events table
+      const speakerNames = selectedSpeakers
+        .map((s) => {
+          const speaker = speakers.find((sp) => sp.id === s.speaker_id);
+          return speaker ? `${speaker.name}${s.talk_title ? `: ${s.talk_title}` : ""}` : "";
+        })
+        .filter(Boolean)
+        .join("; ");
+
+      const botEventData = {
+        title: form.title,
+        description: form.description || null,
+        event_date: date.toISOString(),
+        city: "Минск",
+        location: form.location_name || null,
+        location_url: form.yandex_map_url || null,
+        speakers: speakerNames || null,
+        is_active: form.is_published,
+        web_event_id: eventId,
+      };
+
+      // Check if bot_event already exists for this web event
+      const { data: existingBotEvent } = await supabase
+        .from("bot_events")
+        .select("id")
+        .eq("web_event_id", eventId)
+        .single();
+
+      if (existingBotEvent) {
+        await supabase
+          .from("bot_events")
+          .update(botEventData)
+          .eq("web_event_id", eventId);
+      } else {
+        await supabase.from("bot_events").insert([botEventData]);
+      }
+
       toast({
         title: currentEvent ? "Обновлено" : "Создано",
-        description: `Мероприятие успешно ${currentEvent ? "обновлено" : "создано"}`,
+        description: `Мероприятие успешно ${currentEvent ? "обновлено" : "создано"} и синхронизировано с ботом`,
       });
 
       setOpenDialog(false);
@@ -377,12 +414,19 @@ const EventsManager: React.FC = () => {
     }
 
     try {
+      // Delete from bot_events first (foreign key constraint)
+      await supabase.from("bot_events").delete().eq("web_event_id", eventId);
+
+      // Delete event speakers
+      await supabase.from("event_speakers").delete().eq("event_id", eventId);
+
+      // Delete the event
       const { error } = await supabase.from("events").delete().eq("id", eventId);
       if (error) throw error;
 
       toast({
         title: "Удалено",
-        description: "Мероприятие успешно удалено",
+        description: "Мероприятие удалено из сайта и бота",
       });
 
       fetchEvents();
