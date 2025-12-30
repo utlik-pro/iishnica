@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExternalLink, Copy, Link } from "lucide-react";
+import { ExternalLink, Copy, Link, Bell } from "lucide-react";
 
 interface Location {
   id: string;
@@ -504,6 +504,49 @@ const EventsManager: React.FC = () => {
     window.open(url, "_blank");
   };
 
+  const handleNotify = async (event: Event) => {
+    const eventDate = new Date(event.date);
+    const formattedDate = eventDate.toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "long",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const message = `<b>${event.title}</b>\n\n` +
+      `${event.description ? event.description.slice(0, 200) + "..." : ""}\n\n` +
+      `${event.location_name ? `${event.location_name}` : ""}\n` +
+      `${formattedDate}\n\n` +
+      `${event.price > 0 ? `${event.price} BYN` : "Бесплатно"}`;
+
+    try {
+      const { error } = await supabase
+        .from("broadcast_queue")
+        .insert([{
+          title: `${event.title}`,
+          message_text: message,
+          message_type: "event_notification",
+          target_type: "all",
+          target_event_id: event.id,
+          status: "pending",
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Оповещение создано",
+        description: "Рассылка будет отправлена при следующей синхронизации (до 60 сек)",
+      });
+    } catch (error) {
+      console.error("Error creating notification:", error);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось создать оповещение",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -588,6 +631,17 @@ const EventsManager: React.FC = () => {
                 )}
 
                 <div className="flex justify-end gap-2 pt-2">
+                  {event.is_published && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleNotify(event)}
+                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                    >
+                      <Bell className="h-4 w-4 mr-1" />
+                      Оповестить
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="sm"

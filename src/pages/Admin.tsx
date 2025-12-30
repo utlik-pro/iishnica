@@ -15,6 +15,7 @@ import { BotRegistrationsManager } from "@/components/admin/BotRegistrationsMana
 import { BotFeedbackManager } from "@/components/admin/BotFeedbackManager";
 import { LocationsManager } from "@/components/admin/LocationsManager";
 import PostsManager from "@/components/admin/PostsManager";
+import BroadcastManager from "@/components/admin/BroadcastManager";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -87,6 +88,7 @@ const Admin = () => {
             <TabsTrigger value="bot-users">Пользователи бота</TabsTrigger>
             <TabsTrigger value="bot-registrations">Регистрации бота</TabsTrigger>
             <TabsTrigger value="bot-feedback">Фидбек</TabsTrigger>
+            <TabsTrigger value="broadcasts">Рассылки</TabsTrigger>
             <TabsTrigger value="posts">Публикации</TabsTrigger>
           </TabsList>
           
@@ -124,6 +126,10 @@ const Admin = () => {
 
           <TabsContent value="bot-feedback">
             <BotFeedbackManager />
+          </TabsContent>
+
+          <TabsContent value="broadcasts">
+            <BroadcastManager />
           </TabsContent>
 
           <TabsContent value="posts">

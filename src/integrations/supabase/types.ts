@@ -623,6 +623,68 @@ export type Database = {
         }
         Relationships: []
       }
+      broadcast_queue: {
+        Row: {
+          id: string
+          title: string
+          message_text: string
+          message_type: "text" | "event_notification" | "poll"
+          target_type: "all" | "event_registered" | "event_not_registered" | "custom"
+          target_event_id: string | null
+          status: "pending" | "in_progress" | "completed" | "failed" | "cancelled"
+          scheduled_for: string | null
+          total_recipients: number
+          sent_count: number
+          failed_count: number
+          created_at: string
+          started_at: string | null
+          completed_at: string | null
+          error_message: string | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          message_text: string
+          message_type?: "text" | "event_notification" | "poll"
+          target_type?: "all" | "event_registered" | "event_not_registered" | "custom"
+          target_event_id?: string | null
+          status?: "pending" | "in_progress" | "completed" | "failed" | "cancelled"
+          scheduled_for?: string | null
+          total_recipients?: number
+          sent_count?: number
+          failed_count?: number
+          created_at?: string
+          started_at?: string | null
+          completed_at?: string | null
+          error_message?: string | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          message_text?: string
+          message_type?: "text" | "event_notification" | "poll"
+          target_type?: "all" | "event_registered" | "event_not_registered" | "custom"
+          target_event_id?: string | null
+          status?: "pending" | "in_progress" | "completed" | "failed" | "cancelled"
+          scheduled_for?: string | null
+          total_recipients?: number
+          sent_count?: number
+          failed_count?: number
+          created_at?: string
+          started_at?: string | null
+          completed_at?: string | null
+          error_message?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "broadcast_queue_target_event_id_fkey"
+            columns: ["target_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
