@@ -41,6 +41,7 @@ interface Post {
   meta_description: string | null;
   og_image_url: string | null;
   author: string | null;
+  author_url: string | null;
   is_published: boolean;
   published_at: string | null;
   view_count: number;
@@ -76,6 +77,7 @@ const PostsManager: React.FC = () => {
     meta_description: "",
     og_image_url: "",
     author: "",
+    author_url: "",
     is_published: false,
   });
 
@@ -138,6 +140,7 @@ const PostsManager: React.FC = () => {
       meta_description: "",
       og_image_url: "",
       author: "",
+      author_url: "",
       is_published: false,
     });
     setSeoOpen(false);
@@ -157,6 +160,7 @@ const PostsManager: React.FC = () => {
       meta_description: post.meta_description || "",
       og_image_url: post.og_image_url || "",
       author: post.author || "",
+      author_url: post.author_url || "",
       is_published: post.is_published,
     });
     setSeoOpen(false);
@@ -209,6 +213,7 @@ const PostsManager: React.FC = () => {
         meta_description: form.meta_description || null,
         og_image_url: form.og_image_url || null,
         author: form.author || null,
+        author_url: form.author_url || null,
         is_published: form.is_published,
         published_at: form.is_published && !currentPost?.published_at
           ? new Date().toISOString()
@@ -483,6 +488,17 @@ const PostsManager: React.FC = () => {
                   name="author"
                   value={form.author}
                   onChange={handleChange}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="author_url">Соцсеть автора (URL)</Label>
+                <Input
+                  id="author_url"
+                  name="author_url"
+                  value={form.author_url}
+                  onChange={handleChange}
+                  placeholder="https://t.me/username или https://linkedin.com/in/..."
                 />
               </div>
             </div>

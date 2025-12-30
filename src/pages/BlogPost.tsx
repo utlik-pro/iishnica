@@ -11,6 +11,7 @@ import {
   BreadcrumbSchema,
 } from "@/components/seo/StructuredData";
 import { Button } from "@/components/ui/button";
+import ShareButtons from "@/components/ShareButtons";
 
 interface Post {
   id: string;
@@ -24,6 +25,7 @@ interface Post {
   meta_description: string | null;
   og_image_url: string | null;
   author: string | null;
+  author_url: string | null;
   is_published: boolean;
   published_at: string | null;
   view_count: number;
@@ -255,7 +257,23 @@ const BlogPost: React.FC = () => {
               <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8 pb-8 border-b">
                 {post.author && (
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{post.author}</span>
+                    {post.author_url ? (
+                      <a
+                        href={post.author_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-primary hover:underline flex items-center gap-1"
+                      >
+                        {post.author}
+                        <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <span className="font-medium">{post.author}</span>
+                    )}
                   </div>
                 )}
                 <span>{formatDate(post.published_at || post.created_at)}</span>
@@ -268,8 +286,17 @@ const BlogPost: React.FC = () => {
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
 
-              {/* Back to blog */}
+              {/* Share buttons */}
               <div className="mt-12 pt-8 border-t">
+                <ShareButtons
+                  url={postUrl}
+                  title={post.title}
+                  description={post.excerpt || undefined}
+                />
+              </div>
+
+              {/* Back to blog */}
+              <div className="mt-8 pt-8 border-t">
                 <Link to="/blog">
                   <Button variant="outline">
                     &larr; Вернуться к блогу
