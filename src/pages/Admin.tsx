@@ -9,10 +9,12 @@ import EventsManager from "@/components/admin/EventsManager";
 import SponsorsManager from "@/components/admin/SponsorsManager";
 import LeadsManager from "@/components/admin/LeadsManager";
 import SpeakersManager from "@/components/admin/SpeakersManager";
+import EventProgramManager from "@/components/admin/EventProgramManager";
 import { BotUsersManager } from "@/components/admin/BotUsersManager";
 import { BotRegistrationsManager } from "@/components/admin/BotRegistrationsManager";
 import { BotFeedbackManager } from "@/components/admin/BotFeedbackManager";
 import { LocationsManager } from "@/components/admin/LocationsManager";
+import PostsManager from "@/components/admin/PostsManager";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -77,6 +79,7 @@ const Admin = () => {
         <Tabs defaultValue="events" className="w-full">
           <TabsList className="mb-8 flex-wrap">
             <TabsTrigger value="events">Мероприятия</TabsTrigger>
+            <TabsTrigger value="program">Программа</TabsTrigger>
             <TabsTrigger value="speakers">Спикеры</TabsTrigger>
             <TabsTrigger value="locations">Локации</TabsTrigger>
             <TabsTrigger value="leads">Участники</TabsTrigger>
@@ -84,10 +87,15 @@ const Admin = () => {
             <TabsTrigger value="bot-users">Пользователи бота</TabsTrigger>
             <TabsTrigger value="bot-registrations">Регистрации бота</TabsTrigger>
             <TabsTrigger value="bot-feedback">Фидбек</TabsTrigger>
+            <TabsTrigger value="posts">Публикации</TabsTrigger>
           </TabsList>
           
           <TabsContent value="events">
             <EventsManager />
+          </TabsContent>
+
+          <TabsContent value="program">
+            <EventProgramManager />
           </TabsContent>
 
           <TabsContent value="speakers">
@@ -116,6 +124,10 @@ const Admin = () => {
 
           <TabsContent value="bot-feedback">
             <BotFeedbackManager />
+          </TabsContent>
+
+          <TabsContent value="posts">
+            <PostsManager />
           </TabsContent>
         </Tabs>
       </main>

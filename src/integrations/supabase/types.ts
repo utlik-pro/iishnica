@@ -326,6 +326,60 @@ export type Database = {
           },
         ]
       }
+      event_program: {
+        Row: {
+          id: string
+          event_id: string
+          time_start: string
+          time_end: string
+          title: string
+          description: string | null
+          type: string
+          speaker_id: string | null
+          order_index: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          time_start: string
+          time_end: string
+          title: string
+          description?: string | null
+          type?: string
+          speaker_id?: string | null
+          order_index?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          time_start?: string
+          time_end?: string
+          title?: string
+          description?: string | null
+          type?: string
+          speaker_id?: string | null
+          order_index?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_program_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_program_speaker_id_fkey"
+            columns: ["speaker_id"]
+            isOneToOne: false
+            referencedRelation: "speakers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_sponsors: {
         Row: {
           event_id: string | null
@@ -372,6 +426,7 @@ export type Database = {
           price: number
           registration_info: string | null
           speaker: string | null
+          slug: string | null
           telegram_bot_url: string | null
           title: string
           updated_at: string
@@ -389,6 +444,7 @@ export type Database = {
           price?: number
           registration_info?: string | null
           speaker?: string | null
+          slug?: string | null
           telegram_bot_url?: string | null
           title: string
           updated_at?: string
@@ -406,6 +462,7 @@ export type Database = {
           price?: number
           registration_info?: string | null
           speaker?: string | null
+          slug?: string | null
           telegram_bot_url?: string | null
           title?: string
           updated_at?: string
@@ -506,6 +563,63 @@ export type Database = {
           logo_url?: string | null
           name?: string
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          content: string
+          excerpt: string | null
+          category: "blog" | "news" | "article"
+          featured_image_url: string | null
+          meta_title: string | null
+          meta_description: string | null
+          og_image_url: string | null
+          author: string | null
+          is_published: boolean
+          published_at: string | null
+          view_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          content: string
+          excerpt?: string | null
+          category?: "blog" | "news" | "article"
+          featured_image_url?: string | null
+          meta_title?: string | null
+          meta_description?: string | null
+          og_image_url?: string | null
+          author?: string | null
+          is_published?: boolean
+          published_at?: string | null
+          view_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          content?: string
+          excerpt?: string | null
+          category?: "blog" | "news" | "article"
+          featured_image_url?: string | null
+          meta_title?: string | null
+          meta_description?: string | null
+          og_image_url?: string | null
+          author?: string | null
+          is_published?: boolean
+          published_at?: string | null
+          view_count?: number
+          created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }

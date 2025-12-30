@@ -30,6 +30,7 @@ const Navbar = () => {
           <Link to="#program" onClick={(e) => { e.preventDefault(); handleScrollToSection('program'); }} className="text-sm font-medium hover:text-primary transition-colors">Программа</Link>
           <Link to="#team" onClick={(e) => { e.preventDefault(); handleScrollToSection('team'); }} className="text-sm font-medium hover:text-primary transition-colors">Команда</Link>
           <Link to="/calendar" className="text-sm font-medium hover:text-primary transition-colors">Календарь</Link>
+          <Link to="/blog" className="text-sm font-medium hover:text-primary transition-colors">Блог</Link>
         </nav>
 
         <div>
