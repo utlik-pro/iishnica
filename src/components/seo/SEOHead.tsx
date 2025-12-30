@@ -25,8 +25,19 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   siteName = "M.AI.N - AI Community",
 }) => {
   const fullTitle = `${title} | ${siteName}`;
-  const defaultImage = "/og-image.png";
-  const ogImage = image || defaultImage;
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://iishnica.utlik.co";
+  const defaultImage = `${baseUrl}/og-image.png`;
+
+  // Ensure image URL is absolute
+  const getAbsoluteUrl = (imgUrl: string | undefined): string => {
+    if (!imgUrl) return defaultImage;
+    if (imgUrl.startsWith("http://") || imgUrl.startsWith("https://")) {
+      return imgUrl;
+    }
+    return `${baseUrl}${imgUrl.startsWith("/") ? "" : "/"}${imgUrl}`;
+  };
+
+  const ogImage = getAbsoluteUrl(image);
 
   return (
     <Helmet>
@@ -38,6 +49,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta property="og:url" content={url} />
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content={siteName} />

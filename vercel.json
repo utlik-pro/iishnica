@@ -1,12 +1,14 @@
 {
-    "redirects": [
-      {
-        "source": "/",
-        "destination": "/event/evening-november-25",
-        "permanent": false
-      }
-    ],
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/" }
-    ]
-  }
+  "rewrites": [
+    { "source": "/api/blog/:slug", "destination": "/api/blog/[slug]" },
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "s-maxage=3600, stale-while-revalidate" }
+      ]
+    }
+  ]
+}
