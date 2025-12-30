@@ -72,7 +72,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 </html>`;
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");
-    res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate");
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=30");
     return res.status(200).send(html);
   } catch (error) {
     console.error("Error fetching post:", error);
