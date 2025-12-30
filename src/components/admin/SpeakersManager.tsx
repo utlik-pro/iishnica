@@ -208,18 +208,22 @@ const SpeakersManager: React.FC = () => {
           {speakers.map((speaker) => (
             <Card key={speaker.id} className={`overflow-hidden ${!speaker.is_active ? "opacity-60" : ""}`}>
               <CardHeader className="bg-muted/50">
-                <CardTitle className="line-clamp-2">{speaker.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                {speaker.photo_url && (
-                  <div className="h-32 flex items-center justify-center border rounded p-2 bg-white">
+                <div className="flex items-center gap-4">
+                  {speaker.photo_url ? (
                     <img
                       src={speaker.photo_url}
                       alt={speaker.name}
-                      className="max-h-full max-w-full object-cover rounded"
+                      className="w-16 h-16 rounded-full object-cover border-2 border-background shadow-sm"
                     />
-                  </div>
-                )}
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-2xl font-semibold text-muted-foreground">
+                      {speaker.name.charAt(0)}
+                    </div>
+                  )}
+                  <CardTitle className="line-clamp-2">{speaker.name}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
 
                 <div className="space-y-2">
                   {speaker.title && (
@@ -266,7 +270,7 @@ const SpeakersManager: React.FC = () => {
       )}
 
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {currentSpeaker ? "Редактировать спикера" : "Добавить спикера"}
