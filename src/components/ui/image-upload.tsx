@@ -15,6 +15,7 @@ interface ImageUploadProps {
   placeholder?: string;
   aspectRatio?: "square" | "video" | "auto";
   maxSizeMB?: number;
+  compact?: boolean;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
@@ -26,6 +27,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   placeholder = "https://example.com/image.jpg",
   aspectRatio = "auto",
   maxSizeMB = 5,
+  compact = false,
 }) => {
   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
@@ -124,11 +126,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
       {value ? (
         <div className="relative group">
-          <div className={`border rounded-lg overflow-hidden bg-muted/50 ${aspectRatioClass}`}>
+          <div className={`border rounded-lg overflow-hidden bg-muted/50 ${compact ? "max-h-32" : aspectRatioClass}`}>
             <img
               src={value}
               alt="Preview"
-              className="w-full h-full object-cover"
+              className={`w-full object-cover ${compact ? "max-h-32" : "h-full"}`}
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
                   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23f3f4f6' width='100' height='100'/%3E%3Ctext fill='%239ca3af' x='50%25' y='50%25' text-anchor='middle' dy='.3em' font-size='12'%3EОшибка%3C/text%3E%3C/svg%3E";
@@ -149,7 +151,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       ) : (
         <div className="space-y-2">
           <div
-            className={`border-2 border-dashed rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer ${aspectRatioClass}`}
+            className={`border-2 border-dashed rounded-lg ${compact ? "p-4" : "p-6"} text-center hover:border-primary/50 transition-colors cursor-pointer ${compact ? "" : aspectRatioClass}`}
             onClick={() => fileInputRef.current?.click()}
           >
             {isUploading ? (

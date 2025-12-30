@@ -266,7 +266,7 @@ const SpeakersManager: React.FC = () => {
       )}
 
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {currentSpeaker ? "Редактировать спикера" : "Добавить спикера"}
@@ -307,7 +307,7 @@ const SpeakersManager: React.FC = () => {
               onChange={(url) => setForm({ ...form, photo_url: url })}
               folder="speakers"
               label="Фотография"
-              aspectRatio="square"
+              compact
             />
 
             <div className="space-y-2">
