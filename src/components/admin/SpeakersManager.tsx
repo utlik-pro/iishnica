@@ -270,7 +270,7 @@ const SpeakersManager: React.FC = () => {
       )}
 
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[1000px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {currentSpeaker ? "Редактировать спикера" : "Добавить спикера"}
