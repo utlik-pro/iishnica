@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import ImageUpload from "@/components/ui/image-upload";
 
 interface Sponsor {
   id: string;
@@ -268,16 +269,13 @@ const SponsorsManager: React.FC = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="logo_url">URL логотипа</Label>
-              <Input
-                id="logo_url"
-                name="logo_url"
-                value={form.logo_url}
-                onChange={handleChange}
-                placeholder="https://example.com/logo.png"
-              />
-            </div>
+            <ImageUpload
+              value={form.logo_url}
+              onChange={(url) => setForm({ ...form, logo_url: url })}
+              folder="sponsors"
+              label="Логотип"
+              aspectRatio="video"
+            />
 
             <div className="space-y-2">
               <Label htmlFor="website_url">URL веб-сайта</Label>

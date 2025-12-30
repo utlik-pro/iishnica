@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, MapPin, ExternalLink, Image } from "lucide-react";
+import ImageUpload from "@/components/ui/image-upload";
 
 type Location = {
   id: string;
@@ -208,27 +209,13 @@ export function LocationsManager() {
                   />
                 </div>
                 <div className="col-span-2">
-                  <Label htmlFor="photo_url">Ссылка на фото</Label>
-                  <Input
-                    id="photo_url"
+                  <ImageUpload
                     value={formData.photo_url}
-                    onChange={(e) =>
-                      setFormData({ ...formData, photo_url: e.target.value })
-                    }
-                    placeholder="https://example.com/photo.jpg"
+                    onChange={(url) => setFormData({ ...formData, photo_url: url })}
+                    folder="locations"
+                    label="Фото локации"
+                    aspectRatio="video"
                   />
-                  {formData.photo_url && (
-                    <div className="mt-2">
-                      <img
-                        src={formData.photo_url}
-                        alt="Preview"
-                        className="h-32 w-auto rounded-lg object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    </div>
-                  )}
                 </div>
                 <div className="col-span-2">
                   <Label htmlFor="yandex_map_url">Ссылка на Яндекс Карты</Label>

@@ -27,6 +27,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import TipTapEditor from "@/components/editor/TipTapEditor";
+import ImageUpload from "@/components/ui/image-upload";
 
 interface Post {
   id: string;
@@ -507,16 +508,13 @@ const PostsManager: React.FC = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="featured_image_url">URL главного изображения</Label>
-              <Input
-                id="featured_image_url"
-                name="featured_image_url"
-                value={form.featured_image_url}
-                onChange={handleChange}
-                placeholder="https://example.com/image.jpg"
-              />
-            </div>
+            <ImageUpload
+              value={form.featured_image_url}
+              onChange={(url) => setForm({ ...form, featured_image_url: url })}
+              folder="posts"
+              label="Главное изображение"
+              aspectRatio="video"
+            />
 
             {/* SEO Section */}
             <Collapsible open={seoOpen} onOpenChange={setSeoOpen}>
@@ -549,16 +547,13 @@ const PostsManager: React.FC = () => {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="og_image_url">Open Graph изображение</Label>
-                  <Input
-                    id="og_image_url"
-                    name="og_image_url"
-                    value={form.og_image_url}
-                    onChange={handleChange}
-                    placeholder="URL изображения для соцсетей (по умолчанию - главное изображение)"
-                  />
-                </div>
+                <ImageUpload
+                  value={form.og_image_url}
+                  onChange={(url) => setForm({ ...form, og_image_url: url })}
+                  folder="posts/og"
+                  label="Open Graph изображение (для соцсетей)"
+                  aspectRatio="video"
+                />
               </CollapsibleContent>
             </Collapsible>
 

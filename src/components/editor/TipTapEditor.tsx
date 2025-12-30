@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
@@ -8,6 +8,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +16,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Upload, Loader2 } from "lucide-react";
 
 interface TipTapEditorProps {
   content: string;
@@ -27,10 +31,13 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
   onChange,
   placeholder = "Начните писать...",
 }) => {
+  const { toast } = useToast();
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -68,11 +75,74 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
     return null;
   }
 
-  const addImage = () => {
+  const addImageByUrl = () => {
     if (imageUrl) {
       editor.chain().focus().setImage({ src: imageUrl }).run();
       setImageUrl("");
       setImageDialogOpen(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Ошибка",
+        description: "Выберите изображение (JPG, PNG, GIF, WebP)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Ошибка",
+        description: "Размер файла не должен превышать 5 МБ",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `posts/content/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from("images")
+        .upload(fileName, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (error) throw error;
+
+      const { data: urlData } = supabase.storage
+        .from("images")
+        .getPublicUrl(data.path);
+
+      editor.chain().focus().setImage({ src: urlData.publicUrl }).run();
+      setImageDialogOpen(false);
+
+      toast({
+        title: "Загружено",
+        description: "Изображение добавлено в статью",
+      });
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Ошибка загрузки",
+        description: error.message || "Не удалось загрузить изображение",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -306,28 +376,77 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
 
       {/* Image Dialog */}
       <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="sm:max-w-[450px]">
           <DialogHeader>
             <DialogTitle>Вставить изображение</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 pt-4">
-            <Input
-              placeholder="URL изображения"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addImage();
-                }
-              }}
+            {/* File Upload */}
+            <div
+              className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+              onClick={() => !isUploading && fileInputRef.current?.click()}
+            >
+              {isUploading ? (
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">Загрузка...</p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">
+                    Нажмите для загрузки изображения
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    JPG, PNG, GIF, WebP до 5 МБ
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+              disabled={isUploading}
             />
-            <div className="flex justify-end gap-2">
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  или вставьте ссылку
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>URL изображения</Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="https://example.com/image.jpg"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addImageByUrl();
+                    }
+                  }}
+                />
+                <Button type="button" onClick={addImageByUrl} disabled={!imageUrl.trim()}>
+                  Вставить
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
               <Button type="button" variant="outline" onClick={() => setImageDialogOpen(false)}>
                 Отмена
-              </Button>
-              <Button type="button" onClick={addImage}>
-                Вставить
               </Button>
             </div>
           </div>

@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import ImageUpload from "@/components/ui/image-upload";
 
 interface Speaker {
   id: string;
@@ -284,28 +285,13 @@ const SpeakersManager: React.FC = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="photo_url">URL фотографии</Label>
-              <Input
-                id="photo_url"
-                name="photo_url"
-                value={form.photo_url}
-                onChange={handleChange}
-                placeholder="https://example.com/photo.jpg"
-              />
-              {form.photo_url && (
-                <div className="mt-2 h-24 flex items-center justify-center border rounded p-2 bg-white">
-                  <img
-                    src={form.photo_url}
-                    alt="Preview"
-                    className="max-h-full max-w-full object-cover rounded"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+            <ImageUpload
+              value={form.photo_url}
+              onChange={(url) => setForm({ ...form, photo_url: url })}
+              folder="speakers"
+              label="Фотография"
+              aspectRatio="square"
+            />
 
             <div className="space-y-2">
               <Label htmlFor="description">Описание</Label>
