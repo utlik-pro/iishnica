@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ExternalLink, Copy, Link } from "lucide-react";
 
 interface Location {
   id: string;
@@ -46,6 +47,7 @@ interface Event {
   yandex_map_url: string | null;
   telegram_bot_url: string | null;
   is_published: boolean;
+  slug: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -88,7 +90,27 @@ const EventsManager: React.FC = () => {
     yandex_map_url: "",
     telegram_bot_url: "https://t.me/maincomby_bot",
     is_published: false,
+    slug: "",
   });
+
+  // Generate slug from title
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[а-яё]/g, (char) => {
+        const map: { [key: string]: string } = {
+          'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+          'ж': 'zh', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+          'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+          'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+          'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+        };
+        return map[char] || char;
+      })
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 50);
+  };
 
   const [selectedSpeakers, setSelectedSpeakers] = useState<EventSpeaker[]>([]);
 
@@ -198,6 +220,7 @@ const EventsManager: React.FC = () => {
       yandex_map_url: "",
       telegram_bot_url: "https://t.me/maincomby_bot",
       is_published: false,
+      slug: "",
     });
     setSelectedSpeakers([]);
     setSelectedLocationId("");
@@ -224,6 +247,7 @@ const EventsManager: React.FC = () => {
       yandex_map_url: event.yandex_map_url || "",
       telegram_bot_url: event.telegram_bot_url || "https://t.me/maincomby_bot",
       is_published: event.is_published,
+      slug: event.slug || "",
     });
 
     // Try to find matching location
@@ -314,6 +338,7 @@ const EventsManager: React.FC = () => {
         yandex_map_url: form.yandex_map_url || null,
         telegram_bot_url: form.telegram_bot_url || null,
         is_published: form.is_published,
+        slug: form.slug || generateSlug(form.title),
         updated_at: new Date().toISOString(),
       };
 
@@ -451,6 +476,34 @@ const EventsManager: React.FC = () => {
     });
   };
 
+  const getEventUrl = (event: Event) => {
+    const baseUrl = window.location.origin;
+    const slug = event.slug || event.id;
+    return `${baseUrl}/event/${slug}`;
+  };
+
+  const copyEventLink = async (event: Event) => {
+    const url = getEventUrl(event);
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: "Скопировано!",
+        description: "Ссылка на мероприятие скопирована в буфер обмена",
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось скопировать ссылку",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const openEventPage = (event: Event) => {
+    const url = getEventUrl(event);
+    window.open(url, "_blank");
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -502,6 +555,38 @@ const EventsManager: React.FC = () => {
                   <p>{event.price > 0 ? `${event.price} BYN` : "Бесплатно"}</p>
                 </div>
 
+                {event.is_published && (
+                  <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Link className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-sm font-medium">Ссылка для рекламы:</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground break-all font-mono">
+                      {getEventUrl(event)}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => openEventPage(event)}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Открыть
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => copyEventLink(event)}
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Копировать
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex justify-end gap-2 pt-2">
                   <Button
                     variant="outline"
@@ -542,6 +627,30 @@ const EventsManager: React.FC = () => {
                 onChange={handleChange}
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="slug">URL-адрес (slug)</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="slug"
+                  name="slug"
+                  value={form.slug}
+                  onChange={handleChange}
+                  placeholder="например: december-18"
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setForm({ ...form, slug: generateSlug(form.title) })}
+                >
+                  Сгенерировать
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Ссылка будет: /event/{form.slug || generateSlug(form.title) || "..."}
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

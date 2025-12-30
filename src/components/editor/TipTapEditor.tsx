@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -379,6 +380,9 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
         <DialogContent className="sm:max-w-[450px]">
           <DialogHeader>
             <DialogTitle>Вставить изображение</DialogTitle>
+            <DialogDescription>
+              Загрузите изображение с компьютера или вставьте ссылку
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-4">
             {/* File Upload */}
@@ -458,6 +462,9 @@ const TipTapEditor: React.FC<TipTapEditorProps> = ({
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
             <DialogTitle>Вставить ссылку</DialogTitle>
+            <DialogDescription>
+              Введите URL для создания ссылки
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-4">
             <Input
