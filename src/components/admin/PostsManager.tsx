@@ -49,6 +49,12 @@ interface Post {
   updated_at: string;
 }
 
+interface AuthorSpeaker {
+  id: string;
+  name: string;
+  social_url: string | null;
+}
+
 type PostCategory = "blog" | "news" | "article";
 
 const CATEGORIES: { value: PostCategory; label: string }[] = [
@@ -60,6 +66,7 @@ const CATEGORIES: { value: PostCategory; label: string }[] = [
 const PostsManager: React.FC = () => {
   const { toast } = useToast();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [authors, setAuthors] = useState<AuthorSpeaker[]>([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentPost, setCurrentPost] = useState<Post | null>(null);
@@ -83,7 +90,24 @@ const PostsManager: React.FC = () => {
 
   useEffect(() => {
     fetchPosts();
+    fetchAuthors();
   }, []);
+
+  const fetchAuthors = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("speakers")
+        .select("id, name, social_url")
+        .eq("is_author", true)
+        .eq("is_active", true)
+        .order("name");
+
+      if (error) throw error;
+      setAuthors((data as AuthorSpeaker[]) || []);
+    } catch (error) {
+      console.error("Error fetching authors:", error);
+    }
+  };
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -183,6 +207,23 @@ const PostsManager: React.FC = () => {
 
   const handleCategoryChange = (value: PostCategory) => {
     setForm({ ...form, category: value });
+  };
+
+  const handleAuthorChange = (authorId: string) => {
+    if (authorId === "custom") {
+      setForm({ ...form, author: "", author_url: "" });
+    } else if (authorId === "none") {
+      setForm({ ...form, author: "", author_url: "" });
+    } else {
+      const selectedAuthor = authors.find(a => a.id === authorId);
+      if (selectedAuthor) {
+        setForm({
+          ...form,
+          author: selectedAuthor.name,
+          author_url: selectedAuthor.social_url || "",
+        });
+      }
+    }
   };
 
   const handleSwitchChange = (checked: boolean) => {
@@ -482,26 +523,52 @@ const PostsManager: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="author">Автор</Label>
-                <Input
-                  id="author"
-                  name="author"
-                  value={form.author}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="author_url">Соцсеть автора (URL)</Label>
-                <Input
-                  id="author_url"
-                  name="author_url"
-                  value={form.author_url}
-                  onChange={handleChange}
-                  placeholder="https://t.me/username или https://linkedin.com/in/..."
-                />
+                <Label>Автор</Label>
+                <Select
+                  value={authors.find(a => a.name === form.author)?.id || (form.author ? "custom" : "none")}
+                  onValueChange={handleAuthorChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите автора" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Без автора</SelectItem>
+                    {authors.map((author) => (
+                      <SelectItem key={author.id} value={author.id}>
+                        {author.name}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="custom">Ввести вручную...</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
+
+            {/* Custom author fields - shown when "custom" is selected or author doesn't match speakers */}
+            {(form.author && !authors.find(a => a.name === form.author)) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
+                <div className="space-y-2">
+                  <Label htmlFor="author">Имя автора</Label>
+                  <Input
+                    id="author"
+                    name="author"
+                    value={form.author}
+                    onChange={handleChange}
+                    placeholder="Введите имя автора"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="author_url">Соцсеть автора (URL)</Label>
+                  <Input
+                    id="author_url"
+                    name="author_url"
+                    value={form.author_url}
+                    onChange={handleChange}
+                    placeholder="https://t.me/username"
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="excerpt">Краткое описание</Label>

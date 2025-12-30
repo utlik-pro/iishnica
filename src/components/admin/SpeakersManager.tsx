@@ -22,7 +22,9 @@ interface Speaker {
   title: string | null;
   description: string | null;
   photo_url: string | null;
+  social_url: string | null;
   is_active: boolean;
+  is_author: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -39,7 +41,9 @@ const SpeakersManager: React.FC = () => {
     title: "",
     description: "",
     photo_url: "",
+    social_url: "",
     is_active: true,
+    is_author: false,
   });
 
   useEffect(() => {
@@ -75,7 +79,9 @@ const SpeakersManager: React.FC = () => {
       title: "",
       description: "",
       photo_url: "",
+      social_url: "",
       is_active: true,
+      is_author: false,
     });
     setOpenDialog(true);
   };
@@ -87,7 +93,9 @@ const SpeakersManager: React.FC = () => {
       title: speaker.title || "",
       description: speaker.description || "",
       photo_url: speaker.photo_url || "",
+      social_url: speaker.social_url || "",
       is_active: speaker.is_active,
+      is_author: speaker.is_author,
     });
     setOpenDialog(true);
   };
@@ -100,10 +108,10 @@ const SpeakersManager: React.FC = () => {
     });
   };
 
-  const handleSwitchChange = (checked: boolean) => {
+  const handleSwitchChange = (field: "is_active" | "is_author", checked: boolean) => {
     setForm({
       ...form,
-      is_active: checked,
+      [field]: checked,
     });
   };
 
@@ -116,7 +124,9 @@ const SpeakersManager: React.FC = () => {
         title: form.title || null,
         description: form.description || null,
         photo_url: form.photo_url || null,
+        social_url: form.social_url || null,
         is_active: form.is_active,
+        is_author: form.is_author,
         updated_at: new Date().toISOString(),
       };
 
@@ -228,9 +238,16 @@ const SpeakersManager: React.FC = () => {
 
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium">Статус:</p>
-                    <span className={`px-2 py-1 text-xs rounded ${speaker.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
-                      {speaker.is_active ? "Активный" : "Неактивный"}
-                    </span>
+                    <div className="flex gap-1">
+                      {speaker.is_author && (
+                        <span className="px-2 py-1 text-xs rounded bg-purple-100 text-purple-800">
+                          Автор
+                        </span>
+                      )}
+                      <span className={`px-2 py-1 text-xs rounded ${speaker.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                        {speaker.is_active ? "Активный" : "Неактивный"}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -305,13 +322,33 @@ const SpeakersManager: React.FC = () => {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="social_url">Ссылка на соц. сеть</Label>
+              <Input
+                id="social_url"
+                name="social_url"
+                value={form.social_url}
+                onChange={handleChange}
+                placeholder="https://t.me/username"
+              />
+            </div>
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="is_active"
                 checked={form.is_active}
-                onCheckedChange={handleSwitchChange}
+                onCheckedChange={(checked) => handleSwitchChange("is_active", checked)}
               />
               <Label htmlFor="is_active">Активный</Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="is_author"
+                checked={form.is_author}
+                onCheckedChange={(checked) => handleSwitchChange("is_author", checked)}
+              />
+              <Label htmlFor="is_author">Автор публикаций</Label>
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
