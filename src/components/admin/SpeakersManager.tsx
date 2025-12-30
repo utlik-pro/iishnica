@@ -311,7 +311,7 @@ const SpeakersManager: React.FC = () => {
               onChange={(url) => setForm({ ...form, photo_url: url })}
               folder="speakers"
               label="Фотография"
-              compact
+              circular
             />
 
             <div className="space-y-2">
