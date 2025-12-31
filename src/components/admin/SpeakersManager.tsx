@@ -25,6 +25,8 @@ interface Speaker {
   social_url: string | null;
   is_active: boolean;
   is_author: boolean;
+  is_team_member: boolean;
+  team_order: number;
   created_at: string;
   updated_at: string;
 }
@@ -44,6 +46,8 @@ const SpeakersManager: React.FC = () => {
     social_url: "",
     is_active: true,
     is_author: false,
+    is_team_member: false,
+    team_order: 0,
   });
 
   useEffect(() => {
@@ -82,6 +86,8 @@ const SpeakersManager: React.FC = () => {
       social_url: "",
       is_active: true,
       is_author: false,
+      is_team_member: false,
+      team_order: 0,
     });
     setOpenDialog(true);
   };
@@ -96,6 +102,8 @@ const SpeakersManager: React.FC = () => {
       social_url: speaker.social_url || "",
       is_active: speaker.is_active,
       is_author: speaker.is_author,
+      is_team_member: speaker.is_team_member || false,
+      team_order: speaker.team_order || 0,
     });
     setOpenDialog(true);
   };
@@ -108,7 +116,7 @@ const SpeakersManager: React.FC = () => {
     });
   };
 
-  const handleSwitchChange = (field: "is_active" | "is_author", checked: boolean) => {
+  const handleSwitchChange = (field: "is_active" | "is_author" | "is_team_member", checked: boolean) => {
     setForm({
       ...form,
       [field]: checked,
@@ -127,6 +135,8 @@ const SpeakersManager: React.FC = () => {
         social_url: form.social_url || null,
         is_active: form.is_active,
         is_author: form.is_author,
+        is_team_member: form.is_team_member,
+        team_order: form.is_team_member ? form.team_order : 0,
         updated_at: new Date().toISOString(),
       };
 
@@ -242,7 +252,12 @@ const SpeakersManager: React.FC = () => {
 
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium">Статус:</p>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-wrap justify-end">
+                      {speaker.is_team_member && (
+                        <span className="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
+                          Команда
+                        </span>
+                      )}
                       {speaker.is_author && (
                         <span className="px-2 py-1 text-xs rounded bg-purple-100 text-purple-800">
                           Автор
@@ -353,6 +368,33 @@ const SpeakersManager: React.FC = () => {
                 onCheckedChange={(checked) => handleSwitchChange("is_author", checked)}
               />
               <Label htmlFor="is_author">Автор публикаций</Label>
+            </div>
+
+            <div className="border-t pt-4 mt-4 space-y-4">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="is_team_member"
+                  checked={form.is_team_member}
+                  onCheckedChange={(checked) => handleSwitchChange("is_team_member", checked)}
+                />
+                <Label htmlFor="is_team_member">Член команды M.AI.N</Label>
+              </div>
+
+              {form.is_team_member && (
+                <div className="space-y-2 pl-6">
+                  <Label htmlFor="team_order">Порядок отображения в команде</Label>
+                  <Input
+                    id="team_order"
+                    name="team_order"
+                    type="number"
+                    min="0"
+                    value={form.team_order}
+                    onChange={(e) => setForm({ ...form, team_order: parseInt(e.target.value) || 0 })}
+                    className="w-32"
+                  />
+                  <p className="text-xs text-muted-foreground">Чем меньше число, тем выше в списке</p>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
