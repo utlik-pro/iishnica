@@ -278,21 +278,21 @@ const EventPage: React.FC = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-28 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
+      <section className="pt-24 pb-12 md:pt-40 md:pb-24 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block mb-4 px-4 py-2 bg-purple-100 rounded-full">
-              <span className="text-purple-600 font-semibold text-sm">Мероприятие M.AI.N Community</span>
+            <div className="inline-block mb-3 md:mb-4 px-3 md:px-4 py-1.5 md:py-2 bg-purple-100 rounded-full">
+              <span className="text-purple-600 font-semibold text-xs md:text-sm">Мероприятие M.AI.N Community</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 gradient-text flex items-center justify-center gap-4 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 md:mb-6 gradient-text flex items-center justify-center gap-2 md:gap-4 flex-wrap">
               {event.title.includes("ИИшница") ? (
                 <>
                   Вечерняя
                   <img
                     src="/iiishnica.png"
                     alt="ИИшница"
-                    className="h-16 md:h-20 lg:h-24 w-auto"
+                    className="h-10 sm:h-12 md:h-20 lg:h-24 w-auto"
                   />
                   ИИшница
                 </>
@@ -302,42 +302,42 @@ const EventPage: React.FC = () => {
             </h1>
 
             {event.description && (
-              <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
                 {event.description}
               </p>
             )}
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 mb-8 md:mb-12 px-4 sm:px-0">
               <Button
                 size="lg"
-                className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-base"
+                className="w-full sm:w-auto rounded-full bg-primary hover:bg-primary/90 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base"
                 onClick={() => window.open(event.telegram_bot_url || 'https://t.me/maincomby_bot', '_blank')}
               >
-                Зарегистрироваться <ArrowRight className="ml-2 h-5 w-5" />
+                Зарегистрироваться <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
               </Button>
             </div>
 
-            {/* Info Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center bg-green-100/50 px-6 py-3 rounded-full">
-                <CalendarIcon className="w-6 h-6 text-green-500 mr-3" />
+            {/* Info Badges - stack on mobile */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 md:gap-4 text-sm text-muted-foreground px-2 sm:px-0">
+              <div className="flex items-center bg-green-100/50 px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center">
+                <CalendarIcon className="w-4 h-4 md:w-6 md:h-6 text-green-500 mr-2 md:mr-3 flex-shrink-0" />
                 <div className="text-left">
-                  <div className="text-xs text-muted-foreground">Дата</div>
-                  <span className="text-lg font-medium text-foreground">{formatDate(event.date)}</span>
+                  <div className="text-[10px] md:text-xs text-muted-foreground">Дата</div>
+                  <span className="text-sm md:text-lg font-medium text-foreground">{formatDate(event.date)}</span>
                 </div>
               </div>
-              <div className="flex items-center bg-blue-100/50 px-6 py-3 rounded-full">
-                <Clock className="w-6 h-6 text-blue-500 mr-3" />
+              <div className="flex items-center bg-blue-100/50 px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center">
+                <Clock className="w-4 h-4 md:w-6 md:h-6 text-blue-500 mr-2 md:mr-3 flex-shrink-0" />
                 <div className="text-left">
-                  <div className="text-xs text-muted-foreground">Время</div>
-                  <span className="text-lg font-medium text-foreground">{formatTime(event.date)}</span>
+                  <div className="text-[10px] md:text-xs text-muted-foreground">Время</div>
+                  <span className="text-sm md:text-lg font-medium text-foreground">{formatTime(event.date)}</span>
                 </div>
               </div>
-              <div className="flex items-center bg-purple-100/50 px-6 py-3 rounded-full">
-                <Wallet className="w-6 h-6 text-purple-500 mr-3" />
+              <div className="flex items-center bg-purple-100/50 px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center">
+                <Wallet className="w-4 h-4 md:w-6 md:h-6 text-purple-500 mr-2 md:mr-3 flex-shrink-0" />
                 <div className="text-left">
-                  <div className="text-xs text-muted-foreground">Стоимость</div>
-                  <span className="text-lg font-medium text-foreground">
+                  <div className="text-[10px] md:text-xs text-muted-foreground">Стоимость</div>
+                  <span className="text-sm md:text-lg font-medium text-foreground">
                     {event.price > 0 ? `${event.price} BYN` : "Бесплатно"}
                   </span>
                 </div>
@@ -346,55 +346,55 @@ const EventPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Decorative elements */}
-        <div className="absolute top-24 left-10 w-24 h-24 bg-purple-200 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
-        <div className="absolute top-40 right-20 w-32 h-32 bg-blue-200 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
+        {/* Decorative elements - hidden on mobile */}
+        <div className="hidden md:block absolute top-24 left-10 w-16 lg:w-24 h-16 lg:h-24 bg-purple-200 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
+        <div className="hidden md:block absolute top-40 right-10 lg:right-20 w-20 lg:w-32 h-20 lg:h-32 bg-blue-200 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
       </section>
 
       {/* About Community Section */}
-      <section id="about" className="py-16 bg-white">
+      <section id="about" className="py-12 md:py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="flex justify-center mb-6">
+            <div className="text-center mb-8 md:mb-12">
+              <div className="flex justify-center mb-4 md:mb-6">
                 <img
                   src="/Main-logo.webp"
                   alt="M.AI.N Community Logo"
-                  className="h-20 w-auto"
+                  className="h-14 md:h-20 w-auto"
                 />
               </div>
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
                 О <span className="gradient-text">комьюнити</span>
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base md:text-lg text-muted-foreground px-2">
                 M.AI.N — это сообщество энтузиастов и профессионалов в области искусственного интеллекта
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-4 md:mb-8">
               <Card className="border border-purple-100 bg-gradient-to-br from-purple-50 to-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-2xl mr-4">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex items-center mb-3 md:mb-4">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl md:text-2xl mr-3 md:mr-4 flex-shrink-0">
                       🎯
                     </div>
-                    <h3 className="text-xl font-bold">Наша миссия</h3>
+                    <h3 className="text-lg md:text-xl font-bold">Наша миссия</h3>
                   </div>
-                  <p className="text-muted-foreground">
+                  <p className="text-sm md:text-base text-muted-foreground">
                     Делать искусственный интеллект доступным и понятным каждому. Мы объединяем специалистов и энтузиастов для обмена опытом и совместного роста.
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="border border-blue-100 bg-gradient-to-br from-blue-50 to-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl mr-4">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex items-center mb-3 md:mb-4">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl md:text-2xl mr-3 md:mr-4 flex-shrink-0">
                       🚀
                     </div>
-                    <h3 className="text-xl font-bold">Что мы делаем</h3>
+                    <h3 className="text-lg md:text-xl font-bold">Что мы делаем</h3>
                   </div>
-                  <p className="text-muted-foreground">
+                  <p className="text-sm md:text-base text-muted-foreground">
                     Проводим регулярные митапы, мастер-классы и воркшопы по практическому применению ИИ в бизнесе и повседневной жизни.
                   </p>
                 </CardContent>
@@ -402,28 +402,28 @@ const EventPage: React.FC = () => {
             </div>
 
             <Card className="border border-purple-100 bg-gradient-to-r from-purple-50 via-blue-50 to-purple-50">
-              <CardContent className="p-8">
+              <CardContent className="p-4 md:p-8">
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold mb-4">Присоединяйтесь к нам!</h3>
-                  <p className="text-lg text-muted-foreground mb-6">
+                  <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Присоединяйтесь к нам!</h3>
+                  <p className="text-sm md:text-lg text-muted-foreground mb-4 md:mb-6 px-2">
                     Станьте частью растущего комьюнити профессионалов, которые используют ИИ для решения реальных задач
                   </p>
-                  <div className="flex flex-wrap justify-center gap-4 mb-6">
-                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full">
-                      <span className="text-2xl">💡</span>
-                      <span className="font-medium">Практические кейсы</span>
+                  <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-4 md:mb-6">
+                    <div className="flex items-center gap-1.5 md:gap-2 bg-white px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                      <span className="text-lg md:text-2xl">💡</span>
+                      <span className="font-medium text-xs md:text-base">Практические кейсы</span>
                     </div>
-                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full">
-                      <span className="text-2xl">🤝</span>
-                      <span className="font-medium">Нетворкинг</span>
+                    <div className="flex items-center gap-1.5 md:gap-2 bg-white px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                      <span className="text-lg md:text-2xl">🤝</span>
+                      <span className="font-medium text-xs md:text-base">Нетворкинг</span>
                     </div>
-                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full">
-                      <span className="text-2xl">📚</span>
-                      <span className="font-medium">Обучение</span>
+                    <div className="flex items-center gap-1.5 md:gap-2 bg-white px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                      <span className="text-lg md:text-2xl">📚</span>
+                      <span className="font-medium text-xs md:text-base">Обучение</span>
                     </div>
                   </div>
 
-                  <div className="flex justify-center items-center gap-6 pt-4 border-t border-purple-200">
+                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 md:gap-6 pt-4 border-t border-purple-200">
                     <p className="text-sm font-medium text-muted-foreground">Мы в соцсетях:</p>
                     <div className="flex gap-3">
                       <a
@@ -470,50 +470,50 @@ const EventPage: React.FC = () => {
 
       {/* Speakers Section */}
       {speakers.length > 0 && (
-        <section className="py-16 bg-gradient-to-b from-white to-purple-50">
+        <section className="py-12 md:py-16 bg-gradient-to-b from-white to-purple-50">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+            <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
                 Спикеры <span className="gradient-text">мероприятия</span>
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-sm md:text-lg text-muted-foreground px-2">
                 Практические доклады от экспертов в области искусственного интеллекта
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
               {speakers.map((item) => (
                 <Card key={item.speaker_id} className="border border-purple-100 bg-white hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-center mb-4">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center mb-3 md:mb-4">
                       {item.speaker.photo_url ? (
                         <img
                           src={item.speaker.photo_url}
                           alt={item.speaker.name}
-                          className="h-16 w-16 rounded-full object-cover mr-4"
+                          className="h-12 w-12 md:h-16 md:w-16 rounded-full object-cover mr-3 md:mr-4 flex-shrink-0"
                         />
                       ) : (
-                        <div className="h-16 w-16 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold mr-4">
+                        <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold mr-3 md:mr-4 flex-shrink-0 text-sm md:text-base">
                           {getInitials(item.speaker.name)}
                         </div>
                       )}
-                      <div>
-                        <h3 className="font-bold text-lg">{item.speaker.name}</h3>
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-base md:text-lg truncate">{item.speaker.name}</h3>
                         <div className="flex items-center text-xs text-muted-foreground">
-                          <Users className="w-3 h-3 mr-1" />
-                          {item.speaker.title || "Спикер"}
+                          <Users className="w-3 h-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">{item.speaker.title || "Спикер"}</span>
                         </div>
                       </div>
                     </div>
 
                     {item.talk_title && (
-                      <h4 className="font-semibold text-primary mb-2">{item.talk_title}</h4>
+                      <h4 className="font-semibold text-primary mb-2 text-sm md:text-base">{item.talk_title}</h4>
                     )}
                     {item.talk_description && (
-                      <p className="text-sm text-muted-foreground">{item.talk_description}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">{item.talk_description}</p>
                     )}
                     {!item.talk_description && item.speaker.description && (
-                      <p className="text-sm text-muted-foreground">{item.speaker.description}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">{item.speaker.description}</p>
                     )}
                   </CardContent>
                 </Card>
@@ -525,59 +525,59 @@ const EventPage: React.FC = () => {
 
       {/* Program Section */}
       {program.length > 0 && (
-        <section id="program" className="py-16 bg-gradient-to-b from-white to-purple-50">
+        <section id="program" className="py-12 md:py-16 bg-gradient-to-b from-white to-purple-50">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+            <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
                 <span className="gradient-text">Программа</span> мероприятия
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-sm md:text-lg text-muted-foreground px-2">
                 Детальное расписание вечера с описанием выступлений
               </p>
             </div>
 
-            <div className="max-w-4xl mx-auto space-y-6">
+            <div className="max-w-4xl mx-auto space-y-3 md:space-y-6">
               {program.map((item) => (
                 <Card key={item.id} className="border border-purple-100 bg-white">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className={`flex-shrink-0 font-bold px-4 py-2 rounded-lg text-sm ${
+                  <CardContent className="p-3 md:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+                      <div className={`flex-shrink-0 font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm self-start ${
                         item.type === 'networking' ? 'bg-purple-100 text-purple-600' :
                         item.type === 'break' ? 'bg-orange-100 text-orange-600' :
                         'bg-blue-100 text-blue-600'
                       }`}>
                         {formatProgramTime(item.time_start, item.time_end)}
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         {item.speaker ? (
                           <>
-                            <div className="flex items-center gap-3 mb-3">
+                            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
                               {item.speaker.photo_url ? (
                                 <img
                                   src={item.speaker.photo_url}
                                   alt={item.speaker.name}
-                                  className="h-12 w-12 rounded-full object-cover"
+                                  className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover flex-shrink-0"
                                 />
                               ) : (
-                                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
+                                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold flex-shrink-0 text-xs md:text-sm">
                                   {getInitials(item.speaker.name)}
                                 </div>
                               )}
-                              <div>
-                                <h3 className="text-xl font-bold">{item.speaker.name}</h3>
-                                <p className="text-sm text-muted-foreground">{item.speaker.title}</p>
+                              <div className="min-w-0">
+                                <h3 className="text-base md:text-xl font-bold truncate">{item.speaker.name}</h3>
+                                <p className="text-xs md:text-sm text-muted-foreground truncate">{item.speaker.title}</p>
                               </div>
                             </div>
-                            <h4 className="text-lg font-semibold text-primary mb-3">{item.title}</h4>
+                            <h4 className="text-sm md:text-lg font-semibold text-primary mb-2 md:mb-3">{item.title}</h4>
                             {item.description && (
-                              <p className="text-muted-foreground whitespace-pre-line">{item.description}</p>
+                              <p className="text-xs md:text-base text-muted-foreground whitespace-pre-line">{item.description}</p>
                             )}
                           </>
                         ) : (
                           <>
-                            <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                            <h3 className="text-base md:text-xl font-bold mb-1 md:mb-2">{item.title}</h3>
                             {item.description && (
-                              <p className="text-muted-foreground whitespace-pre-line">{item.description}</p>
+                              <p className="text-xs md:text-base text-muted-foreground whitespace-pre-line">{item.description}</p>
                             )}
                           </>
                         )}
@@ -596,18 +596,18 @@ const EventPage: React.FC = () => {
 
       {/* Sponsors Section */}
       {sponsors.length > 0 && (
-        <section className="py-16 bg-white">
+        <section className="py-12 md:py-16 bg-white">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+            <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
                 <span className="gradient-text">Спонсоры</span> мероприятия
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-sm md:text-lg text-muted-foreground px-2">
                 Благодарим наших партнёров за поддержку
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center items-center gap-8 max-w-4xl mx-auto">
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 max-w-4xl mx-auto">
               {sponsors.map((sponsor) => (
                 <a
                   key={sponsor.id}
@@ -620,11 +620,11 @@ const EventPage: React.FC = () => {
                     <img
                       src={sponsor.logo_url}
                       alt={sponsor.name}
-                      className="h-16 md:h-20 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                      className="h-12 md:h-16 lg:h-20 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
                     />
                   ) : (
-                    <div className="px-6 py-4 bg-gray-100 rounded-lg group-hover:bg-purple-100 transition-colors">
-                      <span className="text-lg font-semibold text-gray-700 group-hover:text-purple-700">
+                    <div className="px-4 md:px-6 py-2 md:py-4 bg-gray-100 rounded-lg group-hover:bg-purple-100 transition-colors">
+                      <span className="text-sm md:text-lg font-semibold text-gray-700 group-hover:text-purple-700">
                         {sponsor.name}
                       </span>
                     </div>
@@ -638,20 +638,20 @@ const EventPage: React.FC = () => {
 
       {/* Location Section */}
       {(event.location_name || event.location_address) && (
-        <section className="py-16 bg-white">
+        <section className="py-12 md:py-16 bg-white">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+            <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
                 <span className="gradient-text">Место</span> проведения
               </h2>
               {event.location_name && (
-                <p className="text-lg text-muted-foreground mb-2">
+                <p className="text-base md:text-lg text-muted-foreground mb-2">
                   {event.location_name}
                 </p>
               )}
               {event.location_address && (
-                <div className="flex items-center justify-center text-muted-foreground">
-                  <MapPin className="w-5 h-5 mr-2" />
+                <div className="flex items-center justify-center text-muted-foreground text-sm md:text-base">
+                  <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-1.5 md:mr-2 flex-shrink-0" />
                   <span>{event.location_address}</span>
                 </div>
               )}
@@ -668,15 +668,15 @@ const EventPage: React.FC = () => {
       )}
 
       {/* Registration CTA */}
-      <section className="py-16 bg-gradient-to-b from-purple-50 to-white">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-purple-50 to-white">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
             <Card className="border border-purple-200 bg-gradient-to-r from-purple-100 via-blue-50 to-purple-100">
-              <CardContent className="p-8">
-                <h2 className="text-2xl font-bold mb-4">
+              <CardContent className="p-4 md:p-8">
+                <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">
                   Регистрация на мероприятие
                 </h2>
-                <p className="text-lg text-muted-foreground mb-6">
+                <p className="text-base md:text-lg text-muted-foreground mb-4 md:mb-6">
                   Стоимость участия:{" "}
                   <span className="font-bold text-foreground">
                     {event.price > 0 ? `${event.price} BYN` : "Бесплатно"}
@@ -684,10 +684,10 @@ const EventPage: React.FC = () => {
                 </p>
                 <Button
                   size="lg"
-                  className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-base"
+                  className="w-full sm:w-auto rounded-full bg-primary hover:bg-primary/90 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base"
                   onClick={() => window.open(event.telegram_bot_url || 'https://t.me/maincomby_bot', '_blank')}
                 >
-                  Зарегистрироваться в Telegram <ArrowRight className="ml-2 h-5 w-5" />
+                  Зарегистрироваться <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
                 </Button>
               </CardContent>
             </Card>

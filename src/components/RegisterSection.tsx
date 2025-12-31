@@ -112,13 +112,13 @@ const RegisterSection = () => {
   };
 
   return (
-    <section id="register" className="py-16 bg-gradient-to-b from-purple-50 to-white">
+    <section id="register" className="py-12 md:py-16 bg-gradient-to-b from-purple-50 to-white">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+        <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
             Присоединяйтесь к <span className="gradient-text">ИИшнице</span>
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-sm md:text-lg text-muted-foreground px-2">
             Зарегистрируйтесь, чтобы получать уведомления о предстоящих мероприятиях и бронировать места на завтраках
           </p>
         </div>
