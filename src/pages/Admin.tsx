@@ -1,8 +1,22 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster } from "@/components/ui/toaster";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Calendar,
+  ListMusic,
+  Users,
+  MapPin,
+  Building2,
+  Bot,
+  UserCheck,
+  MessageSquare,
+  Send,
+  FileText,
+  Globe,
+  Megaphone
+} from "lucide-react";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 import AdminLogin from "@/components/admin/AdminLogin";
 import EventsManager from "@/components/admin/EventsManager";
@@ -17,11 +31,70 @@ import { LocationsManager } from "@/components/admin/LocationsManager";
 import PostsManager from "@/components/admin/PostsManager";
 import BroadcastManager from "@/components/admin/BroadcastManager";
 
+type TabValue =
+  | "events" | "program" | "speakers" | "locations" | "sponsors" | "leads"
+  | "bot-users" | "bot-registrations" | "bot-feedback" | "broadcasts"
+  | "posts";
+
+interface MenuItem {
+  value: TabValue;
+  label: string;
+  icon: React.ReactNode;
+  description: string;
+}
+
+interface MenuSection {
+  title: string;
+  icon: React.ReactNode;
+  color: string;
+  bgColor: string;
+  items: MenuItem[];
+}
+
+const menuSections: MenuSection[] = [
+  {
+    title: "Лендинг",
+    icon: <Globe className="h-5 w-5" />,
+    color: "text-purple-600",
+    bgColor: "bg-purple-50 hover:bg-purple-100 border-purple-200",
+    items: [
+      { value: "events", label: "Мероприятия", icon: <Calendar className="h-4 w-4" />, description: "Управление событиями" },
+      { value: "program", label: "Программа", icon: <ListMusic className="h-4 w-4" />, description: "Расписание выступлений" },
+      { value: "speakers", label: "Спикеры", icon: <Users className="h-4 w-4" />, description: "База спикеров" },
+      { value: "locations", label: "Локации", icon: <MapPin className="h-4 w-4" />, description: "Места проведения" },
+      { value: "sponsors", label: "Спонсоры", icon: <Building2 className="h-4 w-4" />, description: "Партнёры и спонсоры" },
+    ],
+  },
+  {
+    title: "Telegram Бот",
+    icon: <Bot className="h-5 w-5" />,
+    color: "text-blue-600",
+    bgColor: "bg-blue-50 hover:bg-blue-100 border-blue-200",
+    items: [
+      { value: "bot-users", label: "Пользователи", icon: <Users className="h-4 w-4" />, description: "Пользователи бота" },
+      { value: "bot-registrations", label: "Регистрации", icon: <UserCheck className="h-4 w-4" />, description: "Заявки на события" },
+      { value: "bot-feedback", label: "Фидбек", icon: <MessageSquare className="h-4 w-4" />, description: "Отзывы и обратная связь" },
+      { value: "broadcasts", label: "Рассылки", icon: <Send className="h-4 w-4" />, description: "Массовые уведомления" },
+    ],
+  },
+  {
+    title: "Контент",
+    icon: <FileText className="h-5 w-5" />,
+    color: "text-green-600",
+    bgColor: "bg-green-50 hover:bg-green-100 border-green-200",
+    items: [
+      { value: "posts", label: "Публикации", icon: <Megaphone className="h-4 w-4" />, description: "Блог и новости" },
+      { value: "leads", label: "Участники", icon: <Users className="h-4 w-4" />, description: "База участников" },
+    ],
+  },
+];
+
 const Admin = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabValue>("events");
 
   // Проверяем авторизацию при загрузке страницы
   useEffect(() => {
@@ -70,74 +143,129 @@ const Admin = () => {
     return <AdminLogin onLogin={handleLogin} />;
   }
 
+  // Find current section and item for breadcrumb
+  const getCurrentSection = () => {
+    for (const section of menuSections) {
+      const item = section.items.find(i => i.value === activeTab);
+      if (item) return { section, item };
+    }
+    return null;
+  };
+
+  const current = getCurrentSection();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNavbar username={username} onLogout={handleLogout} onHomeClick={() => navigate("/")} />
-      
+
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Панель администратора</h1>
-        
-        <Tabs defaultValue="events" className="w-full">
-          <TabsList className="mb-8 flex-wrap">
-            <TabsTrigger value="events">Мероприятия</TabsTrigger>
-            <TabsTrigger value="program">Программа</TabsTrigger>
-            <TabsTrigger value="speakers">Спикеры</TabsTrigger>
-            <TabsTrigger value="locations">Локации</TabsTrigger>
-            <TabsTrigger value="leads">Участники</TabsTrigger>
-            <TabsTrigger value="sponsors">Спонсоры</TabsTrigger>
-            <TabsTrigger value="bot-users">Пользователи бота</TabsTrigger>
-            <TabsTrigger value="bot-registrations">Регистрации бота</TabsTrigger>
-            <TabsTrigger value="bot-feedback">Фидбек</TabsTrigger>
-            <TabsTrigger value="broadcasts">Рассылки</TabsTrigger>
-            <TabsTrigger value="posts">Публикации</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="events">
-            <EventsManager />
-          </TabsContent>
+        {/* Header with breadcrumb */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Панель администратора</h1>
+          {current && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className={current.section.color}>{current.section.icon}</span>
+              <span>{current.section.title}</span>
+              <span>/</span>
+              <span className="font-medium text-foreground">{current.item.label}</span>
+            </div>
+          )}
+        </div>
 
-          <TabsContent value="program">
-            <EventProgramManager />
-          </TabsContent>
+        <div className="flex gap-6">
+          {/* Sidebar Menu */}
+          <aside className="w-64 flex-shrink-0">
+            <div className="sticky top-4 space-y-4">
+              {menuSections.map((section) => (
+                <Card key={section.title} className="overflow-hidden">
+                  <div className={`px-4 py-3 border-b ${section.bgColor.split(' ')[0]} flex items-center gap-2`}>
+                    <span className={section.color}>{section.icon}</span>
+                    <span className={`font-semibold ${section.color}`}>{section.title}</span>
+                  </div>
+                  <CardContent className="p-2">
+                    <div className="space-y-1">
+                      {section.items.map((item) => (
+                        <button
+                          key={item.value}
+                          onClick={() => setActiveTab(item.value)}
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all ${
+                            activeTab === item.value
+                              ? `${section.bgColor} ${section.color} font-medium`
+                              : "hover:bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          <span className={activeTab === item.value ? section.color : "text-gray-400"}>
+                            {item.icon}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm truncate">{item.label}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </aside>
 
-          <TabsContent value="speakers">
-            <SpeakersManager />
-          </TabsContent>
+          {/* Main Content */}
+          <div className="flex-1 min-w-0">
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabValue)} className="w-full">
+              <TabsList className="hidden">
+                {menuSections.flatMap(s => s.items).map(item => (
+                  <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>
+                ))}
+              </TabsList>
 
-          <TabsContent value="locations">
-            <LocationsManager />
-          </TabsContent>
+              <TabsContent value="events" className="mt-0">
+                <EventsManager />
+              </TabsContent>
 
-          <TabsContent value="leads">
-            <LeadsManager />
-          </TabsContent>
-          
-          <TabsContent value="sponsors">
-            <SponsorsManager />
-          </TabsContent>
+              <TabsContent value="program" className="mt-0">
+                <EventProgramManager />
+              </TabsContent>
 
-          <TabsContent value="bot-users">
-            <BotUsersManager />
-          </TabsContent>
+              <TabsContent value="speakers" className="mt-0">
+                <SpeakersManager />
+              </TabsContent>
 
-          <TabsContent value="bot-registrations">
-            <BotRegistrationsManager />
-          </TabsContent>
+              <TabsContent value="locations" className="mt-0">
+                <LocationsManager />
+              </TabsContent>
 
-          <TabsContent value="bot-feedback">
-            <BotFeedbackManager />
-          </TabsContent>
+              <TabsContent value="leads" className="mt-0">
+                <LeadsManager />
+              </TabsContent>
 
-          <TabsContent value="broadcasts">
-            <BroadcastManager />
-          </TabsContent>
+              <TabsContent value="sponsors" className="mt-0">
+                <SponsorsManager />
+              </TabsContent>
 
-          <TabsContent value="posts">
-            <PostsManager />
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="bot-users" className="mt-0">
+                <BotUsersManager />
+              </TabsContent>
+
+              <TabsContent value="bot-registrations" className="mt-0">
+                <BotRegistrationsManager />
+              </TabsContent>
+
+              <TabsContent value="bot-feedback" className="mt-0">
+                <BotFeedbackManager />
+              </TabsContent>
+
+              <TabsContent value="broadcasts" className="mt-0">
+                <BroadcastManager />
+              </TabsContent>
+
+              <TabsContent value="posts" className="mt-0">
+                <PostsManager />
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
       </main>
-      
+
       <Toaster />
     </div>
   );

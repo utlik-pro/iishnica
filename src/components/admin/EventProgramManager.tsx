@@ -429,7 +429,7 @@ const EventProgramManager: React.FC = () => {
                     <h4 className="font-semibold mb-1">{item.title}</h4>
 
                     {item.description && (
-                      <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                      <p className="text-sm text-muted-foreground mb-2 line-clamp-3 whitespace-pre-line">
                         {item.description}
                       </p>
                     )}
