@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { NavbarConfig, DEFAULT_NAVBAR_CONFIG } from "@/types/pageBuilder";
 
-const Navbar = () => {
+interface NavbarProps {
+  config?: NavbarConfig;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ config }) => {
+  const cfg = config ?? DEFAULT_NAVBAR_CONFIG;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleScrollToSection = (id: string) => {
@@ -19,14 +25,15 @@ const Navbar = () => {
     setMobileMenuOpen(false);
   };
 
-  const navLinks = [
-    { label: "Главная", action: () => handleScrollToTop() },
-    { label: "О комьюнити", action: () => handleScrollToSection('about') },
-    { label: "Программа", action: () => handleScrollToSection('program') },
-    { label: "Команда", action: () => handleScrollToSection('team') },
-    { label: "Календарь", href: "/calendar" },
-    { label: "Блог", href: "/blog" },
-  ];
+  const handleMenuItemClick = (item: typeof cfg.menuItems[0]) => {
+    if (item.type === 'scroll') {
+      if (item.target === 'top') {
+        handleScrollToTop();
+      } else {
+        handleScrollToSection(item.target);
+      }
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b">
@@ -34,31 +41,31 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2 md:space-x-3">
           <img
-            src="/Main-logo.webp"
-            alt="M.AI.N Community Logo"
+            src={cfg.logo.imageUrl}
+            alt="Logo"
             className="h-8 md:h-10 w-auto"
           />
-          <span className="font-heading font-bold text-lg md:text-xl">ИИшница</span>
+          <span className="font-heading font-bold text-lg md:text-xl">{cfg.logo.title}</span>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            link.href ? (
+          {cfg.menuItems.map((item) => (
+            item.type === 'link' ? (
               <Link
-                key={link.label}
-                to={link.href}
+                key={item.id}
+                to={item.target}
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
-                {link.label}
+                {item.label}
               </Link>
             ) : (
               <button
-                key={link.label}
-                onClick={link.action}
+                key={item.id}
+                onClick={() => handleMenuItemClick(item)}
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
-                {link.label}
+                {item.label}
               </button>
             )
           ))}
@@ -66,13 +73,15 @@ const Navbar = () => {
 
         {/* Desktop CTA + Mobile Menu Button */}
         <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            className="hidden sm:inline-flex bg-primary hover:bg-primary/90 text-xs sm:text-sm px-3 sm:px-4"
-            onClick={() => window.open('https://t.me/maincomby_bot', '_blank')}
-          >
-            Регистрация
-          </Button>
+          {cfg.ctaButton.isVisible && (
+            <Button
+              size="sm"
+              className="hidden sm:inline-flex bg-primary hover:bg-primary/90 text-xs sm:text-sm px-3 sm:px-4"
+              onClick={() => window.open(cfg.ctaButton.url, '_blank')}
+            >
+              {cfg.ctaButton.text}
+            </Button>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -93,39 +102,41 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden border-t bg-background">
           <nav className="container mx-auto px-4 py-4 flex flex-col space-y-1">
-            {navLinks.map((link) => (
-              link.href ? (
+            {cfg.menuItems.map((item) => (
+              item.type === 'link' ? (
                 <Link
-                  key={link.label}
-                  to={link.href}
+                  key={item.id}
+                  to={item.target}
                   onClick={() => setMobileMenuOpen(false)}
                   className="py-3 px-4 text-base font-medium hover:bg-muted rounded-lg transition-colors"
                 >
-                  {link.label}
+                  {item.label}
                 </Link>
               ) : (
                 <button
-                  key={link.label}
-                  onClick={link.action}
+                  key={item.id}
+                  onClick={() => handleMenuItemClick(item)}
                   className="py-3 px-4 text-base font-medium hover:bg-muted rounded-lg transition-colors text-left"
                 >
-                  {link.label}
+                  {item.label}
                 </button>
               )
             ))}
 
             {/* Mobile CTA */}
-            <div className="pt-4 border-t mt-2">
-              <Button
-                className="w-full bg-primary hover:bg-primary/90"
-                onClick={() => {
-                  window.open('https://t.me/maincomby_bot', '_blank');
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Зарегистрироваться
-              </Button>
-            </div>
+            {cfg.ctaButton.isVisible && (
+              <div className="pt-4 border-t mt-2">
+                <Button
+                  className="w-full bg-primary hover:bg-primary/90"
+                  onClick={() => {
+                    window.open(cfg.ctaButton.url, '_blank');
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  {cfg.ctaButton.text}
+                </Button>
+              </div>
+            )}
           </nav>
         </div>
       )}

@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
+import { TeamConfig, DEFAULT_TEAM_CONFIG } from "@/types/pageBuilder";
 
 interface TeamMember {
   id: string;
@@ -11,6 +12,10 @@ interface TeamMember {
   description: string | null;
   photo_url: string | null;
   team_order: number;
+}
+
+interface TeamSectionProps {
+  config?: TeamConfig;
 }
 
 const getInitials = (name: string): string => {
@@ -22,7 +27,8 @@ const getInitials = (name: string): string => {
     .slice(0, 2);
 };
 
-const TeamSection = () => {
+const TeamSection: React.FC<TeamSectionProps> = ({ config }) => {
+  const cfg = config ?? DEFAULT_TEAM_CONFIG;
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,10 +72,10 @@ const TeamSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
-            Наша <span className="gradient-text">команда</span>
+            {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
           <p className="text-sm md:text-lg text-muted-foreground px-2">
-            Познакомьтесь с людьми, которые делают ИИшницу местом для роста и развития
+            {cfg.description}
           </p>
         </div>
 

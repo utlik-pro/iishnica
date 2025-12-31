@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { RegisterConfig, DEFAULT_REGISTER_CONFIG } from "@/types/pageBuilder";
 
-const RegisterSection = () => {
+interface RegisterSectionProps {
+  config?: RegisterConfig;
+}
+
+const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
+  const cfg = config ?? DEFAULT_REGISTER_CONFIG;
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
@@ -116,19 +121,19 @@ const RegisterSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
-            Присоединяйтесь к <span className="gradient-text">ИИшнице</span>
+            {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
           <p className="text-sm md:text-lg text-muted-foreground px-2">
-            Зарегистрируйтесь, чтобы получать уведомления о предстоящих мероприятиях и бронировать места на завтраках
+            {cfg.description}
           </p>
         </div>
         
         <div className="max-w-md mx-auto">
           <Card>
             <CardHeader>
-              <CardTitle>Регистрация</CardTitle>
+              <CardTitle>{cfg.formTitle}</CardTitle>
               <CardDescription>
-                Заполните форму, чтобы присоединиться к нашему сообществу
+                {cfg.formDescription}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -176,16 +181,16 @@ const RegisterSection = () => {
                   </p>
                 </div>
                 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Отправка..." : "Зарегистрироваться"}
+                  {isSubmitting ? "Отправка..." : cfg.submitButtonText}
                 </Button>
-                
+
                 <p className="text-xs text-muted-foreground text-center mt-4">
-                  Регистрируясь, вы соглашаетесь с нашей политикой конфиденциальности и условиями использования.
+                  {cfg.privacyText}
                 </p>
               </form>
             </CardContent>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { BlogConfig, DEFAULT_BLOG_CONFIG } from "@/types/pageBuilder";
 
 interface Post {
   id: string;
@@ -24,13 +25,18 @@ const CATEGORIES: { value: PostCategory; label: string }[] = [
   { value: "article", label: "Статьи" },
 ];
 
-const BlogSection: React.FC = () => {
+interface BlogSectionProps {
+  config?: BlogConfig;
+}
+
+const BlogSection: React.FC<BlogSectionProps> = ({ config }) => {
+  const cfg = config ?? DEFAULT_BLOG_CONFIG;
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [cfg.maxItems]);
 
   const fetchPosts = async () => {
     try {
@@ -39,7 +45,7 @@ const BlogSection: React.FC = () => {
         .select("id, title, slug, excerpt, category, featured_image_url, author, published_at, created_at")
         .eq("is_published", true)
         .order("published_at", { ascending: false })
-        .limit(6);
+        .limit(cfg.maxItems);
 
       if (error) throw error;
       setPosts((data as Post[]) || []);
@@ -95,10 +101,10 @@ const BlogSection: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-            Новости и <span className="gradient-text">публикации</span>
+            {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Статьи, новости и материалы о искусственном интеллекте и AI-сообществе
+            {cfg.description}
           </p>
         </div>
 
@@ -150,9 +156,9 @@ const BlogSection: React.FC = () => {
         </div>
 
         <div className="text-center">
-          <Link to="/blog">
+          <Link to={cfg.buttonLink}>
             <Button variant="outline" size="lg">
-              Все публикации
+              {cfg.buttonText}
             </Button>
           </Link>
         </div>

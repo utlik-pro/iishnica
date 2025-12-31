@@ -1,7 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { FooterConfig, DEFAULT_FOOTER_CONFIG } from "@/types/pageBuilder";
 
-const Footer = () => {
+interface FooterProps {
+  config?: FooterConfig;
+}
+
+const Footer: React.FC<FooterProps> = ({ config }) => {
+  const cfg = config ?? DEFAULT_FOOTER_CONFIG;
   const currentYear = new Date().getFullYear();
 
   const handleScrollToSection = (id: string) => {
@@ -10,6 +15,19 @@ const Footer = () => {
       section.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const handleNavClick = (item: typeof cfg.navigation.items[0]) => {
+    if (item.type === 'scroll') {
+      if (item.target === 'top') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        handleScrollToSection(item.target);
+      }
+    }
+  };
+
+  // Replace {year} placeholder with current year
+  const copyrightText = cfg.copyright.replace('{year}', currentYear.toString());
 
   return (
     <footer className="bg-gray-50 border-t py-8 md:py-12">
@@ -21,49 +39,39 @@ const Footer = () => {
               <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
                 <span className="text-white font-bold text-xs md:text-sm">ИИ</span>
               </div>
-              <span className="font-heading font-bold text-lg md:text-xl">ИИшница</span>
+              <span className="font-heading font-bold text-lg md:text-xl">{cfg.logo.title}</span>
             </div>
             <p className="text-xs md:text-sm text-muted-foreground mt-2">
-              Мероприятия от M.AI.N - AI Community
+              {cfg.logo.tagline}
             </p>
           </div>
 
           {/* Navigation grid */}
           <div className="grid grid-cols-2 gap-6 md:gap-16 w-full md:w-auto">
             <div>
-              <h3 className="font-medium mb-3 md:mb-4 text-sm md:text-base">Навигация</h3>
+              <h3 className="font-medium mb-3 md:mb-4 text-sm md:text-base">{cfg.navigation.title}</h3>
               <ul className="space-y-1.5 md:space-y-2">
-                <li>
-                  <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Главная
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => handleScrollToSection('about')} className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors">
-                    О комьюнити
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => handleScrollToSection('program')} className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Программа
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => handleScrollToSection('team')} className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors">
-                    Команда
-                  </button>
-                </li>
+                {cfg.navigation.items.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      onClick={() => handleNavClick(item)}
+                      className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {item.label}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div>
-              <h3 className="font-medium mb-3 md:mb-4 text-sm md:text-base">Контакты</h3>
+              <h3 className="font-medium mb-3 md:mb-4 text-sm md:text-base">{cfg.contacts.title}</h3>
               <ul className="space-y-1.5 md:space-y-2">
                 <li className="text-xs md:text-sm text-muted-foreground">
-                  admin@utlik.pro
+                  {cfg.contacts.email}
                 </li>
                 <li className="text-xs md:text-sm text-muted-foreground">
-                  +375 44 755 4000
+                  {cfg.contacts.phone}
                 </li>
               </ul>
             </div>
@@ -73,16 +81,19 @@ const Footer = () => {
         {/* Bottom section */}
         <div className="border-t mt-8 md:mt-12 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
           <p className="text-xs md:text-sm text-muted-foreground text-center md:text-left">
-            © {currentYear} ИИшница. M.AI.N - AI Community
+            {copyrightText}
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-            <button onClick={() => handleScrollToSection('privacy')} className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors">
-              Политика конфиденциальности
-            </button>
-            <button onClick={() => handleScrollToSection('terms')} className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors">
-              Условия использования
-            </button>
+            {cfg.bottomLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => handleScrollToSection(link.target)}
+                className="text-xs md:text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                {link.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>

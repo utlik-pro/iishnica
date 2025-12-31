@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -6,6 +5,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { SponsorsConfig, DEFAULT_SPONSORS_CONFIG } from "@/types/pageBuilder";
 
 interface Sponsor {
   id: string;
@@ -14,7 +14,12 @@ interface Sponsor {
   website_url: string | null;
 }
 
-const SponsorsSection = () => {
+interface SponsorsSectionProps {
+  config?: SponsorsConfig;
+}
+
+const SponsorsSection: React.FC<SponsorsSectionProps> = ({ config }) => {
+  const cfg = config ?? DEFAULT_SPONSORS_CONFIG;
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +51,7 @@ const SponsorsSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-6 md:mb-8">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">
-            Наши <span className="gradient-text">спонсоры</span>
+            {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
         </div>
 

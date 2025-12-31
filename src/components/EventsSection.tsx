@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ru } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { EventsConfig, DEFAULT_EVENTS_CONFIG } from "@/types/pageBuilder";
 
 interface Event {
   id: string;
@@ -17,7 +18,12 @@ interface Event {
   registration_info: string | null;
 }
 
-const EventsSection = () => {
+interface EventsSectionProps {
+  config?: EventsConfig;
+}
+
+const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
+  const cfg = config ?? DEFAULT_EVENTS_CONFIG;
   const { toast } = useToast();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -111,10 +117,10 @@ const EventsSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
-            Расписание ближайших <span className="gradient-text">завтраков</span>
+            {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
           <p className="text-sm md:text-lg text-muted-foreground px-2">
-            Присоединяйтесь к нашим еженедельным встречам каждый вторник с 10:00 до 12:00
+            {cfg.description}
           </p>
         </div>
 
@@ -124,7 +130,7 @@ const EventsSection = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
-            {events.slice(0, 3).map((event, index) => (
+            {events.slice(0, cfg.maxItems).map((event, index) => (
               <Card key={event.id} className="border border-purple-100">
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-center justify-between mb-3 md:mb-4 gap-2">
@@ -165,25 +171,25 @@ const EventsSection = () => {
 
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8 items-center justify-center">
           {/* Calendar - hide on mobile, show on tablet+ */}
-          <div className="hidden sm:block sm:w-auto">
-            <Calendar
-              locale={ru}
-              mode="multiple"
-              selected={eventDates}
-              className="rounded-md border shadow p-2 md:p-4 bg-white select-none pointer-events-auto"
-            />
-          </div>
+          {cfg.showCalendar && (
+            <div className="hidden sm:block sm:w-auto">
+              <Calendar
+                locale={ru}
+                mode="multiple"
+                selected={eventDates}
+                className="rounded-md border shadow p-2 md:p-4 bg-white select-none pointer-events-auto"
+              />
+            </div>
+          )}
 
           <div className="w-full sm:w-auto lg:w-1/3 text-center lg:text-left">
-            <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Регулярные встречи</h3>
+            <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4">{cfg.sidebarTitle}</h3>
             <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
-              Наши завтраки проходят каждый вторник с 10:00 до 12:00. Каждая встреча посвящена решению конкретной задачи с использованием инструментов искусственного интеллекта.
+              {cfg.sidebarDescription}
             </p>
-            <p className="text-sm md:text-base text-muted-foreground mb-4">
-              Стоимость участия в одном завтраке — <strong>25 BYN</strong>.
-            </p>
+            <p className="text-sm md:text-base text-muted-foreground mb-4" dangerouslySetInnerHTML={{ __html: cfg.priceInfo }} />
             <Button variant="outline" className="w-full sm:w-auto text-sm md:text-base">
-              Посмотреть все мероприятия
+              {cfg.buttonText}
             </Button>
           </div>
         </div>
