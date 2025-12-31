@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +15,28 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExternalLink, Copy, Link, Bell } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ExternalLink, Copy, Link, Bell, MoreHorizontal, Pencil, Trash2, Calendar, MapPin } from "lucide-react";
 
 interface Location {
   id: string;
@@ -561,105 +575,110 @@ const EventsManager: React.FC = () => {
           Нет мероприятий. Создайте новое!
         </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => (
-            <Card
-              key={event.id}
-              className={`overflow-hidden ${!event.is_published ? "opacity-70" : ""}`}
-            >
-              <CardHeader className="bg-muted/50">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="line-clamp-2">{event.title}</CardTitle>
-                  <Badge variant={event.is_published ? "default" : "secondary"}>
-                    {event.is_published ? "Опубликовано" : "Черновик"}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                <div>
-                  <p className="text-sm font-medium">Дата и время:</p>
-                  <p>{formatDate(event.date)}</p>
-                </div>
-
-                {event.location_name && (
-                  <div>
-                    <p className="text-sm font-medium">Место:</p>
-                    <p>{event.location_name}</p>
-                    {event.location_address && (
-                      <p className="text-sm text-muted-foreground">
-                        {event.location_address}
-                      </p>
+        <div className="border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[300px]">Название</TableHead>
+                <TableHead>Дата</TableHead>
+                <TableHead>Место</TableHead>
+                <TableHead>Цена</TableHead>
+                <TableHead>Статус</TableHead>
+                <TableHead className="text-right">Действия</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {events.map((event) => (
+                <TableRow key={event.id} className={!event.is_published ? "opacity-60" : ""}>
+                  <TableCell>
+                    <div className="font-medium">{event.title}</div>
+                    {event.is_published && (
+                      <div className="flex items-center gap-1 mt-1">
+                        <Link className="h-3 w-3 text-muted-foreground" />
+                        <button
+                          onClick={() => copyEventLink(event)}
+                          className="text-xs text-muted-foreground hover:text-primary truncate max-w-[200px]"
+                          title={getEventUrl(event)}
+                        >
+                          {event.slug || event.id.slice(0, 8)}
+                        </button>
+                      </div>
                     )}
-                  </div>
-                )}
-
-                <div>
-                  <p className="text-sm font-medium">Стоимость:</p>
-                  <p>{event.price > 0 ? `${event.price} BYN` : "Бесплатно"}</p>
-                </div>
-
-                {event.is_published && (
-                  <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+                  </TableCell>
+                  <TableCell>
                     <div className="flex items-center gap-2">
-                      <Link className="h-4 w-4 text-muted-foreground" />
-                      <p className="text-sm font-medium">Ссылка для рекламы:</p>
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="text-sm">{new Date(event.date).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}</div>
+                        <div className="text-xs text-muted-foreground">{new Date(event.date).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })}</div>
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground break-all font-mono">
-                      {getEventUrl(event)}
-                    </p>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => openEventPage(event)}
-                      >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Открыть
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => copyEventLink(event)}
-                      >
-                        <Copy className="h-4 w-4 mr-2" />
-                        Копировать
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex justify-end gap-2 pt-2">
-                  {event.is_published && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleNotify(event)}
-                      className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                    >
-                      <Bell className="h-4 w-4 mr-1" />
-                      Оповестить
-                    </Button>
-                  )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEditEventDialog(event)}
-                  >
-                    Редактировать
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(event.id)}
-                  >
-                    Удалить
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  </TableCell>
+                  <TableCell>
+                    {event.location_name ? (
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                        <div className="truncate max-w-[150px]" title={event.location_name}>
+                          {event.location_name}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <span className={event.price > 0 ? "font-medium" : "text-green-600"}>
+                      {event.price > 0 ? `${event.price} BYN` : "Бесплатно"}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={event.is_published ? "default" : "secondary"}>
+                      {event.is_published ? "Опубликовано" : "Черновик"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEditEventDialog(event)}>
+                          <Pencil className="h-4 w-4 mr-2" />
+                          Редактировать
+                        </DropdownMenuItem>
+                        {event.is_published && (
+                          <>
+                            <DropdownMenuItem onClick={() => openEventPage(event)}>
+                              <ExternalLink className="h-4 w-4 mr-2" />
+                              Открыть страницу
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => copyEventLink(event)}>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Копировать ссылку
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleNotify(event)}>
+                              <Bell className="h-4 w-4 mr-2" />
+                              Оповестить
+                            </DropdownMenuItem>
+                          </>
+                        )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(event.id)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Удалить
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       )}
 
