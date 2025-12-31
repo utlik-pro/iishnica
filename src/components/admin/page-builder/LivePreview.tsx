@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { PageSection, SectionType } from "@/types/pageBuilder";
 
 // Import section components
@@ -8,6 +8,7 @@ import AboutSection from "@/components/AboutSection";
 import EventsSection from "@/components/EventsSection";
 import TeamSection from "@/components/TeamSection";
 import SponsorsSection from "@/components/SponsorsSection";
+import BlogSection from "@/components/BlogSection";
 import RegisterSection from "@/components/RegisterSection";
 import Footer from "@/components/Footer";
 
@@ -23,17 +24,16 @@ const SECTION_COMPONENTS: Record<SectionType, React.ComponentType<{ config?: any
   events: EventsSection,
   team: TeamSection,
   sponsors: SponsorsSection,
-  blog: () => null, // BlogSection will be added later
+  blog: BlogSection,
   register: RegisterSection,
   footer: Footer,
 };
 
 const LivePreview: React.FC<LivePreviewProps> = ({ sections }) => {
-  const visibleSections = useMemo(() => {
-    return sections
-      .filter(s => s.is_visible)
-      .sort((a, b) => a.order_index - b.order_index);
-  }, [sections]);
+  // Sort and filter sections - no memoization to ensure re-render on config changes
+  const visibleSections = sections
+    .filter(s => s.is_visible)
+    .sort((a, b) => a.order_index - b.order_index);
 
   return (
     <div className="h-full flex flex-col">
@@ -63,9 +63,11 @@ const LivePreview: React.FC<LivePreviewProps> = ({ sections }) => {
                 const Component = SECTION_COMPONENTS[section.section_type];
                 if (!Component) return null;
 
+                // Use config hash in key to force re-render on config changes
+                const configKey = JSON.stringify(section.config);
+
                 return (
-                  <div key={section.id} className="relative">
-                    {/* Section highlight on hover could be added here */}
+                  <div key={`${section.id}-${configKey}`} className="relative">
                     <Component config={section.config} />
                   </div>
                 );
