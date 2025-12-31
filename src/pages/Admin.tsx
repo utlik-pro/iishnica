@@ -15,7 +15,8 @@ import {
   Send,
   FileText,
   Globe,
-  Megaphone
+  Megaphone,
+  Layers
 } from "lucide-react";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -30,9 +31,10 @@ import { BotFeedbackManager } from "@/components/admin/BotFeedbackManager";
 import { LocationsManager } from "@/components/admin/LocationsManager";
 import PostsManager from "@/components/admin/PostsManager";
 import BroadcastManager from "@/components/admin/BroadcastManager";
+import PageBuilderManager from "@/components/admin/page-builder/PageBuilderManager";
 
 type TabValue =
-  | "events" | "program" | "speakers" | "locations" | "sponsors" | "leads"
+  | "page-builder" | "events" | "program" | "speakers" | "locations" | "sponsors" | "leads"
   | "bot-users" | "bot-registrations" | "bot-feedback" | "broadcasts"
   | "posts";
 
@@ -58,6 +60,7 @@ const menuSections: MenuSection[] = [
     color: "text-purple-600",
     bgColor: "bg-purple-50 hover:bg-purple-100 border-purple-200",
     items: [
+      { value: "page-builder", label: "Конструктор", icon: <Layers className="h-4 w-4" />, description: "Настройка секций" },
       { value: "events", label: "Мероприятия", icon: <Calendar className="h-4 w-4" />, description: "Управление событиями" },
       { value: "program", label: "Программа", icon: <ListMusic className="h-4 w-4" />, description: "Расписание выступлений" },
       { value: "speakers", label: "Спикеры", icon: <Users className="h-4 w-4" />, description: "База спикеров" },
@@ -94,7 +97,7 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabValue>("events");
+  const [activeTab, setActiveTab] = useState<TabValue>("page-builder");
 
   // Проверяем авторизацию при загрузке страницы
   useEffect(() => {
@@ -217,6 +220,10 @@ const Admin = () => {
                   <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>
                 ))}
               </TabsList>
+
+              <TabsContent value="page-builder" className="mt-0">
+                <PageBuilderManager />
+              </TabsContent>
 
               <TabsContent value="events" className="mt-0">
                 <EventsManager />
