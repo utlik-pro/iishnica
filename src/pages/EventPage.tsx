@@ -570,14 +570,14 @@ const EventPage: React.FC = () => {
                             </div>
                             <h4 className="text-lg font-semibold text-primary mb-3">{item.title}</h4>
                             {item.description && (
-                              <p className="text-muted-foreground">{item.description}</p>
+                              <p className="text-muted-foreground whitespace-pre-line">{item.description}</p>
                             )}
                           </>
                         ) : (
                           <>
                             <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                             {item.description && (
-                              <p className="text-muted-foreground">{item.description}</p>
+                              <p className="text-muted-foreground whitespace-pre-line">{item.description}</p>
                             )}
                           </>
                         )}
@@ -658,7 +658,10 @@ const EventPage: React.FC = () => {
             </div>
 
             <div className="max-w-4xl mx-auto">
-              <EventLocationMap />
+              <EventLocationMap
+                address={event.location_address || undefined}
+                yandexMapUrl={event.yandex_map_url}
+              />
             </div>
           </div>
         </section>

@@ -22,8 +22,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, MapPin, ExternalLink, Image } from "lucide-react";
+import { Plus, Pencil, Trash2, MapPin, ExternalLink, Image, Loader2, Wand2 } from "lucide-react";
 import ImageUpload from "@/components/ui/image-upload";
+import { supabase } from "@/integrations/supabase/client";
 
 type Location = {
   id: string;
@@ -56,8 +57,51 @@ export function LocationsManager() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const [formData, setFormData] = useState<LocationFormData>(emptyForm);
+  const [isResolvingUrl, setIsResolvingUrl] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const resolveYandexUrl = async () => {
+    if (!formData.yandex_map_url) {
+      toast({
+        title: "Введите ссылку",
+        description: "Сначала вставьте ссылку на Яндекс Карты",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsResolvingUrl(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('resolve-yandex-url', {
+        body: { url: formData.yandex_map_url }
+      });
+
+      if (error) throw error;
+
+      if (data.widgetUrl) {
+        setFormData({ ...formData, yandex_map_url: data.widgetUrl });
+        toast({
+          title: "Готово!",
+          description: "Ссылка преобразована в виджет карты",
+        });
+      } else {
+        toast({
+          title: "Не удалось получить координаты",
+          description: "Попробуйте скопировать полную ссылку из адресной строки браузера",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Ошибка",
+        description: error.message || "Не удалось обработать ссылку",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResolvingUrl(false);
+    }
+  };
 
   const { data: locations, isLoading } = useQuery({
     queryKey: ["locations"],
@@ -219,14 +263,33 @@ export function LocationsManager() {
                 </div>
                 <div className="col-span-2">
                   <Label htmlFor="yandex_map_url">Ссылка на Яндекс Карты</Label>
-                  <Input
-                    id="yandex_map_url"
-                    value={formData.yandex_map_url}
-                    onChange={(e) =>
-                      setFormData({ ...formData, yandex_map_url: e.target.value })
-                    }
-                    placeholder="https://yandex.ru/maps/..."
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="yandex_map_url"
+                      value={formData.yandex_map_url}
+                      onChange={(e) =>
+                        setFormData({ ...formData, yandex_map_url: e.target.value })
+                      }
+                      placeholder="Вставьте любую ссылку (короткую или полную)"
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={resolveYandexUrl}
+                      disabled={isResolvingUrl || !formData.yandex_map_url}
+                      title="Получить координаты"
+                    >
+                      {isResolvingUrl ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Wand2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Вставьте ссылку и нажмите кнопку для получения координат
+                  </p>
                 </div>
                 <div className="col-span-2 flex items-center gap-2">
                   <Switch
