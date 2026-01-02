@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { QrCode, Search, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { QrCode, Search, CheckCircle, XCircle, Clock, Camera, Keyboard } from "lucide-react";
+import { Html5Qrcode } from "html5-qrcode";
 
 interface BotRegistration {
   id: number;
@@ -51,6 +53,17 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
   const [searching, setSearching] = useState(false);
   const [registration, setRegistration] = useState<BotRegistration | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanMode, setScanMode] = useState<"manual" | "qr">("manual");
+  const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
+  const scannerInitialized = useRef(false);
+
+  // Cleanup QR scanner on unmount
+  useEffect(() => {
+    return () => {
+      stopScanner();
+    };
+  }, []);
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleString("ru-RU", {
@@ -60,6 +73,77 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const startScanner = async () => {
+    try {
+      if (!html5QrCodeRef.current) {
+        html5QrCodeRef.current = new Html5Qrcode("qr-reader");
+      }
+
+      const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0,
+      };
+
+      await html5QrCodeRef.current.start(
+        { facingMode: "environment" }, // Use back camera
+        config,
+        (decodedText) => {
+          // Success callback - QR code detected
+          if (decodedText && decodedText.trim()) {
+            setTicketCode(decodedText.trim().toUpperCase());
+            stopScanner();
+            // Automatically search after scan
+            setTimeout(() => handleSearch(), 100);
+            toast({
+              title: "QR-код отсканирован",
+              description: `Код: ${decodedText}`,
+            });
+          }
+        },
+        (errorMessage) => {
+          // Error callback - can be ignored for scanning errors
+          // Only log actual errors, not "No QR code found"
+          if (!errorMessage.includes("NotFoundException")) {
+            console.debug("QR scan error:", errorMessage);
+          }
+        }
+      );
+
+      setIsScanning(true);
+      scannerInitialized.current = true;
+    } catch (err: any) {
+      console.error("Error starting scanner:", err);
+      toast({
+        title: "Ошибка камеры",
+        description: err?.message || "Не удалось запустить камеру. Проверьте разрешения.",
+        variant: "destructive",
+      });
+      setIsScanning(false);
+    }
+  };
+
+  const stopScanner = async () => {
+    try {
+      if (html5QrCodeRef.current && scannerInitialized.current) {
+        await html5QrCodeRef.current.stop();
+        html5QrCodeRef.current.clear();
+      }
+      setIsScanning(false);
+    } catch (err) {
+      console.error("Error stopping scanner:", err);
+    }
+  };
+
+  const handleScanModeChange = async (mode: "manual" | "qr") => {
+    setScanMode(mode);
+    if (mode === "qr") {
+      await startScanner();
+    } else {
+      await stopScanner();
+    }
   };
 
   const handleSearch = async () => {
@@ -206,52 +290,114 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
             Поиск билета
           </CardTitle>
           <CardDescription>
-            Введите код билета для проверки и чекина участника
+            Сканируйте QR-код или введите код билета вручную
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <Label htmlFor="ticketCode">Код билета</Label>
-              <Input
-                id="ticketCode"
-                placeholder="MAIN-XXXXX-XXXX"
-                value={ticketCode}
-                onChange={(e) => setTicketCode(e.target.value.toUpperCase())}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSearch();
-                  }
-                }}
-                className="font-mono"
-              />
-            </div>
-            <div className="flex items-end">
-              <Button
-                onClick={handleSearch}
-                disabled={searching || !ticketCode.trim()}
-                className="min-w-[100px]"
-              >
-                {searching ? "Поиск..." : "Найти"}
-              </Button>
-            </div>
-          </div>
+          <Tabs value={scanMode} onValueChange={(value) => handleScanModeChange(value as "manual" | "qr")}>
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="manual" className="flex items-center gap-2">
+                <Keyboard className="h-4 w-4" />
+                Ручной ввод
+              </TabsTrigger>
+              <TabsTrigger value="qr" className="flex items-center gap-2">
+                <Camera className="h-4 w-4" />
+                QR-сканер
+              </TabsTrigger>
+            </TabsList>
 
-          {/* TODO: Добавить QR-сканер */}
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-start gap-3">
-              <QrCode className="h-5 w-5 text-blue-600 mt-0.5" />
-              <div className="text-sm">
-                <p className="font-medium text-blue-900">QR-сканер (в разработке)</p>
-                <p className="text-blue-700 mt-1">
-                  Для добавления QR-сканера установите библиотеку:
-                  <code className="block mt-1 bg-blue-100 px-2 py-1 rounded">
-                    npm install html5-qrcode
-                  </code>
-                </p>
+            {/* Ручной ввод */}
+            <TabsContent value="manual" className="space-y-4">
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <Label htmlFor="ticketCode">Код билета</Label>
+                  <Input
+                    id="ticketCode"
+                    placeholder="MAIN-XXXXX-XXXX"
+                    value={ticketCode}
+                    onChange={(e) => setTicketCode(e.target.value.toUpperCase())}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSearch();
+                      }
+                    }}
+                    className="font-mono"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <Button
+                    onClick={handleSearch}
+                    disabled={searching || !ticketCode.trim()}
+                    className="min-w-[100px]"
+                  >
+                    {searching ? "Поиск..." : "Найти"}
+                  </Button>
+                </div>
               </div>
-            </div>
-          </div>
+            </TabsContent>
+
+            {/* QR-сканер */}
+            <TabsContent value="qr" className="space-y-4">
+              <div className="space-y-4">
+                {/* QR Scanner Video */}
+                <div className="relative">
+                  <div
+                    id="qr-reader"
+                    className="w-full rounded-lg overflow-hidden border-2 border-primary"
+                    style={{ maxWidth: "500px", margin: "0 auto" }}
+                  />
+                  {isScanning && (
+                    <div className="absolute top-2 right-2">
+                      <Badge variant="default" className="bg-green-500">
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                          Сканирование...
+                        </div>
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+
+                {/* Instructions */}
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <Camera className="h-5 w-5 text-blue-600 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-medium text-blue-900">Инструкция:</p>
+                      <ul className="text-blue-700 mt-2 space-y-1 list-disc list-inside">
+                        <li>Наведите камеру на QR-код билета</li>
+                        <li>Код автоматически распознается</li>
+                        <li>После сканирования откроется подтверждение чекина</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Manual input option when in QR mode */}
+                {ticketCode && (
+                  <div className="flex gap-2 pt-4 border-t">
+                    <div className="flex-1">
+                      <Label>Отсканированный код</Label>
+                      <Input
+                        value={ticketCode}
+                        readOnly
+                        className="font-mono bg-gray-50"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        onClick={handleSearch}
+                        disabled={searching}
+                        className="min-w-[100px]"
+                      >
+                        {searching ? "Поиск..." : "Проверить"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
