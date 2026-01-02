@@ -41,7 +41,7 @@ export function MiniappStatsManager() {
       const { data: allLeads, error } = await supabase
         .from("leads")
         .select("created_at, status")
-        .eq("source", "miniapp");
+        .eq("source", "telegram_miniapp");
 
       if (error) throw error;
 

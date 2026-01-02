@@ -27,42 +27,44 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, Archive, ArchiveRestore } from "lucide-react";
+import { Search } from "lucide-react";
 
 interface MiniappLead {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  status: 'new' | 'contacted' | 'paid' | 'not_paid' | 'will_attend' | 'will_not_attend';
+  id: number;
+  event_id: number;
+  user_id: number;
+  ticket_code: string | null;
+  status: string;
   notes: string | null;
-  is_archived: boolean;
-  source: string;
-  created_at: string;
-  event_id: string | null;
-  events?: {
-    id: string;
+  registered_at: string;
+  confirmed: boolean;
+  checked_in_at: string | null;
+  bot_users?: {
+    id: number;
+    username: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    phone_number: string | null;
+  } | null;
+  bot_events?: {
+    id: number;
     title: string;
-    date: string;
+    event_date: string;
   } | null;
 }
 
 const statusLabels: Record<string, string> = {
-  new: "Новый",
-  contacted: "Связались",
-  paid: "Оплачено",
-  not_paid: "Не оплачено",
-  will_attend: "Придёт",
-  will_not_attend: "Не придёт",
+  registered: "Зарегистрирован",
+  confirmed: "Подтвержден",
+  cancelled: "Отменен",
+  attended: "Посетил",
 };
 
 const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-  new: "default",
-  contacted: "secondary",
-  paid: "secondary",
-  not_paid: "destructive",
-  will_attend: "default",
-  will_not_attend: "outline",
+  registered: "default",
+  confirmed: "secondary",
+  cancelled: "destructive",
+  attended: "outline",
 };
 
 export function MiniappLeadsManager() {
@@ -71,37 +73,45 @@ export function MiniappLeadsManager() {
   const [filteredLeads, setFilteredLeads] = useState<MiniappLead[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [eventFilter, setEventFilter] = useState<number | "all">("all");
+  const [events, setEvents] = useState<{id: number, title: string}[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showArchived, setShowArchived] = useState(false);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentLead, setCurrentLead] = useState<MiniappLead | null>(null);
   const [notes, setNotes] = useState("");
-  const [status, setStatus] = useState<MiniappLead['status']>("new");
+  const [status, setStatus] = useState<string>("registered");
 
   useEffect(() => {
     fetchLeads();
+    fetchEvents();
   }, []);
 
   useEffect(() => {
     filterLeads();
-  }, [leads, statusFilter, searchTerm, showArchived]);
+  }, [leads, statusFilter, eventFilter, searchTerm]);
 
   const fetchLeads = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from("leads")
+        .from("bot_registrations")
         .select(`
           *,
-          events (
+          bot_users!bot_registrations_user_id_fkey (
+            id,
+            username,
+            first_name,
+            last_name,
+            phone_number
+          ),
+          bot_events (
             id,
             title,
-            date
+            event_date
           )
         `)
-        .eq("source", "miniapp")
-        .order("created_at", { ascending: false });
+        .order("registered_at", { ascending: false });
 
       if (error) throw error;
       setLeads(data || []);
@@ -117,24 +127,46 @@ export function MiniappLeadsManager() {
     }
   };
 
+  const fetchEvents = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("bot_events")
+        .select("id, title")
+        .order("event_date", { ascending: false });
+
+      if (error) throw error;
+      setEvents(data || []);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
   const filterLeads = () => {
     let filtered = [...leads];
 
+    // Фильтр по событию
+    if (eventFilter !== "all") {
+      filtered = filtered.filter(lead => lead.event_id === eventFilter);
+    }
+
+    // Фильтр по статусу
     if (statusFilter !== "all") {
       filtered = filtered.filter(lead => lead.status === statusFilter);
     }
 
-    if (!showArchived) {
-      filtered = filtered.filter(lead => !lead.is_archived);
-    }
-
+    // Поиск
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(lead =>
-        lead.name.toLowerCase().includes(term) ||
-        lead.email.toLowerCase().includes(term) ||
-        lead.phone.toLowerCase().includes(term)
-      );
+      filtered = filtered.filter(lead => {
+        const userName = lead.bot_users?.first_name || lead.bot_users?.username || '';
+        const userPhone = lead.bot_users?.phone_number || '';
+        const ticketCode = lead.ticket_code || '';
+
+        return userName.toLowerCase().includes(term) ||
+               userPhone.toLowerCase().includes(term) ||
+               ticketCode.toLowerCase().includes(term) ||
+               `#${lead.id}`.includes(term);
+      });
     }
 
     setFilteredLeads(filtered);
@@ -145,7 +177,7 @@ export function MiniappLeadsManager() {
 
     try {
       const { error } = await supabase
-        .from("leads")
+        .from("bot_registrations")
         .update({ notes, status })
         .eq("id", currentLead.id);
 
@@ -153,41 +185,41 @@ export function MiniappLeadsManager() {
 
       toast({
         title: "Успешно",
-        description: "Лид обновлён",
+        description: "Регистрация обновлена",
       });
 
       setOpenDialog(false);
       fetchLeads();
     } catch (error) {
-      console.error("Error updating lead:", error);
+      console.error("Error updating registration:", error);
       toast({
         title: "Ошибка",
-        description: "Не удалось обновить лид",
+        description: "Не удалось обновить регистрацию",
         variant: "destructive",
       });
     }
   };
 
-  const handleArchive = async (leadId: string, archive: boolean) => {
+  const handleCancelRegistration = async (leadId: number) => {
     try {
       const { error } = await supabase
-        .from("leads")
-        .update({ is_archived: archive })
+        .from("bot_registrations")
+        .update({ status: "cancelled" })
         .eq("id", leadId);
 
       if (error) throw error;
 
       toast({
-        title: archive ? "Архивировано" : "Восстановлено",
-        description: archive ? "Лид перемещён в архив" : "Лид восстановлен из архива",
+        title: "Отменено",
+        description: "Регистрация отменена",
       });
 
       fetchLeads();
     } catch (error) {
-      console.error("Error archiving lead:", error);
+      console.error("Error cancelling registration:", error);
       toast({
         title: "Ошибка",
-        description: "Не удалось изменить статус архивации",
+        description: "Не удалось отменить регистрацию",
         variant: "destructive",
       });
     }
@@ -227,44 +259,49 @@ export function MiniappLeadsManager() {
         <div className="relative flex-1 min-w-[250px]">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
-            placeholder="Поиск по имени, email или телефону..."
+            placeholder="Поиск по имени, телефону или коду билета..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
 
+        <Select value={eventFilter.toString()} onValueChange={(v) => setEventFilter(v === "all" ? "all" : parseInt(v))}>
+          <SelectTrigger className="w-[250px]">
+            <SelectValue placeholder="Фильтр по событию" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Все события</SelectItem>
+            {events.map(event => (
+              <SelectItem key={event.id} value={event.id.toString()}>
+                {event.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Фильтр по статусу" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Все статусы</SelectItem>
-            <SelectItem value="new">Новые</SelectItem>
-            <SelectItem value="contacted">Связались</SelectItem>
-            <SelectItem value="paid">Оплачено</SelectItem>
-            <SelectItem value="not_paid">Не оплачено</SelectItem>
-            <SelectItem value="will_attend">Придёт</SelectItem>
-            <SelectItem value="will_not_attend">Не придёт</SelectItem>
+            <SelectItem value="registered">Зарегистрированы</SelectItem>
+            <SelectItem value="confirmed">Подтверждены</SelectItem>
+            <SelectItem value="cancelled">Отменены</SelectItem>
+            <SelectItem value="attended">Посетили</SelectItem>
           </SelectContent>
         </Select>
-
-        <Button
-          variant={showArchived ? "default" : "outline"}
-          onClick={() => setShowArchived(!showArchived)}
-        >
-          <Archive className="h-4 w-4 mr-2" />
-          {showArchived ? "Скрыть архив" : "Показать архив"}
-        </Button>
       </div>
 
       <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>№</TableHead>
               <TableHead>Имя</TableHead>
-              <TableHead>Email</TableHead>
               <TableHead>Телефон</TableHead>
+              <TableHead>Код билета</TableHead>
               <TableHead>Событие</TableHead>
               <TableHead>Статус</TableHead>
               <TableHead>Дата</TableHead>
@@ -274,24 +311,36 @@ export function MiniappLeadsManager() {
           <TableBody>
             {filteredLeads.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                  {searchTerm || statusFilter !== "all" || showArchived
-                    ? "Лиды не найдены"
+                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                  {searchTerm || statusFilter !== "all"
+                    ? "Регистрации не найдены"
                     : "Пока нет регистраций из miniapp"}
                 </TableCell>
               </TableRow>
             ) : (
               filteredLeads.map((lead) => (
-                <TableRow key={lead.id} className={lead.is_archived ? "opacity-50" : ""}>
-                  <TableCell className="font-medium">{lead.name}</TableCell>
-                  <TableCell>{lead.email}</TableCell>
-                  <TableCell>{lead.phone}</TableCell>
+                <TableRow key={lead.id} className={lead.status === "cancelled" ? "opacity-50" : ""}>
+                  <TableCell className="font-medium">#{lead.id}</TableCell>
+                  <TableCell className="font-medium">
+                    {lead.bot_users?.first_name || lead.bot_users?.username || "—"}
+                    {lead.bot_users?.last_name && ` ${lead.bot_users.last_name}`}
+                  </TableCell>
+                  <TableCell>{lead.bot_users?.phone_number || "—"}</TableCell>
                   <TableCell>
-                    {lead.events ? (
+                    {lead.ticket_code ? (
+                      <code className="bg-gray-100 px-2 py-1 rounded text-xs font-mono">
+                        {lead.ticket_code}
+                      </code>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {lead.bot_events ? (
                       <div className="text-sm">
-                        <div className="font-medium">{lead.events.title}</div>
+                        <div className="font-medium">{lead.bot_events.title}</div>
                         <div className="text-xs text-muted-foreground">
-                          {new Date(lead.events.date).toLocaleDateString("ru-RU", {
+                          {new Date(lead.bot_events.event_date).toLocaleDateString("ru-RU", {
                             day: "2-digit",
                             month: "long",
                           })}
@@ -302,34 +351,21 @@ export function MiniappLeadsManager() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={statusColors[lead.status]}>
-                      {statusLabels[lead.status]}
+                    <Badge variant={statusColors[lead.status] || "default"}>
+                      {statusLabels[lead.status] || lead.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
-                    {formatDate(lead.created_at)}
+                    {formatDate(lead.registered_at)}
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => openEditDialog(lead)}
-                      >
-                        Редактировать
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant={lead.is_archived ? "default" : "ghost"}
-                        onClick={() => handleArchive(lead.id, !lead.is_archived)}
-                      >
-                        {lead.is_archived ? (
-                          <><ArchiveRestore className="h-4 w-4" /></>
-                        ) : (
-                          <><Archive className="h-4 w-4" /></>
-                        )}
-                      </Button>
-                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => openEditDialog(lead)}
+                    >
+                      Редактировать
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -341,26 +377,30 @@ export function MiniappLeadsManager() {
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Редактирование лида</DialogTitle>
+            <DialogTitle>Редактирование регистрации</DialogTitle>
             <DialogDescription>
-              {currentLead?.name} ({currentLead?.email})
+              Билет #{currentLead?.id}
+              {currentLead?.bot_users && (
+                <> • {currentLead.bot_users.first_name || currentLead.bot_users.username}</>
+              )}
+              {currentLead?.ticket_code && (
+                <> • <code className="text-xs">{currentLead.ticket_code}</code></>
+              )}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <div>
               <label className="text-sm font-medium">Статус</label>
-              <Select value={status} onValueChange={(value) => setStatus(value as MiniappLead['status'])}>
+              <Select value={status} onValueChange={setStatus}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="new">Новый</SelectItem>
-                  <SelectItem value="contacted">Связались</SelectItem>
-                  <SelectItem value="paid">Оплачено</SelectItem>
-                  <SelectItem value="not_paid">Не оплачено</SelectItem>
-                  <SelectItem value="will_attend">Придёт</SelectItem>
-                  <SelectItem value="will_not_attend">Не придёт</SelectItem>
+                  <SelectItem value="registered">Зарегистрирован</SelectItem>
+                  <SelectItem value="confirmed">Подтвержден</SelectItem>
+                  <SelectItem value="cancelled">Отменен</SelectItem>
+                  <SelectItem value="attended">Посетил</SelectItem>
                 </SelectContent>
               </Select>
             </div>

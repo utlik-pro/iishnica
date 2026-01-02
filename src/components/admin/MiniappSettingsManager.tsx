@@ -293,14 +293,15 @@ export function MiniappSettingsManager() {
           </CardHeader>
           <CardContent className="text-sm space-y-2 text-yellow-900">
             <p><strong>1.</strong> Используйте эти настройки в коде miniapp</p>
-            <p><strong>2.</strong> При отправке регистрации установите <code className="bg-yellow-100 px-1 rounded">source: 'miniapp'</code></p>
-            <p><strong>3.</strong> Отправляйте данные в таблицу <code className="bg-yellow-100 px-1 rounded">leads</code></p>
+            <p><strong>2.</strong> При отправке регистрации установите <code className="bg-yellow-100 px-1 rounded">source: 'telegram_miniapp'</code></p>
+            <p><strong>3.</strong> Отправляйте данные в таблицу <code className="bg-yellow-100 px-1 rounded">leads</code> с привязкой к событию</p>
             <pre className="bg-yellow-100 p-2 rounded mt-2 overflow-x-auto">
 {`await supabase.from("leads").insert({
-  name: "...",
-  email: "...",
-  phone: "...",
-  source: "miniapp"
+  name: "Имя пользователя",
+  phone: "+375XXXXXXXXX",
+  ticket_code: "MAIN-XXXXX-XXXX",
+  event_id: "<UUID события>",
+  source: "telegram_miniapp"
 })`}
             </pre>
           </CardContent>

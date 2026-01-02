@@ -20,7 +20,8 @@ import {
   Smartphone,
   BarChart3,
   Settings,
-  CalendarCheck
+  CalendarCheck,
+  QrCode
 } from "lucide-react";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -40,11 +41,12 @@ import { MiniappLeadsManager } from "@/components/admin/MiniappLeadsManager";
 import { MiniappSettingsManager } from "@/components/admin/MiniappSettingsManager";
 import { MiniappStatsManager } from "@/components/admin/MiniappStatsManager";
 import { MiniappEventsManager } from "@/components/admin/MiniappEventsManager";
+import { CheckInManager } from "@/components/admin/CheckInManager";
 
 type TabValue =
   | "page-builder" | "events" | "program" | "speakers" | "locations" | "sponsors" | "leads"
   | "bot-users" | "bot-registrations" | "bot-feedback" | "broadcasts"
-  | "miniapp-leads" | "miniapp-settings" | "miniapp-stats" | "miniapp-events"
+  | "miniapp-leads" | "miniapp-settings" | "miniapp-stats" | "miniapp-events" | "miniapp-checkin"
   | "posts";
 
 interface MenuItem {
@@ -97,6 +99,7 @@ const menuSections: MenuSection[] = [
     items: [
       { value: "miniapp-leads", label: "Лиды", icon: <Users className="h-4 w-4" />, description: "Регистрации из miniapp" },
       { value: "miniapp-events", label: "События", icon: <CalendarCheck className="h-4 w-4" />, description: "События в miniapp" },
+      { value: "miniapp-checkin", label: "Чекин", icon: <QrCode className="h-4 w-4" />, description: "QR-сканер для чекина" },
       { value: "miniapp-stats", label: "Статистика", icon: <BarChart3 className="h-4 w-4" />, description: "Аналитика регистраций" },
       { value: "miniapp-settings", label: "Настройки", icon: <Settings className="h-4 w-4" />, description: "Конфигурация miniapp" },
     ],
@@ -296,6 +299,10 @@ const Admin = () => {
 
               <TabsContent value="miniapp-events" className="mt-0">
                 <MiniappEventsManager />
+              </TabsContent>
+
+              <TabsContent value="miniapp-checkin" className="mt-0">
+                <CheckInManager />
               </TabsContent>
 
               <TabsContent value="miniapp-stats" className="mt-0">
