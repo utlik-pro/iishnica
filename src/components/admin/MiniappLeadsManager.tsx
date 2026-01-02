@@ -39,6 +39,12 @@ interface MiniappLead {
   is_archived: boolean;
   source: string;
   created_at: string;
+  event_id: string | null;
+  events?: {
+    id: string;
+    title: string;
+    date: string;
+  } | null;
 }
 
 const statusLabels: Record<string, string> = {
@@ -86,7 +92,14 @@ export function MiniappLeadsManager() {
     try {
       const { data, error } = await supabase
         .from("leads")
-        .select("*")
+        .select(`
+          *,
+          events (
+            id,
+            title,
+            date
+          )
+        `)
         .eq("source", "miniapp")
         .order("created_at", { ascending: false });
 
@@ -252,6 +265,7 @@ export function MiniappLeadsManager() {
               <TableHead>Имя</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Телефон</TableHead>
+              <TableHead>Событие</TableHead>
               <TableHead>Статус</TableHead>
               <TableHead>Дата</TableHead>
               <TableHead>Действия</TableHead>
@@ -260,7 +274,7 @@ export function MiniappLeadsManager() {
           <TableBody>
             {filteredLeads.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                   {searchTerm || statusFilter !== "all" || showArchived
                     ? "Лиды не найдены"
                     : "Пока нет регистраций из miniapp"}
@@ -272,6 +286,21 @@ export function MiniappLeadsManager() {
                   <TableCell className="font-medium">{lead.name}</TableCell>
                   <TableCell>{lead.email}</TableCell>
                   <TableCell>{lead.phone}</TableCell>
+                  <TableCell>
+                    {lead.events ? (
+                      <div className="text-sm">
+                        <div className="font-medium">{lead.events.title}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {new Date(lead.events.date).toLocaleDateString("ru-RU", {
+                            day: "2-digit",
+                            month: "long",
+                          })}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">Не указано</span>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={statusColors[lead.status]}>
                       {statusLabels[lead.status]}
