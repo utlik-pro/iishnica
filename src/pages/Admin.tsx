@@ -21,7 +21,9 @@ import {
   BarChart3,
   Settings,
   CalendarCheck,
-  QrCode
+  QrCode,
+  Award,
+  User,
 } from "lucide-react";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -42,12 +44,15 @@ import { MiniappSettingsManager } from "@/components/admin/MiniappSettingsManage
 import { MiniappStatsManager } from "@/components/admin/MiniappStatsManager";
 import { MiniappEventsManager } from "@/components/admin/MiniappEventsManager";
 import { CheckInManager } from "@/components/admin/CheckInManager";
+import { BadgesManager } from "@/components/admin/BadgesManager";
+import { CompaniesManager } from "@/components/admin/CompaniesManager";
 
 type TabValue =
   | "page-builder" | "events" | "program" | "speakers" | "locations" | "sponsors" | "leads"
   | "bot-users" | "bot-registrations" | "bot-feedback" | "broadcasts"
   | "miniapp-leads" | "miniapp-settings" | "miniapp-stats" | "miniapp-events" | "miniapp-checkin"
-  | "posts";
+  | "posts"
+  | "profile-badges" | "profile-companies";
 
 interface MenuItem {
   value: TabValue;
@@ -112,6 +117,16 @@ const menuSections: MenuSection[] = [
     items: [
       { value: "posts", label: "Публикации", icon: <Megaphone className="h-4 w-4" />, description: "Блог и новости" },
       { value: "leads", label: "Участники", icon: <Users className="h-4 w-4" />, description: "База участников" },
+    ],
+  },
+  {
+    title: "Профили",
+    icon: <User className="h-5 w-5" />,
+    color: "text-amber-600",
+    bgColor: "bg-amber-50 hover:bg-amber-100 border-amber-200",
+    items: [
+      { value: "profile-badges", label: "Бейджи", icon: <Award className="h-4 w-4" />, description: "Кастомные награды" },
+      { value: "profile-companies", label: "Компании", icon: <Building2 className="h-4 w-4" />, description: "Организации" },
     ],
   },
 ];
@@ -311,6 +326,14 @@ const Admin = () => {
 
               <TabsContent value="miniapp-settings" className="mt-0">
                 <MiniappSettingsManager />
+              </TabsContent>
+
+              <TabsContent value="profile-badges" className="mt-0">
+                <BadgesManager />
+              </TabsContent>
+
+              <TabsContent value="profile-companies" className="mt-0">
+                <CompaniesManager />
               </TabsContent>
             </Tabs>
           </div>
