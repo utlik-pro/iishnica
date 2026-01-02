@@ -16,7 +16,11 @@ import {
   FileText,
   Globe,
   Megaphone,
-  Layers
+  Layers,
+  Smartphone,
+  BarChart3,
+  Settings,
+  CalendarCheck
 } from "lucide-react";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -32,10 +36,15 @@ import { LocationsManager } from "@/components/admin/LocationsManager";
 import PostsManager from "@/components/admin/PostsManager";
 import BroadcastManager from "@/components/admin/BroadcastManager";
 import PageBuilderManager from "@/components/admin/page-builder/PageBuilderManager";
+import { MiniappLeadsManager } from "@/components/admin/MiniappLeadsManager";
+import { MiniappSettingsManager } from "@/components/admin/MiniappSettingsManager";
+import { MiniappStatsManager } from "@/components/admin/MiniappStatsManager";
+import { MiniappEventsManager } from "@/components/admin/MiniappEventsManager";
 
 type TabValue =
   | "page-builder" | "events" | "program" | "speakers" | "locations" | "sponsors" | "leads"
   | "bot-users" | "bot-registrations" | "bot-feedback" | "broadcasts"
+  | "miniapp-leads" | "miniapp-settings" | "miniapp-stats" | "miniapp-events"
   | "posts";
 
 interface MenuItem {
@@ -78,6 +87,18 @@ const menuSections: MenuSection[] = [
       { value: "bot-registrations", label: "Регистрации", icon: <UserCheck className="h-4 w-4" />, description: "Заявки на события" },
       { value: "bot-feedback", label: "Фидбек", icon: <MessageSquare className="h-4 w-4" />, description: "Отзывы и обратная связь" },
       { value: "broadcasts", label: "Рассылки", icon: <Send className="h-4 w-4" />, description: "Массовые уведомления" },
+    ],
+  },
+  {
+    title: "Telegram Mini-App",
+    icon: <Smartphone className="h-5 w-5" />,
+    color: "text-cyan-600",
+    bgColor: "bg-cyan-50 hover:bg-cyan-100 border-cyan-200",
+    items: [
+      { value: "miniapp-leads", label: "Лиды", icon: <Users className="h-4 w-4" />, description: "Регистрации из miniapp" },
+      { value: "miniapp-events", label: "События", icon: <CalendarCheck className="h-4 w-4" />, description: "События в miniapp" },
+      { value: "miniapp-stats", label: "Статистика", icon: <BarChart3 className="h-4 w-4" />, description: "Аналитика регистраций" },
+      { value: "miniapp-settings", label: "Настройки", icon: <Settings className="h-4 w-4" />, description: "Конфигурация miniapp" },
     ],
   },
   {
@@ -267,6 +288,22 @@ const Admin = () => {
 
               <TabsContent value="posts" className="mt-0">
                 <PostsManager />
+              </TabsContent>
+
+              <TabsContent value="miniapp-leads" className="mt-0">
+                <MiniappLeadsManager />
+              </TabsContent>
+
+              <TabsContent value="miniapp-events" className="mt-0">
+                <MiniappEventsManager />
+              </TabsContent>
+
+              <TabsContent value="miniapp-stats" className="mt-0">
+                <MiniappStatsManager />
+              </TabsContent>
+
+              <TabsContent value="miniapp-settings" className="mt-0">
+                <MiniappSettingsManager />
               </TabsContent>
             </Tabs>
           </div>

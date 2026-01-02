@@ -83,10 +83,11 @@ const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
       const { error } = await supabase
         .from("leads")
         .insert([
-          { 
+          {
             name: formData.name,
             email: formData.email,
-            phone: formData.phone
+            phone: formData.phone,
+            source: 'web'
           }
         ]);
       
