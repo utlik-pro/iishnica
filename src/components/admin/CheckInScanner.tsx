@@ -93,14 +93,20 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
         (decodedText) => {
           // Success callback - QR code detected
           if (decodedText && decodedText.trim()) {
-            setTicketCode(decodedText.trim().toUpperCase());
+            const code = decodedText.trim().toUpperCase();
+            setTicketCode(code);
+
+            // Stop scanner and switch to manual mode for better UX
             stopScanner();
-            // Automatically search after scan
-            setTimeout(() => handleSearch(), 100);
+            setScanMode("manual");
+
             toast({
               title: "QR-код отсканирован",
-              description: `Код: ${decodedText}`,
+              description: `Код: ${code}`,
             });
+
+            // Automatically search after a short delay
+            setTimeout(() => handleSearch(), 500);
           }
         },
         (errorMessage) => {
