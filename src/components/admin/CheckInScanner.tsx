@@ -53,6 +53,7 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
   const [searching, setSearching] = useState(false);
   const [registration, setRegistration] = useState<BotRegistration | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
   const [scanMode, setScanMode] = useState<"manual" | "qr">("manual");
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
@@ -77,6 +78,12 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
 
   const startScanner = async () => {
     try {
+      // Показать QR reader div перед запуском камеры
+      const qrReaderDiv = document.getElementById("qr-reader");
+      if (qrReaderDiv) {
+        qrReaderDiv.style.display = "block";
+      }
+
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode("qr-reader");
       }
@@ -96,9 +103,8 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
             const code = decodedText.trim().toUpperCase();
             setTicketCode(code);
 
-            // Stop scanner and switch to manual mode for better UX
+            // Stop scanner but DON'T switch tabs yet - stay on QR view
             stopScanner();
-            setScanMode("manual");
 
             toast({
               title: "QR-код отсканирован",
@@ -136,8 +142,16 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
       if (html5QrCodeRef.current && scannerInitialized.current) {
         await html5QrCodeRef.current.stop();
         html5QrCodeRef.current.clear();
+        scannerInitialized.current = false;
       }
       setIsScanning(false);
+
+      // Скрыть и очистить div от чёрного экрана
+      const qrReaderDiv = document.getElementById("qr-reader");
+      if (qrReaderDiv) {
+        qrReaderDiv.innerHTML = "";
+        qrReaderDiv.style.display = "none"; // СКРЫТЬ чёрный экран
+      }
     } catch (err) {
       console.error("Error stopping scanner:", err);
     }
@@ -258,15 +272,9 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
 
       if (error) throw error;
 
-      toast({
-        title: "Чекин выполнен!",
-        description: `${registration.bot_users?.first_name || 'Участник'} успешно отмечен(а)`,
-      });
-
-      // Сбросить форму
-      setRegistration(null);
-      setTicketCode("");
+      // Закрыть диалог подтверждения и открыть диалог успеха
       setConfirmDialogOpen(false);
+      setSuccessDialogOpen(true);
 
       // Вызвать callback для обновления списка
       onCheckInComplete?.();
@@ -278,6 +286,14 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
         variant: "destructive",
       });
     }
+  };
+
+  const closeSuccessDialog = () => {
+    setSuccessDialogOpen(false);
+    setRegistration(null);
+    setTicketCode("");
+    // Переключить на ручной режим после закрытия диалога
+    setScanMode("manual");
   };
 
   const cancelCheckIn = () => {
@@ -516,6 +532,71 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
             </Button>
             <Button onClick={confirmCheckIn}>
               Подтвердить чекин
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Диалог успешного чекина */}
+      <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl">Чекин выполнен!</DialogTitle>
+            <DialogDescription className="text-center">
+              Участник успешно отмечен на мероприятии
+            </DialogDescription>
+          </DialogHeader>
+
+          {registration && (
+            <div className="space-y-6 py-6">
+              {/* Success Icon Animation */}
+              <div className="flex items-center justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-75" />
+                  <div className="relative bg-green-500 rounded-full p-4">
+                    <CheckCircle className="h-12 w-12 text-white" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Participant Info */}
+              <div className="text-center space-y-2">
+                <p className="text-3xl font-bold text-green-700">
+                  {registration.bot_users?.first_name || registration.bot_users?.username || 'Участник'}
+                  {registration.bot_users?.last_name && ` ${registration.bot_users.last_name}`}
+                </p>
+                {registration.bot_events && (
+                  <p className="text-sm text-muted-foreground">
+                    {registration.bot_events.title}
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground font-mono">
+                  {registration.ticket_code}
+                </p>
+              </div>
+
+              {/* Success Message */}
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                  <div className="text-sm text-green-900">
+                    <p className="font-semibold">Участник успешно зарегистрирован</p>
+                    <p className="text-green-700 mt-1">
+                      Время чекина: {formatDate(new Date().toISOString())}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="sm:justify-center">
+            <Button
+              onClick={closeSuccessDialog}
+              className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
+              size="lg"
+            >
+              Готово
             </Button>
           </DialogFooter>
         </DialogContent>

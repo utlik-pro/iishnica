@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -24,7 +25,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, MapPin, ExternalLink, Image, Loader2, Wand2 } from "lucide-react";
 import ImageUpload from "@/components/ui/image-upload";
-import { supabase } from "@/integrations/supabase/client";
 
 type Location = {
   id: string;
@@ -226,6 +226,9 @@ export function LocationsManager() {
               <DialogTitle>
                 {editingLocation ? "Редактировать локацию" : "Новая локация"}
               </DialogTitle>
+              <DialogDescription>
+                {editingLocation ? "Измените данные локации" : "Добавьте новую локацию для проведения мероприятий"}
+              </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">

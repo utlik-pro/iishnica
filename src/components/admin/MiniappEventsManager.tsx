@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, MapPin, DollarSign, RefreshCw } from "lucide-react";
+import { Calendar, MapPin, DollarSign, RefreshCw, Bell, Loader2 } from "lucide-react";
 
 interface Event {
   id: string;
@@ -31,6 +31,7 @@ export function MiniappEventsManager() {
   const { toast } = useToast();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sendingNotification, setSendingNotification] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -55,6 +56,33 @@ export function MiniappEventsManager() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const sendEventNotifications = async (eventId: string, eventTitle: string) => {
+    setSendingNotification(eventId);
+    try {
+      // Set the flag in bot_events table to trigger notifications
+      const { error } = await supabase
+        .from("bot_events")
+        .update({ send_notifications: true })
+        .eq("id", parseInt(eventId));
+
+      if (error) throw error;
+
+      toast({
+        title: "Уведомления отправляются",
+        description: `Рассылка для "${eventTitle}" запущена. Уведомления будут доставлены в течение минуты.`,
+      });
+    } catch (error) {
+      console.error("Error sending notifications:", error);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось запустить рассылку уведомлений",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingNotification(null);
     }
   };
 
@@ -141,7 +169,7 @@ export function MiniappEventsManager() {
         <CardContent className="text-sm text-blue-900 space-y-2">
           <p>• Включите переключатель, чтобы событие отображалось в miniapp</p>
           <p>• Пользователи смогут зарегистрироваться на событие через miniapp</p>
-          <p>• Регистрации будут сохраняться в таблицу <code className="bg-blue-100 px-1 rounded">leads</code> с <code className="bg-blue-100 px-1 rounded">source='miniapp'</code></p>
+          <p>• Нажмите <Bell className="h-3 w-3 inline" /> чтобы отправить push-уведомление всем пользователям о событии</p>
         </CardContent>
       </Card>
 
@@ -155,12 +183,13 @@ export function MiniappEventsManager() {
               <TableHead>Локация</TableHead>
               <TableHead>Стоимость</TableHead>
               <TableHead>Спикер</TableHead>
+              <TableHead className="w-24">Действия</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {events.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                   Нет созданных событий
                 </TableCell>
               </TableRow>
@@ -219,6 +248,20 @@ export function MiniappEventsManager() {
                   </TableCell>
                   <TableCell>
                     {event.speaker || <span className="text-muted-foreground text-sm">-</span>}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => sendEventNotifications(event.id, event.title)}
+                      disabled={sendingNotification === event.id}
+                    >
+                      {sendingNotification === event.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Bell className="h-4 w-4" />
+                      )}
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
