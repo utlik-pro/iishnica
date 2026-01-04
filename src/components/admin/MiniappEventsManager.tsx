@@ -62,11 +62,22 @@ export function MiniappEventsManager() {
   const sendEventNotifications = async (eventId: string, eventTitle: string) => {
     setSendingNotification(eventId);
     try {
+      // Find the corresponding bot_event by title
+      const { data: botEvent, error: findError } = await supabase
+        .from("bot_events")
+        .select("id")
+        .eq("title", eventTitle)
+        .single();
+
+      if (findError || !botEvent) {
+        throw new Error("Событие не найдено в bot_events. Убедитесь, что событие синхронизировано.");
+      }
+
       // Set the flag in bot_events table to trigger notifications
       const { error } = await supabase
         .from("bot_events")
         .update({ send_notifications: true })
-        .eq("id", parseInt(eventId));
+        .eq("id", botEvent.id);
 
       if (error) throw error;
 
@@ -74,11 +85,11 @@ export function MiniappEventsManager() {
         title: "Уведомления отправляются",
         description: `Рассылка для "${eventTitle}" запущена. Уведомления будут доставлены в течение минуты.`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error sending notifications:", error);
       toast({
         title: "Ошибка",
-        description: "Не удалось запустить рассылку уведомлений",
+        description: error.message || "Не удалось запустить рассылку уведомлений",
         variant: "destructive",
       });
     } finally {
