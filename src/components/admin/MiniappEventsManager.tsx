@@ -62,34 +62,89 @@ export function MiniappEventsManager() {
   const sendEventNotifications = async (eventId: string, eventTitle: string) => {
     setSendingNotification(eventId);
     try {
-      // Find the corresponding bot_event by title
-      const { data: botEvent, error: findError } = await supabase
-        .from("bot_events")
-        .select("id")
-        .eq("title", eventTitle)
+      // Get event details
+      const { data: event, error: eventError } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", eventId)
         .single();
 
-      if (findError || !botEvent) {
-        throw new Error("Событие не найдено в bot_events. Убедитесь, что событие синхронизировано.");
+      if (eventError || !event) {
+        throw new Error("Событие не найдено");
       }
 
-      // Set the flag in bot_events table to trigger notifications
-      const { error } = await supabase
-        .from("bot_events")
-        .update({ send_notifications: true })
-        .eq("id", botEvent.id);
+      // Get all users from bot_users
+      const { data: users, error: usersError } = await supabase
+        .from("bot_users")
+        .select("tg_user_id, id")
+        .eq("banned", false);
 
-      if (error) throw error;
+      if (usersError) throw usersError;
+
+      const BOT_TOKEN = "8234859307:AAFjLWiY4DCZOnHBIJHS_V72mrMWoHqim4c";
+      const eventDate = new Date(event.date).toLocaleDateString("ru-RU", {
+        day: "numeric",
+        month: "long",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      let sentCount = 0;
+      let errorCount = 0;
+
+      for (const user of users || []) {
+        if (!user.tg_user_id) continue;
+
+        try {
+          // Send Telegram push notification
+          const text = `📅 *Новое мероприятие!*\n\n*${eventTitle}*\n\n📆 ${eventDate}\n📍 ${event.location || "Минск"}\n\nПриглашаем вас принять участие!`;
+
+          const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: user.tg_user_id,
+              text,
+              parse_mode: "Markdown",
+              reply_markup: {
+                inline_keyboard: [[{
+                  text: "Подробнее",
+                  url: "https://t.me/maincomapp_bot/app?startapp=events"
+                }]]
+              }
+            }),
+          });
+
+          const result = await response.json();
+          if (result.ok) {
+            sentCount++;
+
+            // Create in-app notification
+            await supabase.from("app_notifications").insert({
+              user_id: user.id,
+              type: "event_invitation",
+              title: `Новое мероприятие: ${eventTitle}`,
+              message: `${eventDate} | ${event.location || "Минск"}`,
+              data: { event_id: eventId },
+              is_read: false,
+            });
+          } else {
+            errorCount++;
+          }
+        } catch (e) {
+          errorCount++;
+        }
+      }
 
       toast({
-        title: "Уведомления отправляются",
-        description: `Рассылка для "${eventTitle}" запущена. Уведомления будут доставлены в течение минуты.`,
+        title: "Уведомления отправлены",
+        description: `Отправлено: ${sentCount}, ошибок: ${errorCount}`,
       });
     } catch (error: any) {
       console.error("Error sending notifications:", error);
       toast({
         title: "Ошибка",
-        description: error.message || "Не удалось запустить рассылку уведомлений",
+        description: error.message || "Не удалось отправить уведомления",
         variant: "destructive",
       });
     } finally {
