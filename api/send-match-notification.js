@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-    const text = `💕 *Новый матч!*\n\nВы понравились друг другу с ${matchName}!\n\nНапишите первым 👋`;
+    const text = `🤝 *Новый контакт!*\n\n${matchName} тоже хочет познакомиться.\n\nНачните общение! 👋`;
 
     // Send Telegram notification
     const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -39,8 +39,8 @@ export default async function handler(req, res) {
         parse_mode: 'Markdown',
         reply_markup: {
           inline_keyboard: [[{
-            text: '💬 Открыть матчи',
-            url: 'https://t.me/maincomapp_bot/app?startapp=matches'
+            text: '👋 Открыть контакты',
+            web_app: { url: 'https://maincomby-miniapp.onrender.com/?screen=matches' }
           }]]
         }
       }),
@@ -58,8 +58,8 @@ export default async function handler(req, res) {
       await supabase.from('app_notifications').insert({
         user_id: userId,
         type: 'match',
-        title: 'Новый матч!',
-        message: `Вы понравились друг другу с ${matchName}!`,
+        title: 'Новый контакт!',
+        message: `${matchName} тоже хочет познакомиться. Начните общение!`,
         data: { matchedUserId },
         is_read: false,
       });
