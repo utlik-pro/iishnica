@@ -30,6 +30,7 @@ import {
   Calendar,
   Clock,
   Wallet,
+  Copy,
 } from "lucide-react";
 
 interface Location {
@@ -636,14 +637,34 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                   <h2 className="text-lg font-semibold">Регистрация</h2>
 
                   <div className="space-y-2">
-                    <Label htmlFor="telegram_bot_url">Ссылка на Telegram бот</Label>
-                    <Input
-                      id="telegram_bot_url"
-                      name="telegram_bot_url"
-                      value={form.telegram_bot_url}
-                      onChange={handleChange}
-                      placeholder="https://t.me/maincomapp_bot"
-                    />
+                    <Label>Ссылка для регистрации</Label>
+                    {event?.id ? (
+                      <div className="flex gap-2">
+                        <Input
+                          value={`https://t.me/maincomapp_bot?startapp=event_${event.id}`}
+                          readOnly
+                          className="bg-muted"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            navigator.clipboard.writeText(`https://t.me/maincomapp_bot?startapp=event_${event.id}`);
+                            toast({
+                              title: "Скопировано",
+                              description: "Ссылка скопирована в буфер обмена",
+                            });
+                          }}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Сохраните событие, чтобы получить ссылку для регистрации
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">

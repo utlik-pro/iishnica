@@ -339,16 +339,14 @@ const Calendar: React.FC = () => {
               >
                 Подробнее
               </Button>
-              {selectedEvent.telegram_bot_url && (
-                <Button
+              <Button
                   className="flex-1 bg-blue-600 hover:bg-blue-700"
                   onClick={() =>
-                    window.open(selectedEvent.telegram_bot_url!, "_blank")
+                    window.open(`https://t.me/maincomapp_bot?startapp=event_${selectedEvent.id}`, "_blank")
                   }
                 >
                   Регистрация
                 </Button>
-              )}
             </div>
           </div>
         </div>

@@ -311,7 +311,7 @@ const EventPage: React.FC = () => {
               <Button
                 size="lg"
                 className="w-full sm:w-auto rounded-full bg-primary hover:bg-primary/90 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base"
-                onClick={() => window.open(event.telegram_bot_url || 'https://t.me/maincomapp_bot', '_blank')}
+                onClick={() => window.open(`https://t.me/maincomapp_bot?startapp=event_${event.id}`, '_blank')}
               >
                 Зарегистрироваться <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
               </Button>
@@ -684,7 +684,7 @@ const EventPage: React.FC = () => {
                 <Button
                   size="lg"
                   className="w-full sm:w-auto rounded-full bg-primary hover:bg-primary/90 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base"
-                  onClick={() => window.open(event.telegram_bot_url || 'https://t.me/maincomapp_bot', '_blank')}
+                  onClick={() => window.open(`https://t.me/maincomapp_bot?startapp=event_${event.id}`, '_blank')}
                 >
                   Зарегистрироваться <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
                 </Button>
