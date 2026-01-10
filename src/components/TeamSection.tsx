@@ -100,7 +100,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ config }) => {
                     )}
                     <Separator className="my-1.5 md:my-2" />
                     {member.description && (
-                      <p className="text-muted-foreground text-xs md:text-sm">{member.description}</p>
+                      <p className="text-muted-foreground text-xs md:text-sm whitespace-pre-line">{member.description}</p>
                     )}
                   </div>
                 </div>

@@ -56,7 +56,7 @@ const EventDetail = () => {
               <Button
                 size="lg"
                 className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-base"
-                onClick={() => window.open('https://t.me/maincomby_bot', '_blank')}
+                onClick={() => window.open('https://t.me/maincomapp_bot', '_blank')}
               >
                 Зарегистрироваться <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -249,7 +249,7 @@ const EventDetail = () => {
                   </div>
 
                   <h4 className="font-semibold text-primary mb-2">{speaker.topic}</h4>
-                  <p className="text-sm text-muted-foreground">{speaker.description}</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">{speaker.description}</p>
                 </CardContent>
               </Card>
             ))}
