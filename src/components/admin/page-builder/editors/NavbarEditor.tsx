@@ -178,7 +178,7 @@ const NavbarEditor: React.FC<NavbarEditorProps> = ({ config, onChange }) => {
                 id="cta-url"
                 value={config.ctaButton.url}
                 onChange={(e) => updateCtaButton('url', e.target.value)}
-                placeholder="https://t.me/maincomby_bot"
+                placeholder="https://t.me/maincomapp_bot"
               />
             </div>
           </>

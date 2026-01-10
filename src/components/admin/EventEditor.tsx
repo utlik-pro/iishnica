@@ -140,7 +140,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
     location_name: "",
     location_address: "",
     yandex_map_url: "",
-    telegram_bot_url: "https://t.me/maincomby_bot",
+    telegram_bot_url: "https://t.me/maincomapp_bot",
     is_published: false,
     slug: "",
   });
@@ -166,7 +166,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
       location_name: evt.location_name || "",
       location_address: evt.location_address || "",
       yandex_map_url: evt.yandex_map_url || "",
-      telegram_bot_url: evt.telegram_bot_url || "https://t.me/maincomby_bot",
+      telegram_bot_url: evt.telegram_bot_url || "https://t.me/maincomapp_bot",
       is_published: evt.is_published,
       slug: evt.slug || "",
     });
@@ -380,11 +380,10 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                  activeSection === section.id
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${activeSection === section.id
                     ? "bg-primary text-primary-foreground"
                     : "hover:bg-muted"
-                }`}
+                  }`}
               >
                 <section.icon className="h-4 w-4" />
                 <span className="text-sm">{section.label}</span>
@@ -643,7 +642,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                       name="telegram_bot_url"
                       value={form.telegram_bot_url}
                       onChange={handleChange}
-                      placeholder="https://t.me/maincomby_bot"
+                      placeholder="https://t.me/maincomapp_bot"
                     />
                   </div>
 
