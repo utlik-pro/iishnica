@@ -45,6 +45,7 @@ interface Sponsor {
   name: string;
   logo_url: string | null;
   website_url: string | null;
+  effectiveTier: 'general_partner' | 'partner' | 'sponsor';
 }
 
 interface ProgramItem {
@@ -158,18 +159,26 @@ const EventPage: React.FC = () => {
       const { data: eventSponsorsData } = await supabase
         .from("event_sponsors")
         .select(`
+          tier,
           sponsor:sponsors (
             id,
             name,
             logo_url,
-            website_url
+            website_url,
+            tier
           )
         `)
         .eq("event_id", eventData.id);
 
       if (eventSponsorsData) {
         const formattedSponsors = eventSponsorsData
-          .map((item: any) => item.sponsor)
+          .map((item: any) => {
+            if (!item.sponsor) return null;
+            return {
+              ...item.sponsor,
+              effectiveTier: item.tier || item.sponsor.tier || 'sponsor',
+            };
+          })
           .filter(Boolean);
         setSponsors(formattedSponsors);
       }
@@ -594,46 +603,84 @@ const EventPage: React.FC = () => {
       <TeamSection />
 
       {/* Sponsors Section */}
-      {sponsors.length > 0 && (
-        <section className="py-12 md:py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
-                <span className="gradient-text">Спонсоры</span> мероприятия
-              </h2>
-              <p className="text-sm md:text-lg text-muted-foreground px-2">
-                Благодарим наших партнёров за поддержку
-              </p>
-            </div>
+      {sponsors.length > 0 && (() => {
+        const generalPartners = sponsors.filter(s => s.effectiveTier === 'general_partner');
+        const regularSponsors = sponsors.filter(s => s.effectiveTier !== 'general_partner');
 
-            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 max-w-4xl mx-auto">
-              {sponsors.map((sponsor) => (
-                <a
-                  key={sponsor.id}
-                  href={sponsor.website_url || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group"
-                >
-                  {sponsor.logo_url ? (
-                    <img
-                      src={sponsor.logo_url}
-                      alt={sponsor.name}
-                      className="h-12 md:h-16 lg:h-20 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
-                    />
-                  ) : (
-                    <div className="px-4 md:px-6 py-2 md:py-4 bg-gray-100 rounded-lg group-hover:bg-purple-100 transition-colors">
-                      <span className="text-sm md:text-lg font-semibold text-gray-700 group-hover:text-purple-700">
-                        {sponsor.name}
-                      </span>
-                    </div>
-                  )}
-                </a>
-              ))}
+        return (
+          <section className="py-12 md:py-16 bg-white">
+            <div className="container mx-auto px-4">
+              <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
+                  <span className="gradient-text">Партнёры</span> мероприятия
+                </h2>
+                <p className="text-sm md:text-lg text-muted-foreground px-2">
+                  Благодарим наших партнёров за поддержку
+                </p>
+              </div>
+
+              {generalPartners.length > 0 && (
+                <div className="mb-8 md:mb-12">
+                  <p className="text-center text-sm font-medium text-muted-foreground mb-4">
+                    {generalPartners.length === 1 ? "Генеральный партнёр" : "Генеральные партнёры"}
+                  </p>
+                  <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 max-w-4xl mx-auto">
+                    {generalPartners.map((sponsor) => (
+                      <a
+                        key={sponsor.id}
+                        href={sponsor.website_url || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group"
+                      >
+                        {sponsor.logo_url ? (
+                          <img
+                            src={sponsor.logo_url}
+                            alt={sponsor.name}
+                            className="h-16 md:h-24 lg:h-28 w-auto object-contain hover:scale-105 transition-transform"
+                          />
+                        ) : (
+                          <div className="px-6 py-4 bg-gray-100 rounded-lg group-hover:bg-purple-100 transition-colors">
+                            <span className="text-lg font-semibold">{sponsor.name}</span>
+                          </div>
+                        )}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {regularSponsors.length > 0 && (
+                <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 max-w-4xl mx-auto">
+                  {regularSponsors.map((sponsor) => (
+                    <a
+                      key={sponsor.id}
+                      href={sponsor.website_url || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group"
+                    >
+                      {sponsor.logo_url ? (
+                        <img
+                          src={sponsor.logo_url}
+                          alt={sponsor.name}
+                          className="h-12 md:h-16 lg:h-20 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                        />
+                      ) : (
+                        <div className="px-4 md:px-6 py-2 md:py-4 bg-gray-100 rounded-lg group-hover:bg-purple-100 transition-colors">
+                          <span className="text-sm md:text-lg font-semibold text-gray-700 group-hover:text-purple-700">
+                            {sponsor.name}
+                          </span>
+                        </div>
+                      )}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       {/* Location Section */}
       {(event.location_name || event.location_address) && (

@@ -31,7 +31,11 @@ import {
   Clock,
   Wallet,
   Copy,
+  Loader2,
+  Wand2,
+  Building2,
 } from "lucide-react";
+import { TIER_LABELS, type SponsorTier } from "@/lib/sponsor-tiers";
 
 interface Location {
   id: string;
@@ -53,6 +57,18 @@ interface EventSpeaker {
   talk_title: string;
   talk_description: string;
   order_index: number;
+}
+
+interface SponsorOption {
+  id: string;
+  name: string;
+  logo_url: string | null;
+  tier: SponsorTier;
+}
+
+interface SelectedSponsor {
+  sponsor_id: string;
+  tier: SponsorTier | null; // null = use global default
 }
 
 interface EventForm {
@@ -93,12 +109,13 @@ interface EventEditorProps {
   onSave: () => void;
 }
 
-type Section = "basic" | "location" | "speakers" | "registration" | "publish";
+type Section = "basic" | "location" | "speakers" | "sponsors" | "registration" | "publish";
 
 const sections = [
   { id: "basic" as Section, label: "Основное", icon: FileText },
   { id: "location" as Section, label: "Локация", icon: MapPin },
   { id: "speakers" as Section, label: "Спикеры", icon: Users },
+  { id: "sponsors" as Section, label: "Спонсоры", icon: Building2 },
   { id: "registration" as Section, label: "Регистрация", icon: Send },
   { id: "publish" as Section, label: "Публикация", icon: Settings },
 ];
@@ -128,7 +145,10 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
   const [locations, setLocations] = useState<Location[]>([]);
   const [selectedLocationId, setSelectedLocationId] = useState<string>("");
   const [selectedSpeakers, setSelectedSpeakers] = useState<EventSpeaker[]>([]);
+  const [allSponsors, setAllSponsors] = useState<SponsorOption[]>([]);
+  const [selectedSponsors, setSelectedSponsors] = useState<SelectedSponsor[]>([]);
   const [saving, setSaving] = useState(false);
+  const [isResolvingUrl, setIsResolvingUrl] = useState(false);
 
   const [form, setForm] = useState<EventForm>({
     title: "",
@@ -149,6 +169,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
   useEffect(() => {
     fetchSpeakers();
     fetchLocations();
+    fetchAllSponsors();
     if (event) {
       loadEvent(event);
     }
@@ -189,6 +210,23 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
         }))
       );
     }
+
+    // Fetch event sponsors
+    const { data: eventSponsorsData } = await supabase
+      .from("event_sponsors")
+      .select("sponsor_id, tier")
+      .eq("event_id", evt.id);
+
+    if (eventSponsorsData) {
+      setSelectedSponsors(
+        eventSponsorsData
+          .filter((es) => es.sponsor_id)
+          .map((es) => ({
+            sponsor_id: es.sponsor_id!,
+            tier: es.tier as SponsorTier | null,
+          }))
+      );
+    }
   };
 
   const fetchSpeakers = async () => {
@@ -198,6 +236,15 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
       .eq("is_active", true)
       .order("name");
     setSpeakers(data || []);
+  };
+
+  const fetchAllSponsors = async () => {
+    const { data } = await supabase
+      .from("sponsors")
+      .select("id, name, logo_url, tier")
+      .eq("is_active", true)
+      .order("name");
+    setAllSponsors((data as SponsorOption[]) || []);
   };
 
   const fetchLocations = async () => {
@@ -231,6 +278,48 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
     }
   };
 
+  const resolveYandexUrl = async () => {
+    if (!form.yandex_map_url) {
+      toast({
+        title: "Введите ссылку",
+        description: "Сначала вставьте ссылку на Яндекс Карты",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsResolvingUrl(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('resolve-yandex-url', {
+        body: { url: form.yandex_map_url }
+      });
+
+      if (error) throw error;
+
+      if (data.widgetUrl) {
+        setForm({ ...form, yandex_map_url: data.widgetUrl });
+        toast({
+          title: "Готово!",
+          description: "Ссылка преобразована в виджет карты",
+        });
+      } else {
+        toast({
+          title: "Не удалось получить координаты",
+          description: "Попробуйте скопировать полную ссылку из адресной строки браузера",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Ошибка",
+        description: error.message || "Не удалось обработать ссылку",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResolvingUrl(false);
+    }
+  };
+
   const handleSpeakerToggle = (speakerId: string, checked: boolean) => {
     if (checked) {
       setSelectedSpeakers([
@@ -240,6 +329,22 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
     } else {
       setSelectedSpeakers(selectedSpeakers.filter((s) => s.speaker_id !== speakerId));
     }
+  };
+
+  const handleSponsorToggle = (sponsorId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedSponsors([...selectedSponsors, { sponsor_id: sponsorId, tier: null }]);
+    } else {
+      setSelectedSponsors(selectedSponsors.filter((s) => s.sponsor_id !== sponsorId));
+    }
+  };
+
+  const handleSponsorTierChange = (sponsorId: string, tier: string) => {
+    setSelectedSponsors(
+      selectedSponsors.map((s) =>
+        s.sponsor_id === sponsorId ? { ...s, tier: tier === "default" ? null : tier as SponsorTier } : s
+      )
+    );
   };
 
   const handleSpeakerDetailChange = (speakerId: string, field: "talk_title" | "talk_description", value: string) => {
@@ -294,6 +399,17 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
           order_index: index,
         }));
         await supabase.from("event_speakers").insert(speakerInserts);
+      }
+
+      // Update sponsors
+      await supabase.from("event_sponsors").delete().eq("event_id", eventId);
+      if (selectedSponsors.length > 0) {
+        const sponsorInserts = selectedSponsors.map((s) => ({
+          event_id: eventId,
+          sponsor_id: s.sponsor_id,
+          tier: s.tier,
+        }));
+        await supabase.from("event_sponsors").insert(sponsorInserts);
       }
 
       // Sync with bot_events
@@ -545,13 +661,32 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="yandex_map_url">Ссылка на Яндекс.Карты</Label>
-                        <Input
-                          id="yandex_map_url"
-                          name="yandex_map_url"
-                          value={form.yandex_map_url}
-                          onChange={handleChange}
-                          placeholder="https://yandex.ru/maps/..."
-                        />
+                        <div className="flex gap-2">
+                          <Input
+                            id="yandex_map_url"
+                            name="yandex_map_url"
+                            value={form.yandex_map_url}
+                            onChange={handleChange}
+                            placeholder="Вставьте любую ссылку (короткую или полную)"
+                            className="flex-1"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={resolveYandexUrl}
+                            disabled={isResolvingUrl || !form.yandex_map_url}
+                            title="Получить координаты"
+                          >
+                            {isResolvingUrl ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Wand2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Вставьте ссылку и нажмите кнопку для автоматического получения координат
+                        </p>
                       </div>
                     </>
                   )}
@@ -621,6 +756,72 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                                     }
                                     rows={2}
                                   />
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeSection === "sponsors" && (
+                <div className="space-y-6">
+                  <h2 className="text-lg font-semibold">Спонсоры мероприятия</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Выберите спонсоров. Тип по умолчанию берётся из настроек спонсора, но можно переопределить для этого мероприятия.
+                  </p>
+
+                  {allSponsors.length === 0 ? (
+                    <p className="text-muted-foreground">Нет доступных спонсоров</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {allSponsors.map((sponsor) => {
+                        const isSelected = selectedSponsors.some((s) => s.sponsor_id === sponsor.id);
+                        const sponsorData = selectedSponsors.find((s) => s.sponsor_id === sponsor.id);
+
+                        return (
+                          <Card key={sponsor.id} className={isSelected ? "border-primary" : ""}>
+                            <CardContent className="p-4">
+                              <div className="flex items-center gap-3">
+                                <Checkbox
+                                  checked={isSelected}
+                                  onCheckedChange={(checked) => handleSponsorToggle(sponsor.id, checked as boolean)}
+                                />
+                                {sponsor.logo_url && (
+                                  <img
+                                    src={sponsor.logo_url}
+                                    alt={sponsor.name}
+                                    className="w-10 h-10 rounded object-contain"
+                                  />
+                                )}
+                                <div>
+                                  <p className="font-medium">{sponsor.name}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    По умолчанию: {TIER_LABELS[sponsor.tier]}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {isSelected && (
+                                <div className="mt-4 pl-8">
+                                  <Label className="text-sm">Тип для этого мероприятия</Label>
+                                  <Select
+                                    value={sponsorData?.tier || "default"}
+                                    onValueChange={(val) => handleSponsorTierChange(sponsor.id, val)}
+                                  >
+                                    <SelectTrigger className="mt-1">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="default">По умолчанию ({TIER_LABELS[sponsor.tier]})</SelectItem>
+                                      <SelectItem value="general_partner">Генеральный партнёр</SelectItem>
+                                      <SelectItem value="partner">Партнёр</SelectItem>
+                                      <SelectItem value="sponsor">Спонсор</SelectItem>
+                                    </SelectContent>
+                                  </Select>
                                 </div>
                               )}
                             </CardContent>
@@ -796,6 +997,38 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                                   <p className="text-xs text-muted-foreground">{s.talk_title}</p>
                                 )}
                               </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedSponsors.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Спонсоры:</p>
+                      <div className="space-y-1">
+                        {selectedSponsors.map((s) => {
+                          const sponsor = allSponsors.find((sp) => sp.id === s.sponsor_id);
+                          if (!sponsor) return null;
+                          const effectiveTier = s.tier || sponsor.tier;
+                          return (
+                            <div key={s.sponsor_id} className="flex items-center gap-2">
+                              {sponsor.logo_url && (
+                                <img
+                                  src={sponsor.logo_url}
+                                  alt={sponsor.name}
+                                  className="w-6 h-6 rounded object-contain"
+                                />
+                              )}
+                              <span className="text-sm">{sponsor.name}</span>
+                              <span className={`text-xs px-1.5 py-0.5 rounded ${
+                                effectiveTier === 'general_partner' ? 'bg-yellow-100 text-yellow-800' :
+                                effectiveTier === 'partner' ? 'bg-blue-100 text-blue-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {TIER_LABELS[effectiveTier]}
+                              </span>
                             </div>
                           );
                         })}

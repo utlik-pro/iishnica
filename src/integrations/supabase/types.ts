@@ -385,16 +385,19 @@ export type Database = {
           event_id: string | null
           id: string
           sponsor_id: string | null
+          tier: Database["public"]["Enums"]["sponsor_tier"] | null
         }
         Insert: {
           event_id?: string | null
           id?: string
           sponsor_id?: string | null
+          tier?: Database["public"]["Enums"]["sponsor_tier"] | null
         }
         Update: {
           event_id?: string | null
           id?: string
           sponsor_id?: string | null
+          tier?: Database["public"]["Enums"]["sponsor_tier"] | null
         }
         Relationships: [
           {
@@ -546,6 +549,7 @@ export type Database = {
           is_active: boolean
           logo_url: string | null
           name: string
+          tier: Database["public"]["Enums"]["sponsor_tier"]
           website_url: string | null
         }
         Insert: {
@@ -554,6 +558,7 @@ export type Database = {
           is_active?: boolean
           logo_url?: string | null
           name: string
+          tier?: Database["public"]["Enums"]["sponsor_tier"]
           website_url?: string | null
         }
         Update: {
@@ -562,6 +567,7 @@ export type Database = {
           is_active?: boolean
           logo_url?: string | null
           name?: string
+          tier?: Database["public"]["Enums"]["sponsor_tier"]
           website_url?: string | null
         }
         Relationships: []
@@ -703,6 +709,10 @@ export type Database = {
         | "not_paid"
         | "will_attend"
         | "will_not_attend"
+      sponsor_tier:
+        | "general_partner"
+        | "partner"
+        | "sponsor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -825,6 +835,11 @@ export const Constants = {
         "not_paid",
         "will_attend",
         "will_not_attend",
+      ],
+      sponsor_tier: [
+        "general_partner",
+        "partner",
+        "sponsor",
       ],
     },
   },

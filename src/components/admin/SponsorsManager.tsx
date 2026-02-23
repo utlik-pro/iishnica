@@ -13,7 +13,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import ImageUpload from "@/components/ui/image-upload";
+import { TIER_LABELS, type SponsorTier } from "@/lib/sponsor-tiers";
 
 interface Sponsor {
   id: string;
@@ -21,6 +29,7 @@ interface Sponsor {
   logo_url: string | null;
   website_url: string | null;
   is_active: boolean;
+  tier: SponsorTier;
   created_at: string;
 }
 
@@ -37,6 +46,7 @@ const SponsorsManager: React.FC = () => {
     logo_url: "",
     website_url: "",
     is_active: true,
+    tier: "sponsor" as SponsorTier,
   });
 
   useEffect(() => {
@@ -72,6 +82,7 @@ const SponsorsManager: React.FC = () => {
       logo_url: "",
       website_url: "",
       is_active: true,
+      tier: "sponsor",
     });
     setOpenDialog(true);
   };
@@ -83,6 +94,7 @@ const SponsorsManager: React.FC = () => {
       logo_url: sponsor.logo_url || "",
       website_url: sponsor.website_url || "",
       is_active: sponsor.is_active,
+      tier: sponsor.tier || "sponsor",
     });
     setOpenDialog(true);
   };
@@ -111,6 +123,7 @@ const SponsorsManager: React.FC = () => {
         logo_url: form.logo_url || null,
         website_url: form.website_url || null,
         is_active: form.is_active,
+        tier: form.tier,
       };
 
       let result;
@@ -208,6 +221,16 @@ const SponsorsManager: React.FC = () => {
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">Тип:</p>
+                    <span className={`px-2 py-1 text-xs rounded ${
+                      sponsor.tier === 'general_partner' ? 'bg-yellow-100 text-yellow-800' :
+                      sponsor.tier === 'partner' ? 'bg-blue-100 text-blue-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {TIER_LABELS[sponsor.tier] || 'Спонсор'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
                     <p className="text-sm font-medium">Статус:</p>
                     <span className={`px-2 py-1 text-xs rounded ${sponsor.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
                       {sponsor.is_active ? "Активный" : "Неактивный"}
@@ -286,6 +309,20 @@ const SponsorsManager: React.FC = () => {
                 onChange={handleChange}
                 placeholder="https://example.com"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="tier">Тип партнёрства</Label>
+              <Select value={form.tier} onValueChange={(val) => setForm({ ...form, tier: val as SponsorTier })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите тип" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="general_partner">Генеральный партнёр</SelectItem>
+                  <SelectItem value="partner">Партнёр</SelectItem>
+                  <SelectItem value="sponsor">Спонсор</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex items-center space-x-2">
