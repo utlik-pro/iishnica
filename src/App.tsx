@@ -17,6 +17,7 @@ import EventDecember18 from "./pages/EventDecember18";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import { setupInitialData } from "./integrations/supabase/setup";
+import { TrackingPixels } from "./components/TrackingPixels";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <TrackingPixels pageSlug="home" />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/admin" element={<Admin />} />
