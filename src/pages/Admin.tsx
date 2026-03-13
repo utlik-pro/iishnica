@@ -46,13 +46,15 @@ import { MiniappEventsManager } from "@/components/admin/MiniappEventsManager";
 import { CheckInManager } from "@/components/admin/CheckInManager";
 import { BadgesManager } from "@/components/admin/BadgesManager";
 import { CompaniesManager } from "@/components/admin/CompaniesManager";
+import { TrackingPixelsManager } from "@/components/admin/TrackingPixelsManager";
 
 type TabValue =
   | "page-builder" | "events" | "program" | "speakers" | "locations" | "sponsors" | "leads"
   | "bot-users" | "bot-registrations" | "bot-feedback" | "broadcasts"
   | "miniapp-leads" | "miniapp-settings" | "miniapp-stats" | "miniapp-events" | "miniapp-checkin"
   | "posts"
-  | "profile-badges" | "profile-companies";
+  | "profile-badges" | "profile-companies"
+  | "tracking-pixels";
 
 interface MenuItem {
   value: TabValue;
@@ -117,6 +119,7 @@ const menuSections: MenuSection[] = [
     items: [
       { value: "posts", label: "Публикации", icon: <Megaphone className="h-4 w-4" />, description: "Блог и новости" },
       { value: "leads", label: "Участники", icon: <Users className="h-4 w-4" />, description: "База участников" },
+      { value: "tracking-pixels", label: "Пиксели", icon: <BarChart3 className="h-4 w-4" />, description: "Facebook, TikTok, Google" },
     ],
   },
   {
@@ -334,6 +337,10 @@ const Admin = () => {
 
               <TabsContent value="profile-companies" className="mt-0">
                 <CompaniesManager />
+              </TabsContent>
+
+              <TabsContent value="tracking-pixels" className="mt-0">
+                <TrackingPixelsManager />
               </TabsContent>
             </Tabs>
           </div>
