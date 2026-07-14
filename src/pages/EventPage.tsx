@@ -287,27 +287,30 @@ const EventPage: React.FC = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-24 pb-12 md:pt-40 md:pb-24 relative overflow-hidden">
-        <div className="absolute inset-0 ambient-lime pointer-events-none" aria-hidden />
+      <section className="pt-28 pb-14 md:pt-44 md:pb-28 relative overflow-hidden">
+        {/* Background photo */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <img
+            src="/og-image.png"
+            alt=""
+            className="w-full h-full object-cover object-center opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/80" />
+          <div className="absolute inset-0 ambient-lime opacity-70" />
+        </div>
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block mb-3 md:mb-4 px-3 md:px-4 py-1.5 md:py-2 bg-primary/10 border border-primary/20 rounded-full">
-              <span className="text-primary font-semibold text-xs md:text-sm">Мероприятие M.AI.N Community</span>
+            <div className="inline-flex items-center mb-4 md:mb-6 px-4 py-1.5 md:py-2 bg-white/[0.04] border border-white/[0.1] rounded-full backdrop-blur-sm">
+              <span className="text-primary font-semibold text-xs md:text-sm tracking-wide">Мероприятие M.AI.N Community</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 md:mb-6 gradient-text flex items-center justify-center gap-2 md:gap-4 flex-wrap">
-              {event.title.includes("ИИшница") ? (
-                <>
-                  Вечерняя
-                  <img
-                    src="/iiishnica.png"
-                    alt="ИИшница"
-                    className="h-10 sm:h-12 md:h-20 lg:h-24 w-auto"
-                  />
-                  ИИшница
-                </>
-              ) : (
-                event.title
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-5 md:mb-7 tracking-tight leading-[0.95]">
+              {event.title.split(/(ИИшница)/g).map((part, i) =>
+                part === "ИИшница" ? (
+                  <span key={i} className="gradient-text">{part}</span>
+                ) : (
+                  <span key={i} className="text-foreground">{part}</span>
+                )
               )}
             </h1>
 

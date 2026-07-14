@@ -31,23 +31,23 @@ const EventGrodno = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-28 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
-        <div className="absolute inset-0 ambient-lime pointer-events-none" aria-hidden />
+      <section className="pt-28 pb-16 md:pt-44 md:pb-28 relative overflow-hidden">
+        {/* Background photo */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <img src="/og-image.png" alt="" className="w-full h-full object-cover object-center opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/80" />
+          <div className="absolute inset-0 ambient-lime opacity-70" />
+        </div>
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-block mb-4 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full">
               <span className="text-primary font-semibold text-sm">Вечернее мероприятие</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 gradient-text flex items-center justify-center gap-4 flex-wrap">
-              Вечерняя
-              <img
-                src="/iiishnica.png"
-                alt="ИИшница"
-                className="h-16 md:h-20 lg:h-24 w-auto"
-              />
-              ИИшница
-              <span className="text-3xl md:text-4xl lg:text-5xl">в Гродно</span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 tracking-tight leading-[0.95]">
+              <span className="text-foreground">Вечерняя </span>
+              <span className="gradient-text">ИИшница</span>
+              <span className="text-foreground text-3xl md:text-4xl lg:text-5xl"> в Гродно</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
