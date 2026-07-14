@@ -24,7 +24,7 @@ interface MiniappConfig {
 }
 
 const DEFAULT_CONFIG: MiniappConfig = {
-  miniapp_url: "https://t.me/your_bot/miniapp",
+  miniapp_url: "https://telegram.me/your_bot/miniapp",
   welcome_text: "Добро пожаловать в ИИшницу! Зарегистрируйтесь на мероприятие.",
   success_message: "Спасибо за регистрацию! Мы свяжемся с вами в ближайшее время.",
   form_title: "Регистрация на мероприятие",
@@ -153,7 +153,7 @@ export function MiniappSettingsManager() {
                   id="miniapp_url"
                   value={config.miniapp_url}
                   onChange={(e) => setConfig({ ...config, miniapp_url: e.target.value })}
-                  placeholder="https://t.me/your_bot/miniapp"
+                  placeholder="https://telegram.me/your_bot/miniapp"
                 />
                 <Button
                   variant="outline"
@@ -287,15 +287,15 @@ export function MiniappSettingsManager() {
           </CardContent>
         </Card>
 
-        <Card className="border-yellow-200 bg-yellow-50">
+        <Card className="border-warning/20 bg-warning/10">
           <CardHeader>
-            <CardTitle className="text-yellow-800">Инструкция для miniapp</CardTitle>
+            <CardTitle className="text-warning">Инструкция для miniapp</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm space-y-2 text-yellow-900">
+          <CardContent className="text-sm space-y-2 text-foreground">
             <p><strong>1.</strong> Используйте эти настройки в коде miniapp</p>
-            <p><strong>2.</strong> При отправке регистрации установите <code className="bg-yellow-100 px-1 rounded">source: 'telegram_miniapp'</code></p>
-            <p><strong>3.</strong> Отправляйте данные в таблицу <code className="bg-yellow-100 px-1 rounded">leads</code> с привязкой к событию</p>
-            <pre className="bg-yellow-100 p-2 rounded mt-2 overflow-x-auto">
+            <p><strong>2.</strong> При отправке регистрации установите <code className="bg-warning/15 px-1 rounded">source: 'telegram_miniapp'</code></p>
+            <p><strong>3.</strong> Отправляйте данные в таблицу <code className="bg-warning/15 px-1 rounded">leads</code> с привязкой к событию</p>
+            <pre className="bg-warning/15 p-2 rounded mt-2 overflow-x-auto">
 {`await supabase.from("leads").insert({
   name: "Имя пользователя",
   phone: "+375XXXXXXXXX",

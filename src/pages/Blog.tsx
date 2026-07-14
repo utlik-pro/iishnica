@@ -86,13 +86,13 @@ const Blog: React.FC = () => {
   const getCategoryColor = (category: PostCategory) => {
     switch (category) {
       case "blog":
-        return "bg-blue-100 text-blue-800";
+        return "bg-primary/10 text-primary";
       case "news":
-        return "bg-green-100 text-green-800";
+        return "bg-success/15 text-success";
       case "article":
-        return "bg-purple-100 text-purple-800";
+        return "bg-warning/15 text-warning";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-white/[0.05] text-muted-foreground";
     }
   };
 
@@ -125,9 +125,9 @@ const Blog: React.FC = () => {
       <div className="min-h-screen flex flex-col">
         <Navbar />
 
-        <main className="flex-1 container mx-auto px-4 py-12">
+        <main className="flex-1 container mx-auto px-4 pt-28 md:pt-32 pb-12">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold mb-8 text-center">Блог</h1>
+            <h1 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-center tracking-tight">Наш <span className="gradient-text">блог</span></h1>
 
             {/* Category Filter */}
             <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -154,7 +154,7 @@ const Blog: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredPosts.map((post) => (
                   <Link key={post.id} to={`/blog/${post.slug}`}>
-                    <Card className="h-full hover:shadow-lg transition-shadow overflow-hidden">
+                    <Card className="h-full border-white/[0.08] hover:border-primary/40 hover:shadow-lime-sm transition-all overflow-hidden">
                       {post.featured_image_url && (
                         <div className="h-48 overflow-hidden">
                           <img

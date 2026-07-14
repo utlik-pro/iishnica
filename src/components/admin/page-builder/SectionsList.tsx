@@ -75,7 +75,7 @@ const SortableSectionItem: React.FC<SortableSectionItemProps> = ({
         "flex items-center gap-2 p-2 rounded-lg border cursor-pointer transition-all",
         isSelected
           ? "bg-primary/10 border-primary"
-          : "bg-white border-gray-200 hover:border-gray-300",
+          : "bg-white/[0.03] border-white/[0.08] hover:border-white/[0.15]",
         isDragging && "opacity-50 shadow-lg",
         !section.is_visible && "opacity-50"
       )}
@@ -109,8 +109,8 @@ const SortableSectionItem: React.FC<SortableSectionItemProps> = ({
       {/* Visibility toggle */}
       <button
         className={cn(
-          "p-1 rounded hover:bg-gray-100 transition-colors",
-          section.is_visible ? "text-muted-foreground" : "text-red-400"
+          "p-1 rounded hover:bg-white/[0.05] transition-colors",
+          section.is_visible ? "text-muted-foreground" : "text-destructive"
         )}
         onClick={(e) => {
           e.stopPropagation();
@@ -159,7 +159,7 @@ const SectionsList: React.FC<SectionsListProps> = ({
   };
 
   return (
-    <div className="bg-white border rounded-lg p-3">
+    <div className="bg-card border rounded-lg p-3">
       <h3 className="text-sm font-semibold mb-3 text-muted-foreground">
         Секции страницы
       </h3>

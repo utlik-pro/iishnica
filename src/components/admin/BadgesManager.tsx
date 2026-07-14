@@ -240,7 +240,7 @@ export function BadgesManager() {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
           placeholder="Поиск по названию..."
           value={search}
@@ -270,14 +270,14 @@ export function BadgesManager() {
                       <div className="font-medium" style={{ color: badge.color }}>
                         {badge.name}
                       </div>
-                      <div className="text-sm text-gray-500 truncate max-w-[200px]">
+                      <div className="text-sm text-muted-foreground truncate max-w-[200px]">
                         {badge.description}
                       </div>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <code className="text-sm bg-gray-100 px-2 py-1 rounded">
+                  <code className="text-sm bg-secondary px-2 py-1 rounded">
                     {badge.slug}
                   </code>
                 </TableCell>
@@ -355,7 +355,7 @@ export function BadgesManager() {
           </DialogHeader>
           <div className="max-h-96 overflow-auto">
             {awardedBadges?.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">Пока никому не выдан</p>
+              <p className="text-muted-foreground text-center py-4">Пока никому не выдан</p>
             ) : (
               <Table>
                 <TableHeader>
@@ -372,10 +372,10 @@ export function BadgesManager() {
                       <TableCell>
                         {ub.user?.first_name} {ub.user?.last_name}
                         {ub.user?.username && (
-                          <span className="text-gray-500 ml-1">@{ub.user.username}</span>
+                          <span className="text-muted-foreground ml-1">@{ub.user.username}</span>
                         )}
                       </TableCell>
-                      <TableCell className="text-sm text-gray-500">
+                      <TableCell className="text-sm text-muted-foreground">
                         {ub.awarded_reason || "-"}
                       </TableCell>
                       <TableCell className="text-sm">
@@ -387,7 +387,7 @@ export function BadgesManager() {
                           size="sm"
                           onClick={() => revokeBadge.mutate(ub.id)}
                         >
-                          <Trash2 className="h-4 w-4 text-red-500" />
+                          <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </TableCell>
                     </TableRow>

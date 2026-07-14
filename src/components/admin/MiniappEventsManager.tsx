@@ -190,11 +190,11 @@ export function MiniappEventsManager() {
         </div>
       </div>
 
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-primary/20 bg-primary/10">
         <CardHeader>
-          <CardTitle className="text-blue-800 text-base">Как это работает</CardTitle>
+          <CardTitle className="text-primary text-base">Как это работает</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-blue-900 space-y-2">
+        <CardContent className="text-sm text-foreground space-y-2">
           <p>• Включите переключатель, чтобы событие отображалось в miniapp</p>
           <p>• Пользователи смогут зарегистрироваться на событие через miniapp</p>
           <p>• Нажмите <Bell className="h-3 w-3 inline" /> чтобы отправить push-уведомление всем пользователям о событии</p>

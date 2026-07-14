@@ -236,7 +236,7 @@ const EventsManager: React.FC = () => {
           Нет мероприятий. Создайте новое!
         </p>
       ) : (
-        <div className="border rounded-lg">
+        <div className="border border-white/[0.08] rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
@@ -288,7 +288,7 @@ const EventsManager: React.FC = () => {
                     )}
                   </TableCell>
                   <TableCell>
-                    <span className={event.price > 0 ? "font-medium" : "text-green-600"}>
+                    <span className={event.price > 0 ? "font-medium" : "text-success"}>
                       {event.price > 0 ? `${event.price} BYN` : "Бесплатно"}
                     </span>
                   </TableCell>

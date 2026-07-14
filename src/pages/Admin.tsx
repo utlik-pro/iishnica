@@ -75,8 +75,8 @@ const menuSections: MenuSection[] = [
   {
     title: "Лендинг",
     icon: <Globe className="h-5 w-5" />,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50 hover:bg-purple-100 border-purple-200",
+    color: "text-primary",
+    bgColor: "bg-primary/10 hover:bg-primary/15 border-primary/20",
     items: [
       { value: "page-builder", label: "Конструктор", icon: <Layers className="h-4 w-4" />, description: "Настройка секций" },
       { value: "events", label: "Мероприятия", icon: <Calendar className="h-4 w-4" />, description: "Управление событиями" },
@@ -89,8 +89,8 @@ const menuSections: MenuSection[] = [
   {
     title: "Telegram Бот",
     icon: <Bot className="h-5 w-5" />,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50 hover:bg-blue-100 border-blue-200",
+    color: "text-primary",
+    bgColor: "bg-primary/10 hover:bg-primary/15 border-primary/20",
     items: [
       { value: "bot-users", label: "Пользователи", icon: <Users className="h-4 w-4" />, description: "Пользователи бота" },
       { value: "bot-registrations", label: "Регистрации", icon: <UserCheck className="h-4 w-4" />, description: "Заявки на события" },
@@ -101,8 +101,8 @@ const menuSections: MenuSection[] = [
   {
     title: "Telegram Mini-App",
     icon: <Smartphone className="h-5 w-5" />,
-    color: "text-cyan-600",
-    bgColor: "bg-cyan-50 hover:bg-cyan-100 border-cyan-200",
+    color: "text-primary",
+    bgColor: "bg-primary/10 hover:bg-primary/15 border-primary/20",
     items: [
       { value: "miniapp-leads", label: "Лиды", icon: <Users className="h-4 w-4" />, description: "Регистрации из miniapp" },
       { value: "miniapp-events", label: "События", icon: <CalendarCheck className="h-4 w-4" />, description: "События в miniapp" },
@@ -114,8 +114,8 @@ const menuSections: MenuSection[] = [
   {
     title: "Контент",
     icon: <FileText className="h-5 w-5" />,
-    color: "text-green-600",
-    bgColor: "bg-green-50 hover:bg-green-100 border-green-200",
+    color: "text-primary",
+    bgColor: "bg-primary/10 hover:bg-primary/15 border-primary/20",
     items: [
       { value: "posts", label: "Публикации", icon: <Megaphone className="h-4 w-4" />, description: "Блог и новости" },
       { value: "leads", label: "Участники", icon: <Users className="h-4 w-4" />, description: "База участников" },
@@ -125,8 +125,8 @@ const menuSections: MenuSection[] = [
   {
     title: "Профили",
     icon: <User className="h-5 w-5" />,
-    color: "text-amber-600",
-    bgColor: "bg-amber-50 hover:bg-amber-100 border-amber-200",
+    color: "text-primary",
+    bgColor: "bg-primary/10 hover:bg-primary/15 border-primary/20",
     items: [
       { value: "profile-badges", label: "Бейджи", icon: <Award className="h-4 w-4" />, description: "Кастомные награды" },
       { value: "profile-companies", label: "Компании", icon: <Building2 className="h-4 w-4" />, description: "Организации" },
@@ -200,7 +200,7 @@ const Admin = () => {
   const current = getCurrentSection();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <AdminNavbar username={username} onLogout={handleLogout} onHomeClick={() => navigate("/")} />
 
       <main className="container mx-auto px-4 py-8">
@@ -236,10 +236,10 @@ const Admin = () => {
                           className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all ${
                             activeTab === item.value
                               ? `${section.bgColor} ${section.color} font-medium`
-                              : "hover:bg-gray-100 text-gray-700"
+                              : "hover:bg-white/[0.05] text-muted-foreground"
                           }`}
                         >
-                          <span className={activeTab === item.value ? section.color : "text-gray-400"}>
+                          <span className={activeTab === item.value ? section.color : "text-muted-foreground"}>
                             {item.icon}
                           </span>
                           <div className="flex-1 min-w-0">

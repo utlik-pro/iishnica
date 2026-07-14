@@ -152,7 +152,7 @@ export function BotRegistrationsManager() {
 
       <div className="flex gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Поиск по имени пользователя или мероприятию..."
             value={search}
@@ -197,7 +197,7 @@ export function BotRegistrationsManager() {
                       {reg.bot_users?.first_name} {reg.bot_users?.last_name}
                     </div>
                     {reg.bot_users?.username && (
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-muted-foreground">
                         @{reg.bot_users.username}
                       </div>
                     )}
@@ -206,7 +206,7 @@ export function BotRegistrationsManager() {
                 <TableCell>
                   <div>
                     <div className="font-medium">{reg.bot_events?.title}</div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
                       {reg.bot_events?.event_date && formatDate(reg.bot_events.event_date)}
                     </div>
                   </div>
@@ -254,7 +254,7 @@ export function BotRegistrationsManager() {
                 </TableCell>
                 <TableCell>
                   {reg.notes && (
-                    <span className="text-sm text-gray-500" title={reg.notes}>
+                    <span className="text-sm text-muted-foreground" title={reg.notes}>
                       Заметка
                     </span>
                   )}

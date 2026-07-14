@@ -322,7 +322,7 @@ export function LocationsManager() {
         </Dialog>
       </div>
 
-      <div className="border rounded-lg overflow-hidden">
+      <div className="border border-white/[0.08] rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -349,8 +349,8 @@ export function LocationsManager() {
                       }}
                     />
                   ) : (
-                    <div className="h-16 w-24 rounded bg-gray-100 flex items-center justify-center">
-                      <Image className="h-6 w-6 text-gray-400" />
+                    <div className="h-16 w-24 rounded bg-white/[0.03] flex items-center justify-center">
+                      <Image className="h-6 w-6 text-muted-foreground" />
                     </div>
                   )}
                 </TableCell>
@@ -358,7 +358,7 @@ export function LocationsManager() {
                 <TableCell>
                   {location.address ? (
                     <div className="flex items-center gap-1 text-sm">
-                      <MapPin className="h-3 w-3 text-gray-400" />
+                      <MapPin className="h-3 w-3 text-muted-foreground" />
                       {location.address}
                     </div>
                   ) : (
@@ -371,7 +371,7 @@ export function LocationsManager() {
                       href={location.yandex_map_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-blue-600 hover:underline text-sm"
+                      className="flex items-center gap-1 text-primary hover:underline text-sm"
                     >
                       <ExternalLink className="h-3 w-3" />
                       Открыть
@@ -413,7 +413,7 @@ export function LocationsManager() {
             ))}
             {locations?.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                   Нет локаций. Добавьте первую локацию.
                 </TableCell>
               </TableRow>

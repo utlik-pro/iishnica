@@ -333,10 +333,10 @@ const PostsManager: React.FC = () => {
 
   const getCategoryColor = (category: PostCategory) => {
     switch (category) {
-      case "blog": return "bg-blue-100 text-blue-800";
-      case "news": return "bg-green-100 text-green-800";
-      case "article": return "bg-purple-100 text-purple-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "blog": return "bg-primary/15 text-primary";
+      case "news": return "bg-success/15 text-success";
+      case "article": return "bg-secondary text-foreground";
+      default: return "bg-secondary text-muted-foreground";
     }
   };
 
@@ -392,7 +392,7 @@ const PostsManager: React.FC = () => {
                   <span className={`px-2 py-1 text-xs rounded ${getCategoryColor(post.category)}`}>
                     {getCategoryLabel(post.category)}
                   </span>
-                  <span className={`px-2 py-1 text-xs rounded ${post.is_published ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                  <span className={`px-2 py-1 text-xs rounded ${post.is_published ? "bg-success/15 text-success" : "bg-secondary text-muted-foreground"}`}>
                     {post.is_published ? "Опубликовано" : "Черновик"}
                   </span>
                 </div>
@@ -564,7 +564,7 @@ const PostsManager: React.FC = () => {
                     name="author_url"
                     value={form.author_url}
                     onChange={handleChange}
-                    placeholder="https://t.me/username"
+                    placeholder="https://telegram.me/username"
                   />
                 </div>
               </div>

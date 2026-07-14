@@ -63,13 +63,13 @@ const BlogSection: React.FC<BlogSectionProps> = ({ config }) => {
   const getCategoryColor = (category: PostCategory) => {
     switch (category) {
       case "blog":
-        return "bg-blue-100 text-blue-800";
+        return "bg-primary/15 text-primary";
       case "news":
-        return "bg-green-100 text-green-800";
+        return "bg-success/15 text-success";
       case "article":
-        return "bg-purple-100 text-purple-800";
+        return "bg-warning/15 text-warning";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-white/10 text-muted-foreground";
     }
   };
 
@@ -84,9 +84,9 @@ const BlogSection: React.FC<BlogSectionProps> = ({ config }) => {
 
   if (loading) {
     return (
-      <section id="blog" className="py-16 bg-gray-50">
+      <section id="blog" className="py-16 bg-[#0d0d0d]">
         <div className="container mx-auto px-4 text-center">
-          <p>Загрузка публикаций...</p>
+          <p className="text-muted-foreground">Загрузка публикаций...</p>
         </div>
       </section>
     );
@@ -97,7 +97,7 @@ const BlogSection: React.FC<BlogSectionProps> = ({ config }) => {
   }
 
   return (
-    <section id="blog" className="py-16 bg-gray-50">
+    <section id="blog" className="py-16 md:py-20 bg-[#0d0d0d]">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
@@ -111,7 +111,7 @@ const BlogSection: React.FC<BlogSectionProps> = ({ config }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {posts.map((post) => (
             <Link key={post.id} to={`/blog/${post.slug}`}>
-              <Card className="h-full hover:shadow-lg transition-shadow overflow-hidden group">
+              <Card className="h-full rounded-2xl border-white/[0.08] bg-card hover:border-white/[0.16] hover:bg-white/[0.02] transition-colors overflow-hidden group">
                 {post.featured_image_url && (
                   <div className="h-48 overflow-hidden">
                     <img

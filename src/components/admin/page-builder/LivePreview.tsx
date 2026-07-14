@@ -38,8 +38,8 @@ const LivePreview: React.FC<LivePreviewProps> = ({ sections }) => {
   return (
     <div className="h-full flex flex-col">
       {/* Preview header */}
-      <div className="p-2 bg-gray-200 border-b flex items-center justify-between">
-        <span className="text-xs font-medium text-gray-600">Превью страницы</span>
+      <div className="p-2 bg-white/[0.03] border-b border-white/[0.08] flex items-center justify-between">
+        <span className="text-xs font-medium text-muted-foreground">Превью страницы</span>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-red-400" />
           <div className="w-2 h-2 rounded-full bg-yellow-400" />
@@ -48,7 +48,7 @@ const LivePreview: React.FC<LivePreviewProps> = ({ sections }) => {
       </div>
 
       {/* Preview content with scaling */}
-      <div className="flex-1 overflow-hidden bg-white">
+      <div className="flex-1 overflow-hidden bg-background">
         <div className="w-full h-full overflow-auto">
           <div
             className="origin-top-left"

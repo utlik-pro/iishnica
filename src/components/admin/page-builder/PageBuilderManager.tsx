@@ -245,7 +245,7 @@ const PageBuilderManager = () => {
         </div>
 
         {/* Middle column - Section editor */}
-        <div className="w-96 flex-shrink-0 overflow-y-auto border rounded-lg bg-white">
+        <div className="w-96 flex-shrink-0 overflow-y-auto border rounded-lg bg-card">
           {selectedSection ? (
             <SectionEditorPanel
               section={selectedSection}
@@ -259,7 +259,7 @@ const PageBuilderManager = () => {
         </div>
 
         {/* Right column - Live preview */}
-        <div className="flex-1 min-w-0 border rounded-lg bg-gray-100 overflow-hidden">
+        <div className="flex-1 min-w-0 border rounded-lg bg-white/[0.03] overflow-hidden">
           <LivePreview sections={sections} />
         </div>
       </div>

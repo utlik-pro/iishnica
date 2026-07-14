@@ -104,16 +104,16 @@ const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
 
   if (loading) {
     return (
-      <section id="events" className="py-12 md:py-16 bg-white">
+      <section id="events" className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-sm md:text-base">Загрузка расписания...</p>
+          <p className="text-sm md:text-base text-muted-foreground">Загрузка расписания...</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section id="events" className="py-12 md:py-16 bg-white">
+    <section id="events" className="py-12 md:py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
@@ -131,10 +131,10 @@ const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
             {events.slice(0, cfg.maxItems).map((event, index) => (
-              <Card key={event.id} className="border border-purple-100">
-                <CardContent className="p-4 md:p-6">
+              <Card key={event.id} className={`rounded-2xl bg-card transition-colors ${index === 0 ? 'border-primary/30 hover:border-primary/50' : 'border-white/[0.08] hover:border-white/[0.16]'}`}>
+                <CardContent className="p-5 md:p-6">
                   <div className="flex items-center justify-between mb-3 md:mb-4 gap-2">
-                    <div className="bg-primary/10 text-primary font-medium py-1 px-2.5 md:px-3 rounded-full text-xs md:text-sm whitespace-nowrap">
+                    <div className={`font-medium py-1 px-2.5 md:px-3 rounded-full text-xs md:text-sm whitespace-nowrap ${index === 0 ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}>
                       {index === 0 ? "Ближайший" : `${index + 1}-й`}
                     </div>
                     <div className="text-xs md:text-sm text-muted-foreground truncate">
@@ -146,13 +146,13 @@ const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
                     {event.title}
                   </h3>
 
-                  <div className="text-base md:text-lg mb-3 md:mb-4">
+                  <div className="text-base md:text-lg mb-3 md:mb-4 text-foreground/90">
                     {formatDate(event.date)}
                   </div>
 
                   {event.speaker && (
-                    <div className="mb-3 md:mb-4 text-xs md:text-sm">
-                      <span className="font-medium">Спикер:</span> {event.speaker}
+                    <div className="mb-3 md:mb-4 text-xs md:text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">Спикер:</span> {event.speaker}
                     </div>
                   )}
 
@@ -160,7 +160,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
                     {event.description}
                   </p>
 
-                  <Button className="w-full text-sm md:text-base" onClick={() => handleRegister(event)}>
+                  <Button className="w-full text-sm md:text-base rounded-full font-semibold bg-primary text-primary-foreground hover:bg-lime-dark" onClick={() => handleRegister(event)}>
                     Зарегистрироваться
                   </Button>
                 </CardContent>
@@ -177,7 +177,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
                 locale={ru}
                 mode="multiple"
                 selected={eventDates}
-                className="rounded-md border shadow p-2 md:p-4 bg-white select-none pointer-events-auto"
+                className="rounded-2xl border border-white/[0.08] p-2 md:p-4 bg-card select-none pointer-events-auto"
               />
             </div>
           )}

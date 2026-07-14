@@ -170,54 +170,54 @@ export function BotFeedbackManager() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Средняя оценка спикера 1
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <Star className="h-5 w-5 text-yellow-500" />
+              <Star className="h-5 w-5 text-warning" />
               <span className="text-2xl font-bold">{speaker1Avg}</span>
-              <span className="text-gray-500">/ 4</span>
+              <span className="text-muted-foreground">/ 4</span>
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Средняя оценка спикера 2
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <Star className="h-5 w-5 text-yellow-500" />
+              <Star className="h-5 w-5 text-warning" />
               <span className="text-2xl font-bold">{speaker2Avg}</span>
-              <span className="text-gray-500">/ 4</span>
+              <span className="text-muted-foreground">/ 4</span>
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Комментариев
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5 text-blue-500" />
+              <MessageSquare className="h-5 w-5 text-primary" />
               <span className="text-2xl font-bold">{stats?.commentsCount || 0}</span>
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Всего отзывов
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-green-500" />
+              <TrendingUp className="h-5 w-5 text-success" />
               <span className="text-2xl font-bold">{feedback?.length || 0}</span>
             </div>
           </CardContent>
@@ -267,7 +267,7 @@ export function BotFeedbackManager() {
                       {fb.bot_users?.first_name} {fb.bot_users?.last_name}
                     </div>
                     {fb.bot_users?.username && (
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-muted-foreground">
                         @{fb.bot_users.username}
                       </div>
                     )}
@@ -279,7 +279,7 @@ export function BotFeedbackManager() {
                 <TableCell>
                   {fb.speaker1_rating ? (
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-500" />
+                      <Star className="h-4 w-4 text-warning" />
                       {fb.speaker1_rating}/4
                     </div>
                   ) : (
@@ -289,7 +289,7 @@ export function BotFeedbackManager() {
                 <TableCell>
                   {fb.speaker2_rating ? (
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-500" />
+                      <Star className="h-4 w-4 text-warning" />
                       {fb.speaker2_rating}/4
                     </div>
                   ) : (
@@ -323,7 +323,7 @@ export function BotFeedbackManager() {
                     "-"
                   )}
                 </TableCell>
-                <TableCell className="text-sm text-gray-500">
+                <TableCell className="text-sm text-muted-foreground">
                   {formatDate(fb.created_at)}
                 </TableCell>
               </TableRow>

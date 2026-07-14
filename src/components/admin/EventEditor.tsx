@@ -161,7 +161,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
     location_name: "",
     location_address: "",
     yandex_map_url: "",
-    telegram_bot_url: "https://t.me/maincomapp_bot",
+    telegram_bot_url: "https://telegram.me/maincomapp_bot",
     is_published: false,
     slug: "",
   });
@@ -188,7 +188,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
       location_name: evt.location_name || "",
       location_address: evt.location_address || "",
       yandex_map_url: evt.yandex_map_url || "",
-      telegram_bot_url: evt.telegram_bot_url || "https://t.me/maincomapp_bot",
+      telegram_bot_url: evt.telegram_bot_url || "https://telegram.me/maincomapp_bot",
       is_published: evt.is_published,
       slug: evt.slug || "",
     });
@@ -842,7 +842,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                     {event?.id ? (
                       <div className="flex gap-2">
                         <Input
-                          value={`https://t.me/maincomapp_bot?startapp=event_${event.id}`}
+                          value={`https://telegram.me/maincomapp_bot?startapp=event_${event.id}`}
                           readOnly
                           className="bg-muted"
                         />
@@ -851,7 +851,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                           variant="outline"
                           size="icon"
                           onClick={() => {
-                            navigator.clipboard.writeText(`https://t.me/maincomapp_bot?startapp=event_${event.id}`);
+                            navigator.clipboard.writeText(`https://telegram.me/maincomapp_bot?startapp=event_${event.id}`);
                             toast({
                               title: "Скопировано",
                               description: "Ссылка скопирована в буфер обмена",
@@ -904,8 +904,8 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                   </Card>
 
                   {form.is_published && (
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <p className="text-sm text-green-800">
+                    <div className="p-4 bg-success/10 border border-success/20 rounded-lg">
+                      <p className="text-sm text-success">
                         Ссылка на мероприятие:{" "}
                         <span className="font-mono">
                           /event/{form.slug || generateSlug(form.title)}
@@ -927,7 +927,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
           </div>
           <ScrollArea className="flex-1">
             <div className="p-4">
-              <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+              <div className="bg-card rounded-lg shadow-sm border border-white/[0.08] overflow-hidden">
                 {/* Mini preview of event page */}
                 <div className="p-6 space-y-4">
                   <Badge variant={form.is_published ? "default" : "secondary"} className="mb-2">
@@ -946,19 +946,19 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
 
                   <div className="flex flex-wrap gap-2 text-xs">
                     {form.date && (
-                      <div className="flex items-center gap-1 bg-green-100 px-3 py-1.5 rounded-full">
-                        <Calendar className="h-3 w-3 text-green-600" />
+                      <div className="flex items-center gap-1 bg-white/[0.05] px-3 py-1.5 rounded-full">
+                        <Calendar className="h-3 w-3 text-primary" />
                         <span>{formatPreviewDate()}</span>
                       </div>
                     )}
                     {form.time && (
-                      <div className="flex items-center gap-1 bg-blue-100 px-3 py-1.5 rounded-full">
-                        <Clock className="h-3 w-3 text-blue-600" />
+                      <div className="flex items-center gap-1 bg-white/[0.05] px-3 py-1.5 rounded-full">
+                        <Clock className="h-3 w-3 text-primary" />
                         <span>{form.time}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-1 bg-purple-100 px-3 py-1.5 rounded-full">
-                      <Wallet className="h-3 w-3 text-purple-600" />
+                    <div className="flex items-center gap-1 bg-white/[0.05] px-3 py-1.5 rounded-full">
+                      <Wallet className="h-3 w-3 text-primary" />
                       <span>{form.price > 0 ? `${form.price} BYN` : "Бесплатно"}</span>
                     </div>
                   </div>
@@ -1023,9 +1023,9 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                               )}
                               <span className="text-sm">{sponsor.name}</span>
                               <span className={`text-xs px-1.5 py-0.5 rounded ${
-                                effectiveTier === 'general_partner' ? 'bg-yellow-100 text-yellow-800' :
-                                effectiveTier === 'partner' ? 'bg-blue-100 text-blue-800' :
-                                'bg-gray-100 text-gray-800'
+                                effectiveTier === 'general_partner' ? 'bg-warning/15 text-warning' :
+                                effectiveTier === 'partner' ? 'bg-primary/15 text-primary' :
+                                'bg-white/[0.06] text-muted-foreground'
                               }`}>
                                 {TIER_LABELS[effectiveTier]}
                               </span>

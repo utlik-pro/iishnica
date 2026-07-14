@@ -300,7 +300,7 @@ export function CompaniesManager() {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
           placeholder="Поиск по названию или индустрии..."
           value={search}
@@ -309,7 +309,7 @@ export function CompaniesManager() {
         />
       </div>
 
-      <div className="border rounded-lg overflow-hidden">
+      <div className="border border-white/[0.08] rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -332,18 +332,18 @@ export function CompaniesManager() {
                         className="w-10 h-10 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
-                        <Building2 className="h-5 w-5 text-gray-400" />
+                      <div className="w-10 h-10 rounded-lg bg-white/[0.03] flex items-center justify-center">
+                        <Building2 className="h-5 w-5 text-muted-foreground" />
                       </div>
                     )}
                     <div>
                       <div className="font-medium flex items-center gap-1">
                         {company.name}
                         {company.is_verified && (
-                          <CheckCircle className="h-4 w-4 text-blue-500" />
+                          <CheckCircle className="h-4 w-4 text-primary" />
                         )}
                       </div>
-                      <div className="text-sm text-gray-500 truncate max-w-[200px]">
+                      <div className="text-sm text-muted-foreground truncate max-w-[200px]">
                         {company.description}
                       </div>
                     </div>
@@ -360,7 +360,7 @@ export function CompaniesManager() {
                       href={company.website_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline flex items-center gap-1"
+                      className="text-primary hover:underline flex items-center gap-1"
                     >
                       <Globe className="h-4 w-4" />
                       Сайт
@@ -379,9 +379,9 @@ export function CompaniesManager() {
                     }
                   >
                     {company.is_verified ? (
-                      <CheckCircle className="h-4 w-4 text-blue-500" />
+                      <CheckCircle className="h-4 w-4 text-primary" />
                     ) : (
-                      <XCircle className="h-4 w-4 text-gray-400" />
+                      <XCircle className="h-4 w-4 text-muted-foreground" />
                     )}
                   </Button>
                 </TableCell>
@@ -474,13 +474,13 @@ export function CompaniesManager() {
               <Building2 className="h-5 w-5" />
               {viewingCompany?.name}
               {viewingCompany?.is_verified && (
-                <CheckCircle className="h-4 w-4 text-blue-500" />
+                <CheckCircle className="h-4 w-4 text-primary" />
               )}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             {viewingCompany?.description && (
-              <p className="text-gray-600">{viewingCompany.description}</p>
+              <p className="text-muted-foreground">{viewingCompany.description}</p>
             )}
             <div className="flex items-center gap-4 text-sm">
               {viewingCompany?.industry && (
@@ -491,7 +491,7 @@ export function CompaniesManager() {
                   href={viewingCompany.website_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
+                  className="text-primary hover:underline"
                 >
                   {viewingCompany.website_url}
                 </a>
@@ -500,7 +500,7 @@ export function CompaniesManager() {
             <div>
               <h4 className="font-medium mb-2">Сотрудники</h4>
               {companyEmployees?.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">Пока никого нет</p>
+                <p className="text-muted-foreground text-center py-4">Пока никого нет</p>
               ) : (
                 <Table>
                   <TableHeader>
@@ -517,7 +517,7 @@ export function CompaniesManager() {
                         <TableCell>
                           {uc.user?.first_name} {uc.user?.last_name}
                           {uc.user?.username && (
-                            <span className="text-gray-500 ml-1">
+                            <span className="text-muted-foreground ml-1">
                               @{uc.user.username}
                             </span>
                           )}
@@ -532,7 +532,7 @@ export function CompaniesManager() {
                             size="sm"
                             onClick={() => removeUserFromCompany.mutate(uc.id)}
                           >
-                            <Trash2 className="h-4 w-4 text-red-500" />
+                            <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
                         </TableCell>
                       </TableRow>

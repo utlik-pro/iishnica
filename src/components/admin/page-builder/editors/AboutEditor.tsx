@@ -107,7 +107,7 @@ const AboutEditor: React.FC<AboutEditorProps> = ({ config, onChange }) => {
 
         <div className="space-y-3">
           {config.cards.map((card) => (
-            <div key={card.id} className="p-3 border rounded-lg bg-gray-50 space-y-2">
+            <div key={card.id} className="p-3 border rounded-lg bg-white/[0.03] space-y-2">
               <div className="flex items-center gap-2">
                 <Select
                   value={card.icon}
@@ -133,7 +133,7 @@ const AboutEditor: React.FC<AboutEditorProps> = ({ config, onChange }) => {
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8 text-red-500"
+                  className="h-8 w-8 text-destructive"
                   onClick={() => removeCard(card.id)}
                 >
                   <Trash2 className="h-4 w-4" />

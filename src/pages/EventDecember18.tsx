@@ -27,15 +27,16 @@ const EventDecember18 = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
       {/* Hero Section */}
       <section className="pt-28 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="absolute inset-0 ambient-lime pointer-events-none" aria-hidden />
+        <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block mb-4 px-4 py-2 bg-purple-100 rounded-full">
-              <span className="text-purple-600 font-semibold text-sm">Вечернее мероприятие</span>
+            <div className="inline-block mb-4 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full">
+              <span className="text-primary font-semibold text-sm">Вечернее мероприятие</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 gradient-text flex items-center justify-center gap-4 flex-wrap">
@@ -56,7 +57,7 @@ const EventDecember18 = () => {
               <Button
                 size="lg"
                 className="rounded-full bg-primary hover:bg-primary/90 px-8 py-6 text-base"
-                onClick={() => window.open('https://t.me/maincomapp_bot', '_blank')}
+                onClick={() => window.open('https://telegram.me/maincomapp_bot', '_blank')}
               >
                 Зарегистрироваться <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -64,21 +65,21 @@ const EventDecember18 = () => {
 
             {/* Info Badges */}
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center bg-green-100/50 px-6 py-3 rounded-full">
-                <CalendarIcon className="w-6 h-6 text-green-500 mr-3" />
+              <div className="flex items-center bg-white/[0.03] border border-white/[0.08] px-6 py-3 rounded-full">
+                <CalendarIcon className="w-6 h-6 text-primary mr-3" />
                 <div className="text-left">
                   <div className="text-xs text-muted-foreground">Дата</div>
                   <span className="text-lg font-medium text-foreground">18 декабря, четверг</span>
                 </div>
               </div>
-              <div className="flex items-center bg-blue-100/50 px-6 py-3 rounded-full">
-                <Clock className="w-6 h-6 text-blue-500 mr-3" />
+              <div className="flex items-center bg-white/[0.03] border border-white/[0.08] px-6 py-3 rounded-full">
+                <Clock className="w-6 h-6 text-primary mr-3" />
                 <div className="text-left">
                   <div className="text-xs text-muted-foreground">Время</div>
                   <span className="text-lg font-medium text-foreground">18:30</span>
                 </div>
-              </div>              <div className="flex items-center bg-purple-100/50 px-6 py-3 rounded-full">
-                <Wallet className="w-6 h-6 text-purple-500 mr-3" />
+              </div>              <div className="flex items-center bg-white/[0.03] border border-white/[0.08] px-6 py-3 rounded-full">
+                <Wallet className="w-6 h-6 text-primary mr-3" />
                 <div className="text-left">
                   <div className="text-xs text-muted-foreground">Стоимость</div>
                   <span className="text-lg font-medium text-foreground">Бесплатно</span>
@@ -89,12 +90,12 @@ const EventDecember18 = () => {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute top-24 left-10 w-24 h-24 bg-purple-200 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
-        <div className="absolute top-40 right-20 w-32 h-32 bg-blue-200 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
+        <div className="absolute top-24 left-10 w-24 h-24 bg-primary/20 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
+        <div className="absolute top-40 right-20 w-32 h-32 bg-primary/10 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
       </section>
 
       {/* About Community Section */}
-      <section id="about" className="py-16 bg-white">
+      <section id="about" className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
@@ -114,10 +115,10 @@ const EventDecember18 = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              <Card className="border border-purple-100 bg-gradient-to-br from-purple-50 to-white">
+              <Card className="border border-white/[0.08] bg-card">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-2xl mr-4">
+                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl mr-4">
                       🎯
                     </div>
                     <h3 className="text-xl font-bold">Наша миссия</h3>
@@ -128,10 +129,10 @@ const EventDecember18 = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border border-blue-100 bg-gradient-to-br from-blue-50 to-white">
+              <Card className="border border-white/[0.08] bg-card">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl mr-4">
+                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl mr-4">
                       🚀
                     </div>
                     <h3 className="text-xl font-bold">Что мы делаем</h3>
@@ -143,7 +144,7 @@ const EventDecember18 = () => {
               </Card>
             </div>
 
-            <Card className="border border-purple-100 bg-gradient-to-r from-purple-50 via-blue-50 to-purple-50">
+            <Card className="border border-white/[0.08] bg-card">
               <CardContent className="p-8">
                 <div className="text-center">
                   <h3 className="text-2xl font-bold mb-4">Присоединяйтесь к нам!</h3>
@@ -151,28 +152,28 @@ const EventDecember18 = () => {
                     Станьте частью растущего комьюнити профессионалов, которые используют ИИ для решения реальных задач
                   </p>
                   <div className="flex flex-wrap justify-center gap-4 mb-6">
-                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full">
+                    <div className="flex items-center gap-2 bg-white/[0.05] px-4 py-2 rounded-full">
                       <span className="text-2xl">💡</span>
                       <span className="font-medium">Практические кейсы</span>
                     </div>
-                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full">
+                    <div className="flex items-center gap-2 bg-white/[0.05] px-4 py-2 rounded-full">
                       <span className="text-2xl">🤝</span>
                       <span className="font-medium">Нетворкинг</span>
                     </div>
-                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full">
+                    <div className="flex items-center gap-2 bg-white/[0.05] px-4 py-2 rounded-full">
                       <span className="text-2xl">📚</span>
                       <span className="font-medium">Обучение</span>
                     </div>
                   </div>
 
-                  <div className="flex justify-center items-center gap-6 pt-4 border-t border-purple-200">
+                  <div className="flex justify-center items-center gap-6 pt-4 border-t border-white/[0.12]">
                     <p className="text-sm font-medium text-muted-foreground">Мы в соцсетях:</p>
                     <div className="flex gap-3">
                       <a
-                        href="https://t.me/maincomby"
+                        href="https://telegram.me/maincomby"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-full bg-white hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center shadow-sm border border-purple-100"
+                        className="w-10 h-10 rounded-full bg-white/[0.05] hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center shadow-sm border border-white/[0.08]"
                         aria-label="Telegram"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -183,7 +184,7 @@ const EventDecember18 = () => {
                         href="https://www.linkedin.com/company/maincomby/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-full bg-white hover:bg-blue-700 hover:text-white transition-colors flex items-center justify-center shadow-sm border border-purple-100"
+                        className="w-10 h-10 rounded-full bg-white/[0.05] hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center shadow-sm border border-white/[0.08]"
                         aria-label="LinkedIn"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -194,7 +195,7 @@ const EventDecember18 = () => {
                         href="https://www.instagram.com/maincomby/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-full bg-white hover:bg-pink-600 hover:text-white transition-colors flex items-center justify-center shadow-sm border border-purple-100"
+                        className="w-10 h-10 rounded-full bg-white/[0.05] hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center shadow-sm border border-white/[0.08]"
                         aria-label="Instagram"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -211,7 +212,7 @@ const EventDecember18 = () => {
       </section>
 
       {/* Speakers & Topics Section */}
-      <section className="py-16 bg-gradient-to-b from-white to-purple-50">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
@@ -224,7 +225,7 @@ const EventDecember18 = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {speakers.map((speaker, index) => (
-              <Card key={index} className="border border-purple-100 bg-white hover:shadow-lg transition-shadow">
+              <Card key={index} className="border border-white/[0.08] bg-white/[0.05] hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     {speaker.image ? (
@@ -234,7 +235,7 @@ const EventDecember18 = () => {
                         className="h-16 w-16 rounded-full object-cover mr-4"
                       />
                     ) : (
-                      <div className="h-16 w-16 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold mr-4">
+                      <div className="h-16 w-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold mr-4">
                         {speaker.avatar}
                       </div>
                     )}
@@ -257,7 +258,7 @@ const EventDecember18 = () => {
       </section>
 
       {/* Program Section */}
-      <section id="program" className="py-16 bg-gradient-to-b from-white to-purple-50">
+      <section id="program" className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
@@ -270,10 +271,10 @@ const EventDecember18 = () => {
 
           <div className="max-w-4xl mx-auto space-y-6">
             {/* Networking 1 */}
-            <Card className="border border-purple-100 bg-white">
+            <Card className="border border-white/[0.08] bg-card">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 bg-purple-100 text-purple-600 font-bold px-4 py-2 rounded-lg text-sm">
+                  <div className="flex-shrink-0 bg-primary/10 text-primary font-bold px-4 py-2 rounded-lg text-sm">
                     18:30-19:00
                   </div>
                   <div className="flex-1">
@@ -285,10 +286,10 @@ const EventDecember18 = () => {
             </Card>
 
             {/* Oleg Zelinsky */}
-            <Card className="border border-purple-100 bg-white">
+            <Card className="border border-white/[0.08] bg-card">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 bg-blue-100 text-blue-600 font-bold px-4 py-2 rounded-lg text-sm">
+                  <div className="flex-shrink-0 bg-primary/10 text-primary font-bold px-4 py-2 rounded-lg text-sm">
                     19:00-19:40
                   </div>
                   <div className="flex-1">
@@ -300,7 +301,7 @@ const EventDecember18 = () => {
                           className="h-12 w-12 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
+                        <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
                           ОЗ
                         </div>
                       )}
@@ -327,10 +328,10 @@ const EventDecember18 = () => {
             </Card>
 
             {/* Coffee Break */}
-            <Card className="border border-purple-100 bg-white">
+            <Card className="border border-white/[0.08] bg-card">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 bg-orange-100 text-orange-600 font-bold px-4 py-2 rounded-lg text-sm">
+                  <div className="flex-shrink-0 bg-warning/15 text-warning font-bold px-4 py-2 rounded-lg text-sm">
                     19:40-19:50
                   </div>
                   <div className="flex-1">
@@ -342,10 +343,10 @@ const EventDecember18 = () => {
             </Card>
 
             {/* Dima Utlik */}
-            <Card className="border border-purple-100 bg-white">
+            <Card className="border border-white/[0.08] bg-card">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 bg-blue-100 text-blue-600 font-bold px-4 py-2 rounded-lg text-sm">
+                  <div className="flex-shrink-0 bg-primary/10 text-primary font-bold px-4 py-2 rounded-lg text-sm">
                     19:50-20:20
                   </div>
                   <div className="flex-1">
@@ -357,7 +358,7 @@ const EventDecember18 = () => {
                           className="h-12 w-12 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
+                        <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
                           АШ
                         </div>
                       )}
@@ -376,10 +377,10 @@ const EventDecember18 = () => {
             </Card>
 
             {/* Networking 2 */}
-            <Card className="border border-purple-100 bg-white">
+            <Card className="border border-white/[0.08] bg-card">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 bg-purple-100 text-purple-600 font-bold px-4 py-2 rounded-lg text-sm">
+                  <div className="flex-shrink-0 bg-primary/10 text-primary font-bold px-4 py-2 rounded-lg text-sm">
                     20:20-21:00
                   </div>
                   <div className="flex-1">
@@ -397,7 +398,7 @@ const EventDecember18 = () => {
       <TeamSection />
 
       {/* Location Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">

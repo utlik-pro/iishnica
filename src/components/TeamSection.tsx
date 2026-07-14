@@ -55,7 +55,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ config }) => {
   };
   if (loading) {
     return (
-      <section id="team" className="py-12 md:py-16 bg-gray-50">
+      <section id="team" className="py-12 md:py-20 bg-background">
         <div className="container mx-auto px-4 text-center">
           <div className="animate-pulse text-sm md:text-base">Загрузка команды...</div>
         </div>
@@ -68,7 +68,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ config }) => {
   }
 
   return (
-    <section id="team" className="py-12 md:py-16 bg-gray-50">
+    <section id="team" className="py-12 md:py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
@@ -81,10 +81,10 @@ const TeamSection: React.FC<TeamSectionProps> = ({ config }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto">
           {teamMembers.map((member) => (
-            <Card key={member.id} className="border border-purple-100 bg-white">
-              <CardContent className="p-4 md:p-6">
+            <Card key={member.id} className="rounded-2xl border-white/[0.08] bg-card hover:border-white/[0.16] transition-colors">
+              <CardContent className="p-5 md:p-6">
                 <div className="flex items-start space-x-3 md:space-x-4">
-                  <Avatar className="h-12 w-12 md:h-16 md:w-16 border-2 border-primary/20 flex-shrink-0">
+                  <Avatar className="h-12 w-12 md:h-16 md:w-16 border-2 border-primary/30 flex-shrink-0">
                     {member.photo_url && (
                       <AvatarImage src={member.photo_url} alt={member.name} />
                     )}

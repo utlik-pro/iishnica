@@ -101,7 +101,7 @@ const NavbarEditor: React.FC<NavbarEditorProps> = ({ config, onChange }) => {
 
         <div className="space-y-3">
           {config.menuItems.map((item) => (
-            <div key={item.id} className="flex items-start gap-2 p-3 border rounded-lg bg-gray-50">
+            <div key={item.id} className="flex items-start gap-2 p-3 border rounded-lg bg-white/[0.03]">
               <GripVertical className="h-4 w-4 mt-2 text-muted-foreground cursor-grab" />
 
               <div className="flex-1 space-y-2">
@@ -138,7 +138,7 @@ const NavbarEditor: React.FC<NavbarEditorProps> = ({ config, onChange }) => {
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-8 w-8 text-red-500 hover:text-red-700"
+                className="h-8 w-8 text-destructive hover:text-destructive/80"
                 onClick={() => removeMenuItem(item.id)}
               >
                 <Trash2 className="h-4 w-4" />
@@ -178,7 +178,7 @@ const NavbarEditor: React.FC<NavbarEditorProps> = ({ config, onChange }) => {
                 id="cta-url"
                 value={config.ctaButton.url}
                 onChange={(e) => updateCtaButton('url', e.target.value)}
-                placeholder="https://t.me/maincomapp_bot"
+                placeholder="https://telegram.me/maincomapp_bot"
               />
             </div>
           </>

@@ -96,13 +96,13 @@ const BlogPost: React.FC = () => {
   const getCategoryColor = (category: PostCategory) => {
     switch (category) {
       case "blog":
-        return "bg-blue-100 text-blue-800";
+        return "bg-primary/10 text-primary";
       case "news":
-        return "bg-green-100 text-green-800";
+        return "bg-success/15 text-success";
       case "article":
-        return "bg-purple-100 text-purple-800";
+        return "bg-warning/15 text-warning";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-white/[0.05] text-muted-foreground";
     }
   };
 
@@ -210,7 +210,7 @@ const BlogPost: React.FC = () => {
       <div className="min-h-screen flex flex-col">
         <Navbar />
 
-        <main className="flex-1">
+        <main className={`flex-1 ${!post.featured_image_url ? 'pt-20 md:pt-24' : ''}`}>
           {/* Hero with featured image */}
           {post.featured_image_url && (
             <div className="w-full h-64 md:h-96 overflow-hidden">
@@ -254,7 +254,7 @@ const BlogPost: React.FC = () => {
               <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
 
               {/* Meta info */}
-              <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8 pb-8 border-b">
+              <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8 pb-8 border-b border-white/[0.08]">
                 {post.author && (
                   <div className="flex items-center gap-2">
                     {post.author_url ? (
@@ -282,12 +282,12 @@ const BlogPost: React.FC = () => {
 
               {/* Content */}
               <div
-                className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary prose-img:rounded-lg"
+                className="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-headings:text-foreground prose-a:text-primary prose-img:rounded-lg"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
 
               {/* Share buttons */}
-              <div className="mt-12 pt-8 border-t">
+              <div className="mt-12 pt-8 border-t border-white/[0.08]">
                 <ShareButtons
                   url={postUrl}
                   title={post.title}
@@ -296,7 +296,7 @@ const BlogPost: React.FC = () => {
               </div>
 
               {/* Back to blog */}
-              <div className="mt-8 pt-8 border-t">
+              <div className="mt-8 pt-8 border-t border-white/[0.08]">
                 <Link to="/blog">
                   <Button variant="outline">
                     &larr; Вернуться к блогу

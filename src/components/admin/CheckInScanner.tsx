@@ -370,7 +370,7 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
                   />
                   {isScanning && (
                     <div className="absolute top-2 right-2">
-                      <Badge variant="default" className="bg-green-500">
+                      <Badge variant="default" className="bg-success">
                         <div className="flex items-center gap-1">
                           <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                           Сканирование...
@@ -381,12 +381,12 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
                 </div>
 
                 {/* Instructions */}
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="p-4 bg-primary/10 border border-primary/20 rounded-lg">
                   <div className="flex items-start gap-3">
-                    <Camera className="h-5 w-5 text-blue-600 mt-0.5" />
+                    <Camera className="h-5 w-5 text-primary mt-0.5" />
                     <div className="text-sm">
-                      <p className="font-medium text-blue-900">Инструкция:</p>
-                      <ul className="text-blue-700 mt-2 space-y-1 list-disc list-inside">
+                      <p className="font-medium text-foreground">Инструкция:</p>
+                      <ul className="text-muted-foreground mt-2 space-y-1 list-disc list-inside">
                         <li>Наведите камеру на QR-код билета</li>
                         <li>Код автоматически распознается</li>
                         <li>После сканирования откроется подтверждение чекина</li>
@@ -403,7 +403,7 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
                       <Input
                         value={ticketCode}
                         readOnly
-                        className="font-mono bg-gray-50"
+                        className="font-mono bg-muted"
                       />
                     </div>
                     <div className="flex items-end">
@@ -425,18 +425,18 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
 
       {/* Информация о билете */}
       {registration && !confirmDialogOpen && (
-        <Card className={registration.checked_in_at ? "border-green-200 bg-green-50" : "border-yellow-200 bg-yellow-50"}>
+        <Card className={registration.checked_in_at ? "border-success/30 bg-success/10" : "border-warning/30 bg-warning/10"}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {registration.checked_in_at ? (
                 <>
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                  <span className="text-green-900">Билет уже отмечен</span>
+                  <CheckCircle className="h-5 w-5 text-success" />
+                  <span className="text-success">Билет уже отмечен</span>
                 </>
               ) : (
                 <>
-                  <Clock className="h-5 w-5 text-yellow-600" />
-                  <span className="text-yellow-900">Информация о билете</span>
+                  <Clock className="h-5 w-5 text-warning" />
+                  <span className="text-warning">Информация о билете</span>
                 </>
               )}
             </CardTitle>
@@ -552,8 +552,8 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
               {/* Success Icon Animation */}
               <div className="flex items-center justify-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-75" />
-                  <div className="relative bg-green-500 rounded-full p-4">
+                  <div className="absolute inset-0 bg-success/30 rounded-full animate-ping opacity-75" />
+                  <div className="relative bg-success rounded-full p-4">
                     <CheckCircle className="h-12 w-12 text-white" />
                   </div>
                 </div>
@@ -561,7 +561,7 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
 
               {/* Participant Info */}
               <div className="text-center space-y-2">
-                <p className="text-3xl font-bold text-green-700">
+                <p className="text-3xl font-bold text-success">
                   {registration.bot_users?.first_name || registration.bot_users?.username || 'Участник'}
                   {registration.bot_users?.last_name && ` ${registration.bot_users.last_name}`}
                 </p>
@@ -576,12 +576,12 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
               </div>
 
               {/* Success Message */}
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="bg-success/10 border border-success/20 rounded-lg p-4">
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                  <div className="text-sm text-green-900">
+                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
+                  <div className="text-sm text-foreground">
                     <p className="font-semibold">Участник успешно зарегистрирован</p>
-                    <p className="text-green-700 mt-1">
+                    <p className="text-muted-foreground mt-1">
                       Время чекина: {formatDate(new Date().toISOString())}
                     </p>
                   </div>
@@ -593,7 +593,7 @@ export function CheckInScanner({ userRole, currentUserId, onCheckInComplete }: C
           <DialogFooter className="sm:justify-center">
             <Button
               onClick={closeSuccessDialog}
-              className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
+              className="w-full sm:w-auto bg-success text-white hover:bg-success/90"
               size="lg"
             >
               Готово

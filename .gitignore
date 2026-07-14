@@ -26,3 +26,7 @@ dist-ssr
 
 # Auto Claude data directory
 .auto-claude/
+
+# Claude Code
+.claude/
+.claude_settings.json

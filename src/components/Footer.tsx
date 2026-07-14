@@ -30,14 +30,14 @@ const Footer: React.FC<FooterProps> = ({ config }) => {
   const copyrightText = cfg.copyright.replace('{year}', currentYear.toString());
 
   return (
-    <footer className="bg-gray-50 border-t py-8 md:py-12">
+    <footer className="bg-[#0d0d0d] border-t border-white/[0.06] py-8 md:py-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-0">
           {/* Logo and tagline */}
           <div className="mb-4 md:mb-0">
             <div className="flex items-center space-x-2">
-              <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
-                <span className="text-white font-bold text-xs md:text-sm">ИИ</span>
+              <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary flex items-center justify-center shadow-lime-sm">
+                <span className="text-primary-foreground font-bold text-xs md:text-sm">ИИ</span>
               </div>
               <span className="font-heading font-bold text-lg md:text-xl">{cfg.logo.title}</span>
             </div>
@@ -79,7 +79,7 @@ const Footer: React.FC<FooterProps> = ({ config }) => {
         </div>
 
         {/* Bottom section */}
-        <div className="border-t mt-8 md:mt-12 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
+        <div className="border-t border-white/[0.06] mt-8 md:mt-12 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
           <p className="text-xs md:text-sm text-muted-foreground text-center md:text-left">
             {copyrightText}
           </p>

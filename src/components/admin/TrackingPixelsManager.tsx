@@ -212,7 +212,7 @@ export function TrackingPixelsManager() {
               {pixels.map((pixel) => (
                 <div
                   key={pixel.id}
-                  className="flex items-center justify-between p-4 border rounded-lg bg-white"
+                  className="flex items-center justify-between p-4 border border-white/[0.08] rounded-lg bg-white/[0.03]"
                 >
                   <div className="flex items-center gap-3">
                     <button
@@ -221,9 +221,9 @@ export function TrackingPixelsManager() {
                       title={pixel.is_active ? "Выключить" : "Включить"}
                     >
                       {pixel.is_active ? (
-                        <Eye className="h-5 w-5 text-green-600" />
+                        <Eye className="h-5 w-5 text-success" />
                       ) : (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
+                        <EyeOff className="h-5 w-5 text-muted-foreground" />
                       )}
                     </button>
                     <div>

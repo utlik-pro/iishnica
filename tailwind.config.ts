@@ -21,7 +21,7 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
-				heading: ['Montserrat', 'sans-serif'],
+				heading: ['"Inter Tight"', 'Inter', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -68,15 +68,33 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				ai: {
-					light: '#9b87f5',
-					DEFAULT: '#7E69AB',
-					dark: '#6E59A5',
-				}
+					light: '#d4ff4d',
+					DEFAULT: '#c8ff00',
+					dark: '#a8d900',
+				},
+				lime: {
+					light: '#d4ff4d',
+					DEFAULT: '#c8ff00',
+					dark: '#a8d900',
+				},
+				success: 'hsl(var(--success))',
+				warning: 'hsl(var(--warning))',
+				danger: 'hsl(var(--danger))'
+			},
+			boxShadow: {
+				'lime': '0 8px 40px -8px hsl(var(--primary) / 0.45)',
+				'lime-sm': '0 6px 24px -10px hsl(var(--primary) / 0.5)',
+				'card': '0 4px 24px -12px rgba(0, 0, 0, 0.6)'
+			},
+			backgroundImage: {
+				'lime-gradient': 'linear-gradient(90deg, #d4ff4d 0%, #c8ff00 55%, #a8d900 100%)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				xl: 'calc(var(--radius) + 4px)',
+				'2xl': 'calc(var(--radius) + 8px)'
 			},
 			keyframes: {
 				'accordion-down': {
@@ -94,13 +112,23 @@ export default {
 				'float': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-10px)' }
+				},
+				'glow-pulse': {
+					'0%, 100%': { opacity: '0.5' },
+					'50%': { opacity: '1' }
+				},
+				'marquee': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-50%)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'pulse-slow': 'pulse-slow 3s infinite',
-				'float': 'float 6s ease-in-out infinite'
+				'float': 'float 6s ease-in-out infinite',
+				'glow-pulse': 'glow-pulse 4s ease-in-out infinite',
+				'marquee': 'marquee 30s linear infinite'
 			}
 		}
 	},

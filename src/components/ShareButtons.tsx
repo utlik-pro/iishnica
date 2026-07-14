@@ -17,7 +17,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({ url, title, description }) 
   const encodedDescription = encodeURIComponent(description || "");
 
   const shareLinks = {
-    telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+    telegram: `https://telegram.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
     whatsapp: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
     vk: `https://vk.com/share.php?url=${encodedUrl}&title=${encodedTitle}`,
     twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,

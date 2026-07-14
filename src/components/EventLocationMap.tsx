@@ -52,7 +52,7 @@ const EventLocationMap = ({
   const widgetUrl = yandexMapUrl ? getWidgetUrl(yandexMapUrl) : defaultWidgetUrl;
 
   return (
-    <div className="w-full h-[450px] rounded-lg overflow-hidden shadow-sm border border-purple-100">
+    <div className="w-full h-[450px] rounded-2xl overflow-hidden border border-white/[0.08]">
       <iframe
         src={widgetUrl}
         width="100%"

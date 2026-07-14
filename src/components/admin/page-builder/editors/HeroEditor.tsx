@@ -114,7 +114,7 @@ const HeroEditor: React.FC<HeroEditorProps> = ({ config, onChange }) => {
 
         <div className="space-y-3">
           {config.buttons.map((button) => (
-            <div key={button.id} className="p-3 border rounded-lg bg-gray-50 space-y-2">
+            <div key={button.id} className="p-3 border rounded-lg bg-white/[0.03] space-y-2">
               <div className="flex items-center gap-2">
                 <Input
                   value={button.text}
@@ -125,7 +125,7 @@ const HeroEditor: React.FC<HeroEditorProps> = ({ config, onChange }) => {
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8 text-red-500"
+                  className="h-8 w-8 text-destructive"
                   onClick={() => removeButton(button.id)}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -172,7 +172,7 @@ const HeroEditor: React.FC<HeroEditorProps> = ({ config, onChange }) => {
 
         <div className="space-y-3">
           {config.badges.map((badge) => (
-            <div key={badge.id} className="flex items-center gap-2 p-3 border rounded-lg bg-gray-50">
+            <div key={badge.id} className="flex items-center gap-2 p-3 border rounded-lg bg-white/[0.03]">
               <Select
                 value={badge.icon}
                 onValueChange={(value) => updateBadge(badge.id, 'icon', value)}
@@ -211,7 +211,7 @@ const HeroEditor: React.FC<HeroEditorProps> = ({ config, onChange }) => {
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-8 w-8 text-red-500"
+                className="h-8 w-8 text-destructive"
                 onClick={() => removeBadge(badge.id)}
               >
                 <Trash2 className="h-4 w-4" />

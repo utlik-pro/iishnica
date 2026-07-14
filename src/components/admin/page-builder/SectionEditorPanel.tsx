@@ -36,7 +36,7 @@ const SectionEditorPanel: React.FC<SectionEditorPanelProps> = ({
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b bg-gray-50">
+      <div className="p-4 border-b bg-white/[0.03]">
         <h3 className="font-semibold">
           {SECTION_LABELS[section.section_type]}
         </h3>

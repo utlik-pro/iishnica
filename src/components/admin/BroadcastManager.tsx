@@ -189,21 +189,21 @@ const BroadcastManager: React.FC = () => {
     switch (status) {
       case "pending":
         return (
-          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-300">
+          <Badge variant="outline" className="bg-warning/15 text-warning border-warning/30">
             <Clock className="w-3 h-3 mr-1" />
             Ожидает
           </Badge>
         );
       case "in_progress":
         return (
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+          <Badge variant="outline" className="bg-primary/15 text-primary border-primary/30">
             <Loader2 className="w-3 h-3 mr-1 animate-spin" />
             Отправляется
           </Badge>
         );
       case "completed":
         return (
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-300">
+          <Badge variant="outline" className="bg-success/15 text-success border-success/30">
             <CheckCircle className="w-3 h-3 mr-1" />
             Завершено
           </Badge>
@@ -303,11 +303,11 @@ const BroadcastManager: React.FC = () => {
 
                   {broadcast.status === "completed" && (
                     <div className="flex gap-3">
-                      <span className="text-green-600">
+                      <span className="text-success">
                         Отправлено: {broadcast.sent_count}
                       </span>
                       {broadcast.failed_count > 0 && (
-                        <span className="text-red-600">
+                        <span className="text-destructive">
                           Ошибок: {broadcast.failed_count}
                         </span>
                       )}
@@ -322,7 +322,7 @@ const BroadcastManager: React.FC = () => {
                 </div>
 
                 {broadcast.error_message && (
-                  <p className="text-sm text-red-600">{broadcast.error_message}</p>
+                  <p className="text-sm text-destructive">{broadcast.error_message}</p>
                 )}
 
                 {broadcast.status === "pending" && (

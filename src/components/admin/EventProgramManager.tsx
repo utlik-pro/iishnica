@@ -330,15 +330,15 @@ const EventProgramManager: React.FC = () => {
 
   const getTypeColor = (type: string) => {
     const colors: Record<string, string> = {
-      registration: "bg-blue-100 text-blue-800",
-      talk: "bg-purple-100 text-purple-800",
-      workshop: "bg-green-100 text-green-800",
-      networking: "bg-yellow-100 text-yellow-800",
-      break: "bg-gray-100 text-gray-800",
-      lunch: "bg-orange-100 text-orange-800",
-      coffee: "bg-amber-100 text-amber-800",
-      qa: "bg-pink-100 text-pink-800",
-      other: "bg-slate-100 text-slate-800",
+      registration: "bg-primary/15 text-primary",
+      talk: "bg-primary/15 text-primary",
+      workshop: "bg-success/15 text-success",
+      networking: "bg-warning/15 text-warning",
+      break: "bg-white/[0.06] text-muted-foreground",
+      lunch: "bg-warning/15 text-warning",
+      coffee: "bg-warning/15 text-warning",
+      qa: "bg-primary/15 text-primary",
+      other: "bg-white/[0.06] text-muted-foreground",
     };
     return colors[type] || colors.other;
   };

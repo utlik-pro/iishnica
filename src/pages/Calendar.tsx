@@ -113,37 +113,37 @@ const Calendar: React.FC = () => {
   const today = new Date();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
 
       <main className="flex-grow pt-24 pb-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
               Календарь событий
             </h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Выберите интересующее вас мероприятие и зарегистрируйтесь
             </p>
           </div>
 
           <div className="max-w-5xl mx-auto">
             {/* Calendar Header */}
-            <div className="flex items-center justify-between mb-6 bg-white/10 backdrop-blur-sm rounded-xl p-4">
+            <div className="flex items-center justify-between mb-6 surface-card rounded-xl p-4">
               <Button
                 variant="ghost"
                 onClick={prevMonth}
-                className="text-white hover:bg-white/20"
+                className="text-foreground hover:bg-white/[0.05]"
               >
                 <ChevronLeft className="h-5 w-5" />
               </Button>
-              <h2 className="text-2xl font-bold text-white">
+              <h2 className="text-2xl font-bold text-foreground">
                 {MONTHS_RU[currentDate.getMonth()]} {currentDate.getFullYear()}
               </h2>
               <Button
                 variant="ghost"
                 onClick={nextMonth}
-                className="text-white hover:bg-white/20"
+                className="text-foreground hover:bg-white/[0.05]"
               >
                 <ChevronRight className="h-5 w-5" />
               </Button>
@@ -151,18 +151,18 @@ const Calendar: React.FC = () => {
 
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
             ) : (
               <>
                 {/* Calendar Grid */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
+                <div className="surface-card rounded-xl overflow-hidden">
                   {/* Weekday Headers */}
-                  <div className="grid grid-cols-7 bg-white/5">
+                  <div className="grid grid-cols-7 bg-white/[0.03]">
                     {WEEKDAYS_RU.map((day) => (
                       <div
                         key={day}
-                        className="p-3 text-center text-sm font-medium text-gray-300 border-b border-white/10"
+                        className="p-3 text-center text-sm font-medium text-muted-foreground border-b border-white/[0.08]"
                       >
                         {day}
                       </div>
@@ -184,17 +184,17 @@ const Calendar: React.FC = () => {
                       return (
                         <div
                           key={i}
-                          className={`min-h-[100px] p-2 border-b border-r border-white/10 ${
-                            !isValidDay ? "bg-white/5" : ""
-                          } ${isToday ? "bg-purple-500/20" : ""}`}
+                          className={`min-h-[100px] p-2 border-b border-r border-white/[0.08] ${
+                            !isValidDay ? "bg-white/[0.02]" : ""
+                          } ${isToday ? "bg-primary/10" : ""}`}
                         >
                           {isValidDay && (
                             <>
                               <span
                                 className={`text-sm ${
                                   isToday
-                                    ? "text-purple-400 font-bold"
-                                    : "text-gray-400"
+                                    ? "text-primary font-bold"
+                                    : "text-muted-foreground"
                                 }`}
                               >
                                 {dayNumber}
@@ -204,7 +204,7 @@ const Calendar: React.FC = () => {
                                   <button
                                     key={event.id}
                                     onClick={() => setSelectedEvent(event)}
-                                    className="w-full text-left p-1 text-xs bg-purple-600 hover:bg-purple-500 text-white rounded truncate transition-colors"
+                                    className="w-full text-left p-1 text-xs bg-primary hover:bg-lime-dark text-primary-foreground rounded truncate transition-colors"
                                   >
                                     {formatTime(event.date)} {event.title}
                                   </button>
@@ -220,11 +220,11 @@ const Calendar: React.FC = () => {
 
                 {/* Upcoming Events List */}
                 <div className="mt-12">
-                  <h3 className="text-2xl font-bold text-white mb-6">
+                  <h3 className="text-2xl font-bold text-foreground mb-6">
                     Ближайшие события
                   </h3>
                   {events.filter((e) => new Date(e.date) >= today).length === 0 ? (
-                    <p className="text-gray-400 text-center py-8">
+                    <p className="text-muted-foreground text-center py-8">
                       Нет запланированных событий
                     </p>
                   ) : (
@@ -235,14 +235,14 @@ const Calendar: React.FC = () => {
                         .map((event) => (
                           <Card
                             key={event.id}
-                            className="bg-white/10 border-white/20 hover:bg-white/15 transition-colors cursor-pointer"
+                            className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.05] hover:border-primary/40 transition-colors cursor-pointer"
                             onClick={() => setSelectedEvent(event)}
                           >
                             <CardContent className="p-4">
-                              <h4 className="font-semibold text-white mb-2 line-clamp-2">
+                              <h4 className="font-semibold text-foreground mb-2 line-clamp-2">
                                 {event.title}
                               </h4>
-                              <div className="space-y-1 text-sm text-gray-300">
+                              <div className="space-y-1 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-2">
                                   <Clock className="h-4 w-4" />
                                   {formatFullDate(event.date)}
@@ -273,19 +273,19 @@ const Calendar: React.FC = () => {
           onClick={() => setSelectedEvent(null)}
         >
           <div
-            className="bg-gray-800 rounded-xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto"
+            className="bg-card border border-white/[0.08] rounded-xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               {selectedEvent.title}
             </h2>
 
-            <div className="space-y-4 text-gray-300">
+            <div className="space-y-4 text-muted-foreground">
               <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 text-purple-400" />
+                <Clock className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="font-medium">{formatFullDate(selectedEvent.date)}</p>
-                  <p className="text-sm text-gray-400">
+                  <p className="font-medium text-foreground">{formatFullDate(selectedEvent.date)}</p>
+                  <p className="text-sm text-muted-foreground">
                     Начало в {formatTime(selectedEvent.date)}, продолжительность{" "}
                     {selectedEvent.duration_minutes} мин
                   </p>
@@ -294,11 +294,11 @@ const Calendar: React.FC = () => {
 
               {selectedEvent.location_name && (
                 <div className="flex items-center gap-3">
-                  <MapPin className="h-5 w-5 text-purple-400" />
+                  <MapPin className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="font-medium">{selectedEvent.location_name}</p>
+                    <p className="font-medium text-foreground">{selectedEvent.location_name}</p>
                     {selectedEvent.location_address && (
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {selectedEvent.location_address}
                       </p>
                     )}
@@ -313,7 +313,7 @@ const Calendar: React.FC = () => {
               )}
 
               <div className="flex items-center gap-3">
-                <Users className="h-5 w-5 text-purple-400" />
+                <Users className="h-5 w-5 text-primary" />
                 <p>
                   Стоимость:{" "}
                   <span className="font-medium">
@@ -334,15 +334,15 @@ const Calendar: React.FC = () => {
                 Закрыть
               </Button>
               <Button
-                className="flex-1 bg-purple-600 hover:bg-purple-700"
+                className="flex-1 bg-white/[0.05] text-foreground border border-white/[0.1] hover:bg-white/[0.08]"
                 onClick={() => navigate(`/event/${selectedEvent.id}`)}
               >
                 Подробнее
               </Button>
               <Button
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  className="flex-1 bg-primary text-primary-foreground hover:bg-lime-dark"
                   onClick={() =>
-                    window.open(`https://t.me/maincomapp_bot?startapp=event_${selectedEvent.id}`, "_blank")
+                    window.open(`https://telegram.me/maincomapp_bot?startapp=event_${selectedEvent.id}`, "_blank")
                   }
                 >
                   Регистрация

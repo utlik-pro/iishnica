@@ -51,10 +51,10 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ config }) => {
   const regularSponsors = sponsors.filter(s => s.tier !== 'general_partner');
 
   return (
-    <section className="py-8 md:py-12 bg-white">
+    <section className="py-10 md:py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-6 md:mb-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4 tracking-tight">
             {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
         </div>
@@ -64,7 +64,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ config }) => {
             <p className="text-center text-sm text-muted-foreground mb-4">
               {generalPartners.length === 1 ? "Генеральный партнёр" : "Генеральные партнёры"}
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
               {generalPartners.map((sponsor) => (
                 <a
                   key={sponsor.id}
@@ -74,13 +74,15 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ config }) => {
                   className="block"
                 >
                   {sponsor.logo_url ? (
-                    <img
-                      src={sponsor.logo_url}
-                      alt={sponsor.name}
-                      className="max-h-20 md:max-h-32 max-w-full object-contain"
-                    />
+                    <div className="bg-white rounded-2xl px-6 py-4 md:px-8 md:py-5 flex items-center justify-center border border-white/[0.08]">
+                      <img
+                        src={sponsor.logo_url}
+                        alt={sponsor.name}
+                        className="max-h-16 md:max-h-24 max-w-full object-contain"
+                      />
+                    </div>
                   ) : (
-                    <span className="font-semibold text-lg">{sponsor.name}</span>
+                    <span className="font-semibold text-lg text-foreground">{sponsor.name}</span>
                   )}
                 </a>
               ))}
@@ -98,8 +100,8 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ config }) => {
           >
             <CarouselContent className="py-2 md:py-4">
               {regularSponsors.map((sponsor) => (
-                <CarouselItem key={sponsor.id} className="basis-1/2 sm:basis-1/3 lg:basis-1/4">
-                  <div className="h-24 md:h-32 p-3 md:p-4 flex flex-col items-center justify-center text-center rounded-lg border border-gray-100 hover:shadow-md transition duration-300">
+                <CarouselItem key={sponsor.id} className="basis-1/2 sm:basis-1/3 lg:basis-1/4 pl-2 md:pl-4">
+                  <div className="h-24 md:h-32 p-3 md:p-4 flex flex-col items-center justify-center text-center rounded-2xl border border-white/[0.08] bg-white hover:border-primary/40 transition duration-300">
                     {sponsor.logo_url ? (
                       <a
                         href={sponsor.website_url || "#"}
@@ -118,7 +120,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ config }) => {
                         href={sponsor.website_url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium text-sm md:text-base hover:underline"
+                        className="font-medium text-sm md:text-base text-neutral-900 hover:underline"
                       >
                         {sponsor.name}
                       </a>

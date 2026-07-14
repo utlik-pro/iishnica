@@ -254,16 +254,16 @@ const SpeakersManager: React.FC = () => {
                     <p className="text-sm font-medium">Статус:</p>
                     <div className="flex gap-1 flex-wrap justify-end">
                       {speaker.is_team_member && (
-                        <span className="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
+                        <span className="px-2 py-1 text-xs rounded bg-primary/15 text-primary">
                           Команда
                         </span>
                       )}
                       {speaker.is_author && (
-                        <span className="px-2 py-1 text-xs rounded bg-purple-100 text-purple-800">
+                        <span className="px-2 py-1 text-xs rounded bg-secondary text-secondary-foreground">
                           Автор
                         </span>
                       )}
-                      <span className={`px-2 py-1 text-xs rounded ${speaker.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                      <span className={`px-2 py-1 text-xs rounded ${speaker.is_active ? "bg-success/15 text-success" : "bg-white/[0.06] text-muted-foreground"}`}>
                         {speaker.is_active ? "Активный" : "Неактивный"}
                       </span>
                     </div>
@@ -348,7 +348,7 @@ const SpeakersManager: React.FC = () => {
                 name="social_url"
                 value={form.social_url}
                 onChange={handleChange}
-                placeholder="https://t.me/username"
+                placeholder="https://telegram.me/username"
               />
             </div>
 

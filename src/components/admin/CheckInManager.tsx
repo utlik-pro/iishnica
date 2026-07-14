@@ -215,14 +215,14 @@ export function CheckInManager() {
   if (!userRole) {
     return (
       <div className="p-8">
-        <Card className="border-yellow-200 bg-yellow-50">
+        <Card className="border-warning/30 bg-warning/10">
           <CardHeader>
-            <CardTitle className="text-yellow-900">Доступ ограничен</CardTitle>
-            <CardDescription className="text-yellow-700">
+            <CardTitle className="text-warning">Доступ ограничен</CardTitle>
+            <CardDescription className="text-warning/80">
               У вас нет прав для выполнения чекина участников
             </CardDescription>
           </CardHeader>
-          <CardContent className="text-yellow-800">
+          <CardContent className="text-foreground">
             <p>Чтобы получить доступ, обратитесь к администратору системы.</p>
             <p className="mt-2 text-sm">
               Необходимая роль: <Badge variant="outline">admin</Badge> или <Badge variant="outline">volunteer</Badge>
@@ -261,7 +261,7 @@ export function CheckInManager() {
             <UserCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.checked_in}</div>
+            <div className="text-2xl font-bold text-success">{stats.checked_in}</div>
             <p className="text-xs text-muted-foreground">
               {stats.total > 0 ? Math.round((stats.checked_in / stats.total) * 100) : 0}% от общего числа
             </p>
@@ -274,7 +274,7 @@ export function CheckInManager() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{stats.pending}</div>
+            <div className="text-2xl font-bold text-warning">{stats.pending}</div>
             <p className="text-xs text-muted-foreground">Еще не отмечены</p>
           </CardContent>
         </Card>
@@ -285,7 +285,7 @@ export function CheckInManager() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.today}</div>
+            <div className="text-2xl font-bold text-primary">{stats.today}</div>
             <p className="text-xs text-muted-foreground">Отмечено за сегодня</p>
           </CardContent>
         </Card>
@@ -332,7 +332,7 @@ export function CheckInManager() {
               Пока нет чекинов
             </div>
           ) : (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border border-white/[0.08] rounded-lg overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -353,7 +353,7 @@ export function CheckInManager() {
                         {checkIn.bot_users?.last_name && ` ${checkIn.bot_users.last_name}`}
                       </TableCell>
                       <TableCell>
-                        <code className="bg-gray-100 px-2 py-1 rounded text-xs font-mono">
+                        <code className="bg-secondary px-2 py-1 rounded text-xs font-mono">
                           {checkIn.ticket_code}
                         </code>
                       </TableCell>

@@ -210,7 +210,7 @@ const SponsorsManager: React.FC = () => {
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 {sponsor.logo_url && (
-                  <div className="h-24 flex items-center justify-center border rounded p-2 bg-white">
+                  <div className="h-24 flex items-center justify-center border border-white/[0.08] rounded p-2 bg-white/[0.03]">
                     <img 
                       src={sponsor.logo_url} 
                       alt={`${sponsor.name} logo`} 
@@ -223,16 +223,16 @@ const SponsorsManager: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium">Тип:</p>
                     <span className={`px-2 py-1 text-xs rounded ${
-                      sponsor.tier === 'general_partner' ? 'bg-yellow-100 text-yellow-800' :
-                      sponsor.tier === 'partner' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
+                      sponsor.tier === 'general_partner' ? 'bg-warning/15 text-warning' :
+                      sponsor.tier === 'partner' ? 'bg-primary/15 text-primary' :
+                      'bg-white/[0.06] text-muted-foreground'
                     }`}>
                       {TIER_LABELS[sponsor.tier] || 'Спонсор'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium">Статус:</p>
-                    <span className={`px-2 py-1 text-xs rounded ${sponsor.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}>
+                    <span className={`px-2 py-1 text-xs rounded ${sponsor.is_active ? "bg-success/15 text-success" : "bg-white/[0.06] text-muted-foreground"}`}>
                       {sponsor.is_active ? "Активный" : "Неактивный"}
                     </span>
                   </div>
@@ -244,7 +244,7 @@ const SponsorsManager: React.FC = () => {
                         href={sponsor.website_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-blue-600 underline text-sm break-all"
+                        className="text-primary underline text-sm break-all"
                       >
                         {sponsor.website_url}
                       </a>

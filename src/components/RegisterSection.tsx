@@ -118,19 +118,20 @@ const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
   };
 
   return (
-    <section id="register" className="py-12 md:py-16 bg-gradient-to-b from-purple-50 to-white">
-      <div className="container mx-auto px-4">
+    <section id="register" className="py-12 md:py-20 bg-background relative overflow-hidden">
+      <div className="absolute inset-0 ambient-lime pointer-events-none" aria-hidden />
+      <div className="container mx-auto px-4 relative">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4 tracking-tight">
             {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
           <p className="text-sm md:text-lg text-muted-foreground px-2">
             {cfg.description}
           </p>
         </div>
-        
+
         <div className="max-w-md mx-auto">
-          <Card>
+          <Card className="rounded-2xl border-white/[0.08] bg-card/80 backdrop-blur-sm shadow-card">
             <CardHeader>
               <CardTitle>{cfg.formTitle}</CardTitle>
               <CardDescription>
@@ -140,7 +141,7 @@ const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Имя <span className="text-red-500">*</span></Label>
+                  <Label htmlFor="name">Имя <span className="text-destructive">*</span></Label>
                   <Input
                     id="name"
                     name="name"
@@ -152,7 +153,7 @@ const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+                  <Label htmlFor="email">Email <span className="text-destructive">*</span></Label>
                   <Input
                     id="email"
                     name="email"
@@ -165,7 +166,7 @@ const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Телефон <span className="text-red-500">*</span></Label>
+                  <Label htmlFor="phone">Телефон <span className="text-destructive">*</span></Label>
                   <Input
                     id="phone"
                     name="phone"
@@ -175,7 +176,7 @@ const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
                     required
                   />
                   {phoneError && (
-                    <p className="text-xs text-red-500 mt-1">{phoneError}</p>
+                    <p className="text-xs text-destructive mt-1">{phoneError}</p>
                   )}
                   <p className="text-xs text-muted-foreground mt-1">
                     Введите номер телефона в формате +375XXXXXXXXX или +7XXXXXXXXXX
@@ -184,7 +185,7 @@ const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
                 
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full rounded-full font-semibold bg-primary text-primary-foreground hover:bg-lime-dark shadow-lime-sm"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Отправка..." : cfg.submitButtonText}

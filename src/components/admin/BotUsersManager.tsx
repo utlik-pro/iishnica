@@ -87,7 +87,7 @@ export function BotUsersManager() {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
           placeholder="Поиск по имени, username или Telegram ID..."
           value={search}
@@ -120,16 +120,16 @@ export function BotUsersManager() {
                       {user.first_name} {user.last_name}
                     </div>
                     {user.username && (
-                      <div className="text-sm text-gray-500">@{user.username}</div>
+                      <div className="text-sm text-muted-foreground">@{user.username}</div>
                     )}
                   </div>
                 </TableCell>
                 <TableCell>
                   <a
-                    href={`https://t.me/${user.username || ""}`}
+                    href={`https://telegram.me/${user.username || ""}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-blue-600 hover:underline"
+                    className="flex items-center gap-1 text-primary hover:underline"
                   >
                     {user.tg_user_id}
                     <ExternalLink className="h-3 w-3" />

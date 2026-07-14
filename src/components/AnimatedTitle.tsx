@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const AnimatedTitle = () => {
-  const words = ['завтраков', 'ужинов', 'обедов', 'бранчей'];
+  const words = ['энтузиастов', 'практиков', 'предпринимателей', 'новаторов', 'единомышленников'];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -45,12 +45,10 @@ const AnimatedTitle = () => {
   }, [displayText, isDeleting, currentWordIndex, isPaused, words]);
 
   return (
-    <div className="text-4xl md:text-6xl font-bold text-center">
-      <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-        Клуб ИИ-{displayText}
-        <span className="animate-blink inline-block w-[2px] h-[1em] bg-purple-600 ml-1 align-middle" style={{ transform: 'translateY(-0.05em)' }}></span>
-      </span>
-    </div>
+    <span className="gradient-text">
+      Клуб ИИ-{displayText}
+      <span className="animate-blink inline-block w-[0.06em] h-[0.9em] bg-primary ml-1 align-middle rounded-full" style={{ transform: 'translateY(-0.05em)' }}></span>
+    </span>
   );
 };
 

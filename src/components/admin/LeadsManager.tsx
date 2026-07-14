@@ -197,13 +197,13 @@ const LeadsManager: React.FC = () => {
 
   const getStatusBadgeClass = (status: Lead['status']) => {
     switch (status) {
-      case "new": return "bg-blue-100 text-blue-800";
-      case "contacted": return "bg-yellow-100 text-yellow-800";
-      case "paid": return "bg-green-100 text-green-800";
-      case "not_paid": return "bg-red-100 text-red-800";
-      case "will_attend": return "bg-purple-100 text-purple-800";
-      case "will_not_attend": return "bg-gray-100 text-gray-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "new": return "bg-primary/15 text-primary";
+      case "contacted": return "bg-warning/15 text-warning";
+      case "paid": return "bg-success/15 text-success";
+      case "not_paid": return "bg-destructive/15 text-destructive";
+      case "will_attend": return "bg-primary/15 text-primary";
+      case "will_not_attend": return "bg-white/[0.06] text-muted-foreground";
+      default: return "bg-white/[0.06] text-muted-foreground";
     }
   };
 
@@ -299,7 +299,7 @@ const LeadsManager: React.FC = () => {
                       {getStatusLabel(lead.status)}
                     </span>
                     {lead.ticket_sent && (
-                      <div className="mt-1 text-xs text-green-600">Билет отправлен</div>
+                      <div className="mt-1 text-xs text-success">Билет отправлен</div>
                     )}
                   </TableCell>
                   <TableCell className="whitespace-nowrap">

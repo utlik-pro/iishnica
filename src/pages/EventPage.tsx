@@ -253,10 +253,10 @@ const EventPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <main className="flex-grow flex items-center justify-center pt-28">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </main>
         <Footer />
       </div>
@@ -265,7 +265,7 @@ const EventPage: React.FC = () => {
 
   if (error || !event) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <main className="flex-grow flex items-center justify-center pt-28 pb-16">
           <div className="text-center">
@@ -283,15 +283,16 @@ const EventPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
       {/* Hero Section */}
       <section className="pt-24 pb-12 md:pt-40 md:pb-24 relative overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="absolute inset-0 ambient-lime pointer-events-none" aria-hidden />
+        <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block mb-3 md:mb-4 px-3 md:px-4 py-1.5 md:py-2 bg-purple-100 rounded-full">
-              <span className="text-purple-600 font-semibold text-xs md:text-sm">Мероприятие M.AI.N Community</span>
+            <div className="inline-block mb-3 md:mb-4 px-3 md:px-4 py-1.5 md:py-2 bg-primary/10 border border-primary/20 rounded-full">
+              <span className="text-primary font-semibold text-xs md:text-sm">Мероприятие M.AI.N Community</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 md:mb-6 gradient-text flex items-center justify-center gap-2 md:gap-4 flex-wrap">
@@ -319,8 +320,8 @@ const EventPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 mb-8 md:mb-12 px-4 sm:px-0">
               <Button
                 size="lg"
-                className="w-full sm:w-auto rounded-full bg-primary hover:bg-primary/90 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base"
-                onClick={() => window.open(`https://t.me/maincomapp_bot?startapp=event_${event.id}`, '_blank')}
+                className="w-full sm:w-auto rounded-full bg-primary text-primary-foreground hover:bg-lime-dark shadow-lime hover:shadow-lime-sm px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold transition-all"
+                onClick={() => window.open(`https://telegram.me/maincomapp_bot?startapp=event_${event.id}`, '_blank')}
               >
                 Зарегистрироваться <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
               </Button>
@@ -328,22 +329,22 @@ const EventPage: React.FC = () => {
 
             {/* Info Badges - stack on mobile */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 md:gap-4 text-sm text-muted-foreground px-2 sm:px-0">
-              <div className="flex items-center bg-green-100/50 px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center">
-                <CalendarIcon className="w-4 h-4 md:w-6 md:h-6 text-green-500 mr-2 md:mr-3 flex-shrink-0" />
+              <div className="flex items-center border border-white/[0.08] bg-white/[0.03] px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center backdrop-blur-sm">
+                <CalendarIcon className="w-4 h-4 md:w-6 md:h-6 text-primary mr-2 md:mr-3 flex-shrink-0" />
                 <div className="text-left">
                   <div className="text-[10px] md:text-xs text-muted-foreground">Дата</div>
                   <span className="text-sm md:text-lg font-medium text-foreground">{formatDate(event.date)}</span>
                 </div>
               </div>
-              <div className="flex items-center bg-blue-100/50 px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center">
-                <Clock className="w-4 h-4 md:w-6 md:h-6 text-blue-500 mr-2 md:mr-3 flex-shrink-0" />
+              <div className="flex items-center border border-white/[0.08] bg-white/[0.03] px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center backdrop-blur-sm">
+                <Clock className="w-4 h-4 md:w-6 md:h-6 text-primary mr-2 md:mr-3 flex-shrink-0" />
                 <div className="text-left">
                   <div className="text-[10px] md:text-xs text-muted-foreground">Время</div>
                   <span className="text-sm md:text-lg font-medium text-foreground">{formatTime(event.date)}</span>
                 </div>
               </div>
-              <div className="flex items-center bg-purple-100/50 px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center">
-                <Wallet className="w-4 h-4 md:w-6 md:h-6 text-purple-500 mr-2 md:mr-3 flex-shrink-0" />
+              <div className="flex items-center border border-white/[0.08] bg-white/[0.03] px-4 md:px-6 py-2 md:py-3 rounded-full w-full sm:w-auto justify-center backdrop-blur-sm">
+                <Wallet className="w-4 h-4 md:w-6 md:h-6 text-primary mr-2 md:mr-3 flex-shrink-0" />
                 <div className="text-left">
                   <div className="text-[10px] md:text-xs text-muted-foreground">Стоимость</div>
                   <span className="text-sm md:text-lg font-medium text-foreground">
@@ -356,12 +357,12 @@ const EventPage: React.FC = () => {
         </div>
 
         {/* Decorative elements - hidden on mobile */}
-        <div className="hidden md:block absolute top-24 left-10 w-16 lg:w-24 h-16 lg:h-24 bg-purple-200 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
-        <div className="hidden md:block absolute top-40 right-10 lg:right-20 w-20 lg:w-32 h-20 lg:h-32 bg-blue-200 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
+        <div className="hidden md:block absolute top-24 left-10 w-16 lg:w-24 h-16 lg:h-24 bg-primary/20 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
+        <div className="hidden md:block absolute top-40 right-10 lg:right-20 w-20 lg:w-32 h-20 lg:h-32 bg-primary/10 rounded-full blur-3xl opacity-60 animate-pulse-slow"></div>
       </section>
 
       {/* About Community Section */}
-      <section id="about" className="py-12 md:py-16 bg-white">
+      <section id="about" className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8 md:mb-12">
@@ -381,13 +382,13 @@ const EventPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-4 md:mb-8">
-              <Card className="border border-purple-100 bg-gradient-to-br from-purple-50 to-white">
+              <Card className="border border-white/[0.08] bg-card rounded-2xl shadow-card">
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-center mb-3 md:mb-4">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-purple-500 flex items-center justify-center text-white text-xl md:text-2xl mr-3 md:mr-4 flex-shrink-0">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center text-xl md:text-2xl mr-3 md:mr-4 flex-shrink-0">
                       🎯
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold">Наша миссия</h3>
+                    <h3 className="text-lg md:text-xl font-bold text-foreground">Наша миссия</h3>
                   </div>
                   <p className="text-sm md:text-base text-muted-foreground">
                     Делать искусственный интеллект доступным и понятным каждому. Мы объединяем специалистов и энтузиастов для обмена опытом и совместного роста.
@@ -395,13 +396,13 @@ const EventPage: React.FC = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border border-blue-100 bg-gradient-to-br from-blue-50 to-white">
+              <Card className="border border-white/[0.08] bg-card rounded-2xl shadow-card">
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-center mb-3 md:mb-4">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl md:text-2xl mr-3 md:mr-4 flex-shrink-0">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center text-xl md:text-2xl mr-3 md:mr-4 flex-shrink-0">
                       🚀
                     </div>
-                    <h3 className="text-lg md:text-xl font-bold">Что мы делаем</h3>
+                    <h3 className="text-lg md:text-xl font-bold text-foreground">Что мы делаем</h3>
                   </div>
                   <p className="text-sm md:text-base text-muted-foreground">
                     Проводим регулярные митапы, мастер-классы и воркшопы по практическому применению ИИ в бизнесе и повседневной жизни.
@@ -410,36 +411,36 @@ const EventPage: React.FC = () => {
               </Card>
             </div>
 
-            <Card className="border border-purple-100 bg-gradient-to-r from-purple-50 via-blue-50 to-purple-50">
+            <Card className="border border-white/[0.08] bg-card rounded-2xl shadow-card">
               <CardContent className="p-4 md:p-8">
                 <div className="text-center">
-                  <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Присоединяйтесь к нам!</h3>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-foreground">Присоединяйтесь к нам!</h3>
                   <p className="text-sm md:text-lg text-muted-foreground mb-4 md:mb-6 px-2">
                     Станьте частью растущего комьюнити профессионалов, которые используют ИИ для решения реальных задач
                   </p>
                   <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-4 md:mb-6">
-                    <div className="flex items-center gap-1.5 md:gap-2 bg-white px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                    <div className="flex items-center gap-1.5 md:gap-2 bg-white/[0.05] border border-white/[0.08] px-3 md:px-4 py-1.5 md:py-2 rounded-full">
                       <span className="text-lg md:text-2xl">💡</span>
-                      <span className="font-medium text-xs md:text-base">Практические кейсы</span>
+                      <span className="font-medium text-xs md:text-base text-foreground">Практические кейсы</span>
                     </div>
-                    <div className="flex items-center gap-1.5 md:gap-2 bg-white px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                    <div className="flex items-center gap-1.5 md:gap-2 bg-white/[0.05] border border-white/[0.08] px-3 md:px-4 py-1.5 md:py-2 rounded-full">
                       <span className="text-lg md:text-2xl">🤝</span>
-                      <span className="font-medium text-xs md:text-base">Нетворкинг</span>
+                      <span className="font-medium text-xs md:text-base text-foreground">Нетворкинг</span>
                     </div>
-                    <div className="flex items-center gap-1.5 md:gap-2 bg-white px-3 md:px-4 py-1.5 md:py-2 rounded-full">
+                    <div className="flex items-center gap-1.5 md:gap-2 bg-white/[0.05] border border-white/[0.08] px-3 md:px-4 py-1.5 md:py-2 rounded-full">
                       <span className="text-lg md:text-2xl">📚</span>
-                      <span className="font-medium text-xs md:text-base">Обучение</span>
+                      <span className="font-medium text-xs md:text-base text-foreground">Обучение</span>
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 md:gap-6 pt-4 border-t border-purple-200">
+                  <div className="flex flex-col sm:flex-row justify-center items-center gap-3 md:gap-6 pt-4 border-t border-white/[0.08]">
                     <p className="text-sm font-medium text-muted-foreground">Мы в соцсетях:</p>
                     <div className="flex gap-3">
                       <a
-                        href="https://t.me/maincomby"
+                        href="https://telegram.me/maincomby"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-full bg-white hover:bg-blue-500 hover:text-white transition-colors flex items-center justify-center shadow-sm border border-purple-100"
+                        className="w-10 h-10 rounded-full bg-white/[0.05] text-foreground hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center border border-white/[0.08]"
                         aria-label="Telegram"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -450,7 +451,7 @@ const EventPage: React.FC = () => {
                         href="https://www.linkedin.com/company/maincomby/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-full bg-white hover:bg-blue-700 hover:text-white transition-colors flex items-center justify-center shadow-sm border border-purple-100"
+                        className="w-10 h-10 rounded-full bg-white/[0.05] text-foreground hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center border border-white/[0.08]"
                         aria-label="LinkedIn"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -461,7 +462,7 @@ const EventPage: React.FC = () => {
                         href="https://www.instagram.com/maincomby/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 rounded-full bg-white hover:bg-pink-600 hover:text-white transition-colors flex items-center justify-center shadow-sm border border-purple-100"
+                        className="w-10 h-10 rounded-full bg-white/[0.05] text-foreground hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center border border-white/[0.08]"
                         aria-label="Instagram"
                       >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -479,10 +480,10 @@ const EventPage: React.FC = () => {
 
       {/* Speakers Section */}
       {speakers.length > 0 && (
-        <section className="py-12 md:py-16 bg-gradient-to-b from-white to-purple-50">
+        <section className="py-12 md:py-16 bg-[#0d0d0d]">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4 text-foreground">
                 Спикеры <span className="gradient-text">мероприятия</span>
               </h2>
               <p className="text-sm md:text-lg text-muted-foreground px-2">
@@ -492,7 +493,7 @@ const EventPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
               {speakers.map((item) => (
-                <Card key={item.speaker_id} className="border border-purple-100 bg-white hover:shadow-lg transition-shadow">
+                <Card key={item.speaker_id} className="border border-white/[0.08] bg-card rounded-2xl hover:shadow-lime-sm transition-shadow">
                   <CardContent className="p-4 md:p-6">
                     <div className="flex items-center mb-3 md:mb-4">
                       {item.speaker.photo_url ? (
@@ -502,12 +503,12 @@ const EventPage: React.FC = () => {
                           className="h-12 w-12 md:h-16 md:w-16 rounded-full object-cover mr-3 md:mr-4 flex-shrink-0"
                         />
                       ) : (
-                        <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold mr-3 md:mr-4 flex-shrink-0 text-sm md:text-base">
+                        <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold mr-3 md:mr-4 flex-shrink-0 text-sm md:text-base">
                           {getInitials(item.speaker.name)}
                         </div>
                       )}
                       <div className="min-w-0">
-                        <h3 className="font-bold text-base md:text-lg truncate">{item.speaker.name}</h3>
+                        <h3 className="font-bold text-base md:text-lg truncate text-foreground">{item.speaker.name}</h3>
                         <div className="flex items-center text-xs text-muted-foreground">
                           <Users className="w-3 h-3 mr-1 flex-shrink-0" />
                           <span className="truncate">{item.speaker.title || "Спикер"}</span>
@@ -539,10 +540,10 @@ const EventPage: React.FC = () => {
         const regularSponsors = sponsors.filter(s => s.effectiveTier === 'sponsor');
 
         return (
-          <section className="py-12 md:py-16 bg-white">
+          <section className="py-12 md:py-16 bg-background">
             <div className="container mx-auto px-4">
               <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4 text-foreground">
                   <span className="gradient-text">Партнёры</span> мероприятия
                 </h2>
                 <p className="text-sm md:text-lg text-muted-foreground px-2">
@@ -565,7 +566,7 @@ const EventPage: React.FC = () => {
                           rel="noopener noreferrer"
                           className="block"
                         >
-                          <Card className="border border-yellow-200 bg-gradient-to-br from-yellow-50 to-white hover:shadow-lg transition-shadow">
+                          <Card className="border border-primary/30 bg-card rounded-2xl hover:shadow-lime-sm transition-shadow">
                             <CardContent className="p-4 md:p-6 flex items-center justify-center min-h-[80px] md:min-h-[100px]">
                               {sponsor.logo_url ? (
                                 <img
@@ -574,7 +575,7 @@ const EventPage: React.FC = () => {
                                   className="max-h-16 md:max-h-24 max-w-full object-contain"
                                 />
                               ) : (
-                                <span className="text-lg md:text-xl font-semibold">{sponsor.name}</span>
+                                <span className="text-lg md:text-xl font-semibold text-foreground">{sponsor.name}</span>
                               )}
                             </CardContent>
                           </Card>
@@ -598,7 +599,7 @@ const EventPage: React.FC = () => {
                           rel="noopener noreferrer"
                           className="block"
                         >
-                          <Card className="border border-blue-100 bg-gradient-to-br from-blue-50 to-white hover:shadow-lg transition-shadow">
+                          <Card className="border border-white/[0.08] bg-card rounded-2xl hover:shadow-lime-sm transition-shadow">
                             <CardContent className="p-3 md:p-5 flex items-center justify-center min-h-[64px] md:min-h-[80px]">
                               {sponsor.logo_url ? (
                                 <img
@@ -607,7 +608,7 @@ const EventPage: React.FC = () => {
                                   className="max-h-12 md:max-h-16 max-w-full object-contain"
                                 />
                               ) : (
-                                <span className="text-sm md:text-base font-semibold">{sponsor.name}</span>
+                                <span className="text-sm md:text-base font-semibold text-foreground">{sponsor.name}</span>
                               )}
                             </CardContent>
                           </Card>
@@ -638,8 +639,8 @@ const EventPage: React.FC = () => {
                               className="h-10 md:h-14 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
                             />
                           ) : (
-                            <div className="px-4 py-2 bg-gray-100 rounded-lg group-hover:bg-purple-100 transition-colors">
-                              <span className="text-sm font-medium text-gray-700 group-hover:text-purple-700">
+                            <div className="px-4 py-2 bg-white/[0.05] border border-white/[0.08] rounded-lg group-hover:bg-primary/10 transition-colors">
+                              <span className="text-sm font-medium text-muted-foreground group-hover:text-primary">
                                 {sponsor.name}
                               </span>
                             </div>
@@ -657,10 +658,10 @@ const EventPage: React.FC = () => {
 
       {/* Program Section */}
       {program.length > 0 && (
-        <section id="program" className="py-12 md:py-16 bg-gradient-to-b from-white to-purple-50">
+        <section id="program" className="py-12 md:py-16 bg-[#0d0d0d]">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4 text-foreground">
                 <span className="gradient-text">Программа</span> мероприятия
               </h2>
               <p className="text-sm md:text-lg text-muted-foreground px-2">
@@ -670,12 +671,12 @@ const EventPage: React.FC = () => {
 
             <div className="max-w-4xl mx-auto space-y-3 md:space-y-6">
               {program.map((item) => (
-                <Card key={item.id} className="border border-purple-100 bg-white">
+                <Card key={item.id} className="border border-white/[0.08] bg-card rounded-2xl">
                   <CardContent className="p-3 md:p-6">
                     <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-                      <div className={`flex-shrink-0 font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm self-start ${item.type === 'networking' ? 'bg-purple-100 text-purple-600' :
-                          item.type === 'break' ? 'bg-orange-100 text-orange-600' :
-                            'bg-blue-100 text-blue-600'
+                      <div className={`flex-shrink-0 font-bold px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm self-start ${item.type === 'networking' ? 'bg-primary/10 text-primary' :
+                          item.type === 'break' ? 'bg-warning/15 text-warning' :
+                            'bg-secondary text-secondary-foreground'
                         }`}>
                         {formatProgramTime(item.time_start, item.time_end)}
                       </div>
@@ -690,12 +691,12 @@ const EventPage: React.FC = () => {
                                   className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover flex-shrink-0"
                                 />
                               ) : (
-                                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold flex-shrink-0 text-xs md:text-sm">
+                                <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold flex-shrink-0 text-xs md:text-sm">
                                   {getInitials(item.speaker.name)}
                                 </div>
                               )}
                               <div className="min-w-0">
-                                <h3 className="text-base md:text-xl font-bold truncate">{item.speaker.name}</h3>
+                                <h3 className="text-base md:text-xl font-bold truncate text-foreground">{item.speaker.name}</h3>
                                 <p className="text-xs md:text-sm text-muted-foreground truncate">{item.speaker.title}</p>
                               </div>
                             </div>
@@ -706,7 +707,7 @@ const EventPage: React.FC = () => {
                           </>
                         ) : (
                           <>
-                            <h3 className="text-base md:text-xl font-bold mb-1 md:mb-2">{item.title}</h3>
+                            <h3 className="text-base md:text-xl font-bold mb-1 md:mb-2 text-foreground">{item.title}</h3>
                             {item.description && (
                               <p className="text-xs md:text-base text-muted-foreground whitespace-pre-line">{item.description}</p>
                             )}
@@ -727,10 +728,10 @@ const EventPage: React.FC = () => {
 
       {/* Location Section */}
       {(event.location_name || event.location_address) && (
-        <section className="py-12 md:py-16 bg-white">
+        <section className="py-12 md:py-16 bg-background">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4 text-foreground">
                 <span className="gradient-text">Место</span> проведения
               </h2>
               {event.location_name && (
@@ -757,12 +758,12 @@ const EventPage: React.FC = () => {
       )}
 
       {/* Registration CTA */}
-      <section className="py-12 md:py-16 bg-gradient-to-b from-purple-50 to-white">
+      <section className="py-12 md:py-16 bg-[#0d0d0d]">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <Card className="border border-purple-200 bg-gradient-to-r from-purple-100 via-blue-50 to-purple-100">
+            <Card className="border border-white/[0.08] bg-card rounded-2xl shadow-card">
               <CardContent className="p-4 md:p-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">
+                <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-foreground">
                   Регистрация на мероприятие
                 </h2>
                 <p className="text-base md:text-lg text-muted-foreground mb-4 md:mb-6">
@@ -773,8 +774,8 @@ const EventPage: React.FC = () => {
                 </p>
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto rounded-full bg-primary hover:bg-primary/90 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base"
-                  onClick={() => window.open(`https://t.me/maincomapp_bot?startapp=event_${event.id}`, '_blank')}
+                  className="w-full sm:w-auto rounded-full bg-primary text-primary-foreground hover:bg-lime-dark shadow-lime hover:shadow-lime-sm px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold transition-all"
+                  onClick={() => window.open(`https://telegram.me/maincomapp_bot?startapp=event_${event.id}`, '_blank')}
                 >
                   Зарегистрироваться <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
                 </Button>

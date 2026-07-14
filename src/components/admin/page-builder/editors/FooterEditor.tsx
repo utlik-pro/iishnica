@@ -157,7 +157,7 @@ const FooterEditor: React.FC<FooterEditorProps> = ({ config, onChange }) => {
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-8 w-8 text-red-500"
+                className="h-8 w-8 text-destructive"
                 onClick={() => removeNavItem(item.id)}
               >
                 <Trash2 className="h-4 w-4" />
@@ -246,7 +246,7 @@ const FooterEditor: React.FC<FooterEditorProps> = ({ config, onChange }) => {
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-8 w-8 text-red-500"
+                className="h-8 w-8 text-destructive"
                 onClick={() => removeBottomLink(link.id)}
               >
                 <Trash2 className="h-4 w-4" />

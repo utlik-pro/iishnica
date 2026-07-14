@@ -190,7 +190,7 @@ export const DEFAULT_NAVBAR_CONFIG: NavbarConfig = {
   ],
   ctaButton: {
     text: 'Регистрация',
-    url: 'https://t.me/maincomapp_bot',
+    url: 'https://telegram.me/maincomapp_bot',
     isVisible: true,
   },
 };
