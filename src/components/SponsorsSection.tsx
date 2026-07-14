@@ -6,6 +6,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { SponsorsConfig, DEFAULT_SPONSORS_CONFIG } from "@/types/pageBuilder";
+import SectionEyebrow from "@/components/SectionEyebrow";
 
 interface Sponsor {
   id: string;
@@ -54,6 +55,7 @@ const SponsorsSection: React.FC<SponsorsSectionProps> = ({ config }) => {
     <section className="py-10 md:py-16 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-6 md:mb-8">
+          <SectionEyebrow>Партнёры</SectionEyebrow>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold mb-3 md:mb-4 tracking-tight">
             {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>

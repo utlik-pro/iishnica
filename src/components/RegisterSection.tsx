@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { RegisterConfig, DEFAULT_REGISTER_CONFIG } from "@/types/pageBuilder";
+import SectionEyebrow from "@/components/SectionEyebrow";
 
 interface RegisterSectionProps {
   config?: RegisterConfig;
@@ -122,6 +123,7 @@ const RegisterSection: React.FC<RegisterSectionProps> = ({ config }) => {
       <div className="absolute inset-0 ambient-lime pointer-events-none" aria-hidden />
       <div className="container mx-auto px-4 relative">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+          <SectionEyebrow>Участие</SectionEyebrow>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4 tracking-tight">
             {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>

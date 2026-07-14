@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BlogConfig, DEFAULT_BLOG_CONFIG } from "@/types/pageBuilder";
+import SectionEyebrow from "@/components/SectionEyebrow";
 
 interface Post {
   id: string;
@@ -100,7 +101,8 @@ const BlogSection: React.FC<BlogSectionProps> = ({ config }) => {
     <section id="blog" className="py-16 md:py-20 bg-[#0d0d0d]">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+          <SectionEyebrow>Материалы</SectionEyebrow>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 tracking-tight">
             {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
           <p className="text-lg text-muted-foreground">
@@ -111,7 +113,7 @@ const BlogSection: React.FC<BlogSectionProps> = ({ config }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {posts.map((post) => (
             <Link key={post.id} to={`/blog/${post.slug}`}>
-              <Card className="h-full rounded-2xl border-white/[0.08] bg-card hover:border-white/[0.16] hover:bg-white/[0.02] transition-colors overflow-hidden group">
+              <Card className="h-full rounded-2xl border-white/[0.08] bg-card hover:border-white/[0.16] hover:bg-white/[0.02] hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
                 {post.featured_image_url && (
                   <div className="h-48 overflow-hidden">
                     <img

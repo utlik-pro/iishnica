@@ -6,6 +6,7 @@ import { ru } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { EventsConfig, DEFAULT_EVENTS_CONFIG } from "@/types/pageBuilder";
+import SectionEyebrow from "@/components/SectionEyebrow";
 
 interface Event {
   id: string;
@@ -34,9 +35,16 @@ const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        // Синхронизация с мини-аппом: показываем только события, включённые
+        // в mini-app (is_visible_in_miniapp), и только предстоящие.
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+
         const { data, error } = await supabase
           .from("events")
           .select("*")
+          .eq("is_visible_in_miniapp", true)
+          .gte("date", startOfToday.toISOString())
           .order("date", { ascending: true });
 
         if (error) throw error;
@@ -116,7 +124,8 @@ const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
     <section id="events" className="py-12 md:py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4">
+          <SectionEyebrow>Расписание</SectionEyebrow>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold mb-3 md:mb-4 tracking-tight">
             {cfg.title.prefix} <span className="gradient-text">{cfg.title.highlight}</span>
           </h2>
           <p className="text-sm md:text-lg text-muted-foreground px-2">
@@ -131,7 +140,7 @@ const EventsSection: React.FC<EventsSectionProps> = ({ config }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
             {events.slice(0, cfg.maxItems).map((event, index) => (
-              <Card key={event.id} className={`rounded-2xl bg-card transition-colors ${index === 0 ? 'border-primary/30 hover:border-primary/50' : 'border-white/[0.08] hover:border-white/[0.16]'}`}>
+              <Card key={event.id} className={`rounded-2xl bg-card transition-all duration-300 hover:-translate-y-1 ${index === 0 ? 'border-primary/30 hover:border-primary/50 hover:shadow-lime-sm' : 'border-white/[0.08] hover:border-white/[0.16]'}`}>
                 <CardContent className="p-5 md:p-6">
                   <div className="flex items-center justify-between mb-3 md:mb-4 gap-2">
                     <div className={`font-medium py-1 px-2.5 md:px-3 rounded-full text-xs md:text-sm whitespace-nowrap ${index === 0 ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}>
