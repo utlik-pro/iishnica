@@ -289,22 +289,25 @@ const EventPage: React.FC = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-28 pb-14 md:pt-44 md:pb-28 relative overflow-hidden">
-        {/* Background photo — обложка события (БД → карта по slug → дефолт) */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <img
-            src={event.cover_image_url || getEventCover(event.slug) || "/og-image.png"}
-            alt=""
-            onError={(e) => {
-              const img = e.currentTarget as HTMLImageElement;
-              if (!img.src.endsWith("/og-image.png")) img.src = "/og-image.png";
-            }}
-            className="w-full h-full object-cover object-center opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/80" />
-          <div className="absolute inset-0 ambient-lime opacity-70" />
-        </div>
+      <section className="pt-24 md:pt-32 pb-14 md:pb-20 relative overflow-hidden">
+        <div className="absolute inset-0 ambient-lime opacity-50 pointer-events-none" aria-hidden />
         <div className="container mx-auto px-4 relative">
+          {/* Обложка события — чёткий баннер 16:9 */}
+          {(event.cover_image_url || getEventCover(event.slug)) && (
+            <div className="max-w-5xl mx-auto mb-8 md:mb-12">
+              <div className="rounded-2xl overflow-hidden border border-white/[0.08] shadow-card bg-card">
+                <img
+                  src={event.cover_image_url || getEventCover(event.slug) || "/og-image.png"}
+                  alt={event.title}
+                  onError={(e) => {
+                    const img = e.currentTarget as HTMLImageElement;
+                    if (!img.src.endsWith("/og-image.png")) img.src = "/og-image.png";
+                  }}
+                  className="w-full aspect-[16/9] object-cover object-center"
+                />
+              </div>
+            </div>
+          )}
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center mb-4 md:mb-6 px-4 py-1.5 md:py-2 bg-white/[0.04] border border-white/[0.1] rounded-full backdrop-blur-sm">
               <span className="text-primary font-semibold text-xs md:text-sm tracking-wide">Мероприятие M.AI.N Community</span>
