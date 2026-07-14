@@ -85,6 +85,7 @@ interface EventForm {
   telegram_bot_url: string;
   is_published: boolean;
   slug: string;
+  cover_image_url: string;
 }
 
 interface Event {
@@ -101,6 +102,7 @@ interface Event {
   telegram_bot_url: string | null;
   is_published: boolean;
   slug: string | null;
+  cover_image_url: string | null;
 }
 
 interface EventEditorProps {
@@ -164,6 +166,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
     telegram_bot_url: "https://telegram.me/maincomapp_bot",
     is_published: false,
     slug: "",
+    cover_image_url: "",
   });
 
   useEffect(() => {
@@ -191,6 +194,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
       telegram_bot_url: evt.telegram_bot_url || "https://telegram.me/maincomapp_bot",
       is_published: evt.is_published,
       slug: evt.slug || "",
+      cover_image_url: evt.cover_image_url || "",
     });
 
     // Fetch event speakers
@@ -564,6 +568,7 @@ const EventEditor: React.FC<EventEditorProps> = ({ event, onClose, onSave }) => 
                       placeholder="Краткое описание мероприятия..."
                     />
                   </div>
+
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">

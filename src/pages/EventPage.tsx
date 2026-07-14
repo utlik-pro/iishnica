@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TeamSection from "@/components/TeamSection";
 import EventLocationMap from "@/components/EventLocationMap";
+import { getEventCover } from "@/lib/event-covers";
 
 interface Event {
   id: string;
@@ -22,6 +23,7 @@ interface Event {
   telegram_bot_url: string | null;
   is_published: boolean;
   slug: string | null;
+  cover_image_url: string | null;
 }
 
 interface Speaker {
@@ -288,11 +290,15 @@ const EventPage: React.FC = () => {
 
       {/* Hero Section */}
       <section className="pt-28 pb-14 md:pt-44 md:pb-28 relative overflow-hidden">
-        {/* Background photo */}
+        {/* Background photo — обложка события (БД → карта по slug → дефолт) */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <img
-            src="/og-image.png"
+            src={event.cover_image_url || getEventCover(event.slug) || "/og-image.png"}
             alt=""
+            onError={(e) => {
+              const img = e.currentTarget as HTMLImageElement;
+              if (!img.src.endsWith("/og-image.png")) img.src = "/og-image.png";
+            }}
             className="w-full h-full object-cover object-center opacity-40"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/80" />
