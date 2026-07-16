@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ArrowUp, MapPin } from "lucide-react";
+import { ArrowRight, ArrowUp, MapPin, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EventLocationMap from "@/components/EventLocationMap";
@@ -80,20 +79,13 @@ const MARQUEE = "M.AI.N COMMUNITY · ВЕЧЕРНИЕ ИИШНИЦЫ · ИИ Н�
 const EventPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [event, setEvent] = useState<Event | null>(null);
   const [speakers, setSpeakers] = useState<EventSpeaker[]>([]);
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [program, setProgram] = useState<ProgramItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Registration form
-  const [fName, setFName] = useState("");
-  const [fEmail, setFEmail] = useState("");
-  const [fTg, setFTg] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [regCount, setRegCount] = useState<number | null>(null);
 
   // UI
   const [openFaq, setOpenFaq] = useState<number>(0);
@@ -178,10 +170,18 @@ const EventPage: React.FC = () => {
         `)
         .eq("event_id", eventData.id);
 
-      if (eventSponsorsData) {
-        setSponsors(eventSponsorsData
-          .map((item: any) => item.sponsor ? { ...item.sponsor, effectiveTier: item.tier || item.sponsor.tier || 'sponsor' } : null)
-          .filter(Boolean) as Sponsor[]);
+      const eventSponsors = (eventSponsorsData || [])
+        .map((item: any) => item.sponsor ? { ...item.sponsor, effectiveTier: item.tier || item.sponsor.tier || 'sponsor' } : null)
+        .filter(Boolean) as Sponsor[];
+      if (eventSponsors.length > 0) {
+        setSponsors(eventSponsors);
+      } else {
+        // фолбэк: общие активные партнёры сообщества
+        const { data: genSp } = await supabase
+          .from("sponsors")
+          .select("id, name, logo_url, website_url, tier")
+          .eq("is_active", true);
+        setSponsors((genSp || []).map((s: any) => ({ ...s, effectiveTier: s.tier || 'sponsor' })));
       }
 
       const { data: programData } = await supabase
@@ -194,6 +194,20 @@ const EventPage: React.FC = () => {
         .order("order_index");
 
       if (programData) setProgram(programData as ProgramItem[]);
+
+      // Число регистраций из мини-аппа (bot_registrations через связанный bot_event)
+      const { data: botEv } = await supabase
+        .from("bot_events")
+        .select("id")
+        .eq("web_event_id", eventData.id)
+        .limit(1);
+      if (botEv && botEv[0]) {
+        const { count } = await supabase
+          .from("bot_registrations")
+          .select("*", { count: "exact", head: true })
+          .eq("event_id", botEv[0].id);
+        if (typeof count === "number") setRegCount(count);
+      }
     } catch (err) {
       console.error("Error fetching event:", err);
       setError("Ошибка загрузки мероприятия");
@@ -213,29 +227,6 @@ const EventPage: React.FC = () => {
   const getInitials = (name: string) =>
     name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
   const formatProgramTime = (t: string) => t.slice(0, 5);
-
-  const handleRegister = async () => {
-    if (!fName.trim() || !fEmail.trim()) {
-      toast({ title: "Заполните имя и email", variant: "destructive" });
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const { error: insErr } = await supabase.from("leads").insert([{
-        name: fName.trim(),
-        email: fEmail.trim(),
-        phone: fTg.trim() || null,
-        source: "web",
-      }]);
-      if (insErr) throw insErr;
-      setSubmitted(true);
-    } catch (e) {
-      console.error(e);
-      toast({ title: "Ошибка регистрации", description: "Попробуйте ещё раз позже", variant: "destructive" });
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const openBot = () => {
     if (event) window.open(`https://telegram.me/maincomapp_bot?startapp=event_${event.id}`, "_blank");
@@ -319,12 +310,17 @@ const EventPage: React.FC = () => {
             >
               Зарегистрироваться <ArrowRight className="w-[18px] h-[18px]" />
             </button>
-            <button
-              onClick={() => scrollToId("register")}
-              className="inline-flex items-center gap-2.5 rounded-full border border-white/[0.12] text-foreground font-semibold text-base px-6 py-4 hover:bg-white/[0.05] transition-colors"
-            >
-              Оставить заявку на сайте
-            </button>
+            {regCount !== null && regCount > 0 && (
+              <div className="inline-flex items-center gap-3 px-5 md:px-6 py-3.5 md:py-4 rounded-full border border-white/[0.12] bg-white/[0.02]">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
+                </span>
+                <span className="text-sm md:text-[15px] font-medium text-muted-foreground whitespace-nowrap">
+                  Уже <span className="text-foreground font-semibold">{regCount}</span> зарегистрировались
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -396,6 +392,16 @@ const EventPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* community photo */}
+        <div className="mt-10 md:mt-14 rounded-[24px] overflow-hidden border border-white/[0.08] relative shadow-card">
+          <img src="/og-image.png" alt="Сообщество M.AI.N" className="w-full aspect-[21/9] object-cover object-center" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+          <div className="absolute bottom-4 left-5 md:bottom-6 md:left-8 flex items-center gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-primary shadow-lime-sm" />
+            <span className="text-sm md:text-base font-semibold text-foreground">Живые встречи M.AI.N Community</span>
+          </div>
+        </div>
       </section>
 
       {/* PROGRAM */}
@@ -416,9 +422,9 @@ const EventPage: React.FC = () => {
                 <div className="font-heading font-bold text-xl md:text-2xl text-primary">
                   {formatProgramTime(p.time_start)}
                 </div>
-                <div>
-                  <div className="font-bold text-lg md:text-[19px] text-foreground mb-1">{p.title}</div>
-                  <div className="text-sm text-muted-foreground">
+                <div className="min-w-0">
+                  <div className="font-bold text-lg md:text-[19px] text-foreground mb-1 line-clamp-2">{p.title}</div>
+                  <div className="text-sm text-muted-foreground line-clamp-1">
                     {p.speaker ? `${p.speaker.name}${p.speaker.title ? ` · ${p.speaker.title}` : ""}` : (p.description || "")}
                   </div>
                 </div>
@@ -443,17 +449,17 @@ const EventPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {speakers.map((s) => (
               <div key={s.speaker_id} className="bg-card border border-white/[0.07] rounded-[24px] overflow-hidden hover:border-primary/35 hover:-translate-y-1 transition-all duration-300">
-                <div className="h-[220px] relative bg-secondary">
+                <div className="aspect-[4/5] relative bg-secondary">
                   {s.speaker.photo_url ? (
-                    <img src={s.speaker.photo_url} alt={s.speaker.name} className="w-full h-full object-cover" />
+                    <img src={s.speaker.photo_url} alt={s.speaker.name} className="w-full h-full object-cover object-top" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center font-heading font-black text-5xl text-primary/40">
+                    <div className="w-full h-full flex items-center justify-center font-heading font-black text-6xl md:text-7xl text-primary/40">
                       {getInitials(s.speaker.name)}
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
                   {s.speaker.title && (
-                    <div className="absolute bottom-3.5 left-4 font-heading font-semibold text-[15px] text-primary bg-background/60 backdrop-blur-md px-3 py-1.5 rounded-full">
+                    <div className="absolute bottom-4 left-4 right-4 font-heading font-semibold text-[15px] text-primary bg-background/60 backdrop-blur-md px-3 py-1.5 rounded-full inline-block max-w-max">
                       {s.speaker.title}
                     </div>
                   )}
@@ -555,53 +561,26 @@ const EventPage: React.FC = () => {
 
       {/* REGISTER */}
       <section id="register" className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-20">
-        <div className="relative rounded-[32px] overflow-hidden border border-primary/25 p-8 md:p-14"
-          style={{ background: "linear-gradient(160deg, hsl(74 100% 50% / 0.06), hsl(0 0% 8%))" }}>
-          <div aria-hidden className="pointer-events-none absolute -top-28 -right-20 w-[400px] h-[400px] rounded-full"
+        <div className="relative rounded-[32px] overflow-hidden border border-primary/25 px-6 py-12 md:p-16 text-center"
+          style={{ background: "linear-gradient(160deg, hsl(74 100% 50% / 0.07), hsl(0 0% 8%))" }}>
+          <div aria-hidden className="pointer-events-none absolute -top-28 left-1/2 -translate-x-1/2 w-[520px] h-[400px] rounded-full"
             style={{ background: "radial-gradient(circle, hsl(var(--primary)/0.16), transparent 65%)" }} />
-          <div className="relative grid md:grid-cols-2 gap-10 md:gap-14 items-center">
-            <div>
-              <h2 className="font-heading font-black tracking-tight leading-[1] text-4xl md:text-5xl lg:text-6xl text-foreground mb-5">
-                Забронируй<br />место
-              </h2>
-              <p className="text-lg text-foreground/80 leading-relaxed mb-7">
-                Участие бесплатное, но мест ограничено. Пришлём напоминание и материалы после митапа.
-              </p>
-              <button onClick={openBot} className="inline-flex items-center gap-2.5 rounded-full border border-primary/35 bg-primary/10 text-primary font-semibold px-6 py-3.5 hover:bg-primary/20 transition-colors">
-                Быстрая регистрация в Telegram <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="bg-[#0e0e0f] border border-white/[0.09] rounded-[24px] p-7 md:p-8">
-              {submitted ? (
-                <div className="text-center py-6 px-2">
-                  <div className="w-[72px] h-[72px] mx-auto mb-5 rounded-full bg-primary flex items-center justify-center shadow-lime">
-                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="hsl(var(--primary-foreground))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  </div>
-                  <div className="font-heading font-bold text-2xl text-foreground mb-2">Вы в списке</div>
-                  <div className="text-[15px] text-muted-foreground">Мы свяжемся с вами. До встречи на «ИИшнице»!</div>
-                </div>
-              ) : (
-                <div>
-                  <div className="font-heading font-bold text-xl text-foreground mb-5">Регистрация · {priceLabel}</div>
-                  <div className="flex flex-col gap-3.5">
-                    <input value={fName} onChange={(e) => setFName(e.target.value)} placeholder="Имя и фамилия"
-                      className="w-full bg-card border border-white/[0.1] rounded-xl px-4 py-3.5 text-[15px] text-foreground outline-none focus:border-primary transition-colors placeholder:text-muted-foreground" />
-                    <input value={fEmail} onChange={(e) => setFEmail(e.target.value)} type="email" placeholder="Email"
-                      className="w-full bg-card border border-white/[0.1] rounded-xl px-4 py-3.5 text-[15px] text-foreground outline-none focus:border-primary transition-colors placeholder:text-muted-foreground" />
-                    <input value={fTg} onChange={(e) => setFTg(e.target.value)} placeholder="Telegram (по желанию)"
-                      className="w-full bg-card border border-white/[0.1] rounded-xl px-4 py-3.5 text-[15px] text-foreground outline-none focus:border-primary transition-colors placeholder:text-muted-foreground" />
-                  </div>
-                  <button onClick={handleRegister} disabled={submitting}
-                    className="w-full mt-5 bg-primary text-primary-foreground font-bold text-base py-4 rounded-xl shadow-lime hover:bg-lime-dark transition-colors disabled:opacity-60">
-                    {submitting ? "Отправка…" : "Зарегистрироваться →"}
-                  </button>
-                  <div className="text-xs text-muted-foreground/70 text-center mt-3.5">
-                    Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-                  </div>
-                </div>
-              )}
-            </div>
+          <div className="relative max-w-2xl mx-auto">
+            <h2 className="font-heading font-black tracking-tight leading-[1] text-4xl md:text-5xl lg:text-6xl text-foreground mb-4">
+              Забронируй место
+            </h2>
+            <p className="text-lg text-foreground/80 leading-relaxed mb-8 max-w-xl mx-auto">
+              Участие {event.price > 0 ? `— ${event.price} BYN` : "бесплатное"}. Регистрация в Telegram mini-app: подтверждение, билет и напоминание придут прямо в бота.
+            </p>
+            <button onClick={openBot}
+              className="inline-flex items-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base md:text-lg px-8 md:px-10 py-4 md:py-5 shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all animate-glow-pulse">
+              Зарегистрироваться в Telegram <ArrowRight className="w-5 h-5" />
+            </button>
+            {regCount !== null && regCount > 0 && (
+              <div className="mt-6 text-sm text-muted-foreground">
+                <span className="text-foreground font-semibold">{regCount}</span> человек уже зарегистрировались
+              </div>
+            )}
           </div>
         </div>
       </section>
