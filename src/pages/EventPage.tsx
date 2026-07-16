@@ -86,6 +86,8 @@ const EventPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [regCount, setRegCount] = useState<number | null>(null);
+  const [communityCount, setCommunityCount] = useState<number | null>(null);
+  const [partnerLogos, setPartnerLogos] = useState<{ name: string; logo_url: string; website_url: string | null }[]>([]);
 
   // UI
   const [openFaq, setOpenFaq] = useState<number>(0);
@@ -100,6 +102,20 @@ const EventPage: React.FC = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Размер сообщества (в приложении + чате) и логотипы партнёров — как в мини-аппе
+  useEffect(() => {
+    (async () => {
+      const [{ count: users }, settingRes, sponsorRes] = await Promise.all([
+        supabase.from("bot_users").select("*", { count: "exact", head: true }),
+        supabase.from("app_settings").select("value").eq("key", "community_chat_members").maybeSingle(),
+        supabase.from("sponsors").select("name, logo_url, website_url").eq("is_active", true).not("logo_url", "is", null),
+      ]);
+      const chat = Number(settingRes.data?.value) || 0;
+      if (typeof users === "number") setCommunityCount(users + chat);
+      setPartnerLogos(((sponsorRes.data || []) as any[]).filter((s) => s.logo_url));
+    })();
   }, []);
 
   const fetchEvent = async (eventIdOrSlug: string) => {
@@ -346,12 +362,31 @@ const EventPage: React.FC = () => {
         </div>
       </header>
 
-      {/* MARQUEE */}
-      <div className="relative z-[1] my-12 md:my-14 border-y border-white/[0.08] py-5 overflow-hidden whitespace-nowrap">
-        <div className="inline-flex animate-marquee will-change-transform">
-          <span className="font-heading font-semibold text-2xl md:text-[26px] text-white/[0.06]">{MARQUEE.repeat(2)}</span>
-          <span className="font-heading font-semibold text-2xl md:text-[26px] text-white/[0.06]">{MARQUEE.repeat(2)}</span>
+      {/* PARTNERS MARQUEE */}
+      <div className="relative z-[1] my-12 md:my-14 border-y border-white/[0.08] py-6 overflow-hidden">
+        <div className="text-center text-[11px] md:text-xs uppercase tracking-[0.2em] text-muted-foreground/60 mb-4">
+          Партнёры сообщества
         </div>
+        {partnerLogos.length > 0 ? (
+          <div className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
+            <div className="inline-flex items-center gap-14 md:gap-20 animate-marquee will-change-transform pr-14 md:pr-20">
+              {[0, 1, 2].flatMap((rep) =>
+                partnerLogos.map((p, i) => (
+                  <a key={`${rep}-${i}`} href={p.website_url || "#"} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                    <img src={p.logo_url} alt={p.name} className="h-8 md:h-11 w-auto object-contain opacity-60 hover:opacity-100 transition-opacity" />
+                  </a>
+                ))
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="overflow-hidden whitespace-nowrap">
+            <div className="inline-flex animate-marquee will-change-transform">
+              <span className="font-heading font-semibold text-2xl md:text-[26px] text-white/[0.06]">{MARQUEE.repeat(2)}</span>
+              <span className="font-heading font-semibold text-2xl md:text-[26px] text-white/[0.06]">{MARQUEE.repeat(2)}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ABOUT */}
@@ -362,6 +397,16 @@ const EventPage: React.FC = () => {
             <h2 className="font-heading font-bold tracking-tight leading-[1.02] text-3xl md:text-5xl text-foreground">
               Вечер, на котором обсуждают ИИ всерьёз
             </h2>
+            {communityCount !== null && (
+              <div className="mt-7 md:mt-9 inline-flex items-baseline gap-3">
+                <span className="font-heading font-black text-4xl md:text-5xl text-primary tabular-nums leading-none">
+                  {communityCount.toLocaleString("ru-RU")}
+                </span>
+                <span className="text-base md:text-lg text-muted-foreground leading-tight">
+                  участников<br className="hidden md:block" /> в сообществе
+                </span>
+              </div>
+            )}
           </div>
           <div>
             <p className="text-lg md:text-[19px] leading-relaxed text-foreground/80 mb-7">
