@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EventLocationMap from "@/components/EventLocationMap";
 import { getEventCover } from "@/lib/event-covers";
+import { PARTNER_LOGOS } from "@/lib/partners";
 
 interface Event {
   id: string;
@@ -74,7 +75,6 @@ const FAQS = [
   { q: "Можно прийти с коллегой?", a: "Конечно. Просто попросите его тоже зарегистрироваться — так мы точно всех разместим и никого не оставим без места." },
 ];
 
-const MARQUEE = "M.AI.N COMMUNITY · ВЕЧЕРНИЕ ИИШНИЦЫ · ИИ НА ПРАКТИКЕ · LLM В ПРОДЕ · НЕТВОРКИНГ · ";
 
 const EventPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -87,7 +87,6 @@ const EventPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [regCount, setRegCount] = useState<number | null>(null);
   const [communityCount, setCommunityCount] = useState<number | null>(null);
-  const [partnerLogos, setPartnerLogos] = useState<{ name: string; logo_url: string; website_url: string | null }[]>([]);
 
   // UI
   const [openFaq, setOpenFaq] = useState<number>(0);
@@ -107,14 +106,12 @@ const EventPage: React.FC = () => {
   // Размер сообщества (в приложении + чате) и логотипы партнёров — как в мини-аппе
   useEffect(() => {
     (async () => {
-      const [{ count: users }, settingRes, sponsorRes] = await Promise.all([
+      const [{ count: users }, settingRes] = await Promise.all([
         supabase.from("bot_users").select("*", { count: "exact", head: true }),
         supabase.from("app_settings").select("value").eq("key", "community_chat_members").maybeSingle(),
-        supabase.from("sponsors").select("name, logo_url, website_url").eq("is_active", true).not("logo_url", "is", null),
       ]);
       const chat = Number(settingRes.data?.value) || 0;
       if (typeof users === "number") setCommunityCount(users + chat);
-      setPartnerLogos(((sponsorRes.data || []) as any[]).filter((s) => s.logo_url));
     })();
   }, []);
 
@@ -381,30 +378,24 @@ const EventPage: React.FC = () => {
       </header>
 
       {/* PARTNERS MARQUEE */}
-      <div className="relative z-[1] my-12 md:my-14 border-y border-white/[0.08] py-6 overflow-hidden">
-        <div className="text-center text-[11px] md:text-xs uppercase tracking-[0.2em] text-muted-foreground/60 mb-4">
+      <div className="relative z-[1] my-12 md:my-14 border-y border-white/[0.08] py-7 md:py-8 overflow-hidden">
+        <div className="text-center text-[11px] md:text-xs uppercase tracking-[0.2em] text-muted-foreground/60 mb-5 md:mb-6">
           Партнёры сообщества
         </div>
-        {partnerLogos.length > 0 ? (
-          <div className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
-            <div className="inline-flex items-center gap-14 md:gap-20 animate-marquee will-change-transform pr-14 md:pr-20">
-              {[0, 1, 2].flatMap((rep) =>
-                partnerLogos.map((p, i) => (
-                  <a key={`${rep}-${i}`} href={p.website_url || "#"} target="_blank" rel="noopener noreferrer" className="shrink-0">
-                    <img src={p.logo_url} alt={p.name} className="h-8 md:h-11 w-auto object-contain opacity-60 hover:opacity-100 transition-opacity" />
-                  </a>
-                ))
-              )}
-            </div>
+        <div className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_7%,#000_93%,transparent)]">
+          <div className="inline-flex items-center gap-10 md:gap-16 animate-marquee will-change-transform pr-10 md:pr-16">
+            {[0, 1].flatMap((rep) =>
+              PARTNER_LOGOS.map((p, i) => (
+                <img
+                  key={`${rep}-${i}`}
+                  src={p.src}
+                  alt={p.name}
+                  className="h-6 md:h-8 w-auto object-contain shrink-0 opacity-70 hover:opacity-100 transition-opacity"
+                />
+              ))
+            )}
           </div>
-        ) : (
-          <div className="overflow-hidden whitespace-nowrap">
-            <div className="inline-flex animate-marquee will-change-transform">
-              <span className="font-heading font-semibold text-2xl md:text-[26px] text-white/[0.06]">{MARQUEE.repeat(2)}</span>
-              <span className="font-heading font-semibold text-2xl md:text-[26px] text-white/[0.06]">{MARQUEE.repeat(2)}</span>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* ABOUT */}
