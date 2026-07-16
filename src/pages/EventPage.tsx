@@ -269,7 +269,6 @@ const EventPage: React.FC = () => {
 
   const cover = event.cover_image_url || getEventCover(event.slug);
   const numMatch = event.title.match(/#?\s*(\d+)/);
-  const eyebrow = `Митап${numMatch ? ` №${numMatch[1]}` : ""} · M.AI.N Community`;
   const priceLabel = event.price > 0 ? `${event.price} BYN` : "Бесплатно";
   const titleParts = event.title.split(/(ИИшница)/g);
 
@@ -292,9 +291,13 @@ const EventPage: React.FC = () => {
 
       {/* HERO */}
       <header className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 pt-24 md:pt-32 pb-6 md:pb-10">
-        <div className="inline-flex items-center gap-2 mb-6 md:mb-7 px-4 py-2 rounded-full border border-primary/30 bg-primary/10">
-          <span className="w-2 h-2 rounded-full bg-primary shadow-lime-sm" />
-          <span className="text-primary font-semibold text-[11px] md:text-[13px] uppercase tracking-wide">{eyebrow}</span>
+        <div className="inline-flex items-center gap-3 mb-6 md:mb-7">
+          <span className="px-3.5 py-1.5 rounded-full bg-primary text-primary-foreground text-[11px] md:text-xs font-bold uppercase tracking-[0.12em]">
+            Митап{numMatch ? ` №${numMatch[1]}` : ""}
+          </span>
+          <span className="text-muted-foreground text-xs md:text-sm font-semibold uppercase tracking-[0.16em]">
+            M.AI.N Community
+          </span>
         </div>
 
         <div className="max-w-[820px]">
@@ -311,13 +314,13 @@ const EventPage: React.FC = () => {
             </p>
           )}
           {regCount !== null && regCount > 0 && (
-            <div className="inline-flex items-center gap-3.5 mb-7 md:mb-8 px-5 py-3 rounded-2xl border border-primary/25 bg-primary/[0.07]">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+            <div className="flex items-baseline gap-3 mb-7 md:mb-8">
+              <span className="font-heading font-black text-5xl md:text-6xl text-primary tabular-nums leading-none tracking-tight">
+                {regCount}
               </span>
-              <span className="font-heading font-bold text-3xl md:text-4xl text-primary tabular-nums leading-none">{regCount}</span>
-              <span className="text-sm md:text-base text-muted-foreground leading-tight">человек<br className="hidden sm:block" /> уже зарегистрировались</span>
+              <span className="text-base md:text-lg text-muted-foreground font-medium">
+                уже зарегистрировались
+              </span>
             </div>
           )}
           <div className="flex flex-wrap gap-3.5 items-center">
