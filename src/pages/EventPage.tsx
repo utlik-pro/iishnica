@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowUp, MapPin, Users, Calendar as CalendarIcon, Presentation, Ticket } from "lucide-react";
+import { ArrowRight, ArrowUp, MapPin, Users, Calendar as CalendarIcon, Presentation, Ticket, Code2, Mic, Coffee } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EventLocationMap from "@/components/EventLocationMap";
@@ -62,10 +62,10 @@ interface ProgramItem {
 }
 
 const FEATURES = [
-  { title: "Только практика", desc: "Реальные кейсы с кодом, метриками и граблями" },
-  { title: "Нетворкинг", desc: "Инженеры, фаундеры и продакты за одним столом" },
-  { title: "Открытый микрофон", desc: "Задавайте вопросы спикерам напрямую" },
-  { title: "Кофе и общение", desc: "Тёплая атмосфера — часть ритуала «ИИшницы»" },
+  { title: "Только практика", desc: "Реальные кейсы с кодом, метриками и граблями", icon: Code2 },
+  { title: "Нетворкинг", desc: "Инженеры, фаундеры и продакты за одним столом", icon: Users },
+  { title: "Открытый микрофон", desc: "Задавайте вопросы спикерам напрямую", icon: Mic },
+  { title: "Кофе и общение", desc: "Тёплая атмосфера — часть ритуала «ИИшницы»", icon: Coffee },
 ];
 
 const FAQS = [
@@ -423,9 +423,9 @@ const EventPage: React.FC = () => {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {FEATURES.map((f) => (
-                <div key={f.title} className="flex gap-3.5 items-start">
-                  <div className="flex-shrink-0 w-[42px] h-[42px] rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center">
-                    <span className="w-2 h-2 rounded-full bg-primary shadow-lime-sm" />
+                <div key={f.title} className="flex gap-3.5 items-start group">
+                  <div className="flex-shrink-0 w-[42px] h-[42px] rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <f.icon className="w-[18px] h-[18px]" />
                   </div>
                   <div>
                     <div className="font-bold text-base text-foreground mb-0.5">{f.title}</div>
