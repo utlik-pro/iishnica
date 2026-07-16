@@ -91,10 +91,16 @@ const EventPage: React.FC = () => {
   // UI
   const [openFaq, setOpenFaq] = useState<number>(0);
   const [showTop, setShowTop] = useState(false);
+  const [now, setNow] = useState<number>(() => Date.now());
 
   useEffect(() => {
     if (id) fetchEvent(id);
   }, [id]);
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 500);
@@ -275,6 +281,14 @@ const EventPage: React.FC = () => {
   const priceLabel = event.price > 0 ? `${event.price} BYN` : "Бесплатно";
   const titleParts = event.title.split(/(ИИшница)/g);
 
+  const msLeft = Math.max(0, new Date(event.date).getTime() - now);
+  const countdown = [
+    { v: Math.floor(msLeft / 86400000), l: "дни" },
+    { v: Math.floor((msLeft % 86400000) / 3600000), l: "часы" },
+    { v: Math.floor((msLeft % 3600000) / 60000), l: "мин" },
+    { v: Math.floor((msLeft % 60000) / 1000), l: "сек" },
+  ];
+
   const metaCards = [
     { label: "Дата", value: formatDateShort(event.date), sub: `${formatWeekday(event.date)}, ${formatTime(event.date)}`, icon: CalendarIcon },
     { label: "Место", value: event.location_name || "Минск", sub: event.location_address || "уточняется", icon: MapPin },
@@ -316,6 +330,31 @@ const EventPage: React.FC = () => {
               {event.description}
             </p>
           )}
+
+          {/* countdown */}
+          {msLeft > 0 && (
+            <div className="mb-7 md:mb-8">
+              <div className="text-[11px] md:text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/70 mb-3">
+                До события осталось
+              </div>
+              <div className="flex gap-2.5 md:gap-3">
+                {countdown.map((u) => (
+                  <div
+                    key={u.l}
+                    className="flex-1 sm:flex-none sm:min-w-[82px] bg-card border border-white/[0.08] rounded-2xl px-2 py-3 md:px-4 md:py-4 text-center"
+                  >
+                    <div className="font-heading font-black text-2xl md:text-[40px] text-primary tabular-nums leading-none">
+                      {String(u.v).padStart(2, "0")}
+                    </div>
+                    <div className="text-[10px] md:text-[11px] uppercase tracking-[0.1em] text-muted-foreground mt-1.5 md:mt-2">
+                      {u.l}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {regCount !== null && regCount > 0 && (
             <div className="flex items-baseline gap-3 mb-7 md:mb-8">
               <span className="font-heading font-black text-5xl md:text-6xl text-primary tabular-nums leading-none tracking-tight">
