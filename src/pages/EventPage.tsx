@@ -71,7 +71,7 @@ const FEATURES = [
 const FAQS = [
   { q: "Это правда бесплатно?", a: "Да, участие в «ИИшнице» бесплатное. Мы просим регистрацию только чтобы понимать число гостей и подготовить достаточно кофе и мест." },
   { q: "Нужен ли технический бэкграунд?", a: "Не обязательно. Доклады рассчитаны на разный уровень — от продактов до сеньор-инженеров. Всегда есть вводная часть и время на вопросы." },
-  { q: "Будет ли запись?", a: "Да, видео докладов и слайды мы присылаем всем зарегистрированным участникам в течение недели после митапа." },
+  { q: "Будет ли запись?", a: "Нет, записи не будет — «ИИшница» про живое общение и практику здесь и сейчас. Приходите лично, чтобы ничего не упустить." },
   { q: "Можно прийти с коллегой?", a: "Конечно. Просто попросите его тоже зарегистрироваться — так мы точно всех разместим и никого не оставим без места." },
 ];
 
@@ -501,15 +501,20 @@ const EventPage: React.FC = () => {
           </div>
           <div className="flex flex-col gap-3.5">
             {program.map((p) => (
-              <div key={p.id} className="grid grid-cols-1 md:grid-cols-[120px_1fr_auto] gap-3 md:gap-7 md:items-center bg-white/[0.04] backdrop-blur-xl border border-white/[0.07] rounded-[20px] p-6 md:px-7 md:py-6 hover:border-primary/35 transition-colors">
-                <div className="font-heading font-bold text-xl md:text-2xl text-primary">
+              <div key={p.id} className="grid grid-cols-1 md:grid-cols-[120px_1fr_auto] gap-3 md:gap-7 md:items-start bg-white/[0.04] backdrop-blur-xl border border-white/[0.07] rounded-[20px] p-6 md:px-7 md:py-6 hover:border-primary/35 transition-colors">
+                <div className="font-heading font-bold text-xl md:text-2xl text-primary md:pt-0.5">
                   {formatProgramTime(p.time_start)}
                 </div>
                 <div className="min-w-0">
                   <div className="font-bold text-lg md:text-[19px] text-foreground mb-1 line-clamp-2">{p.title}</div>
-                  <div className="text-sm text-muted-foreground line-clamp-1">
-                    {p.speaker ? `${p.speaker.name}${p.speaker.title ? ` · ${p.speaker.title}` : ""}` : (p.description || "")}
-                  </div>
+                  {p.speaker && (
+                    <div className="text-sm font-medium text-primary/90 mb-1.5 line-clamp-1">
+                      {p.speaker.name}{p.speaker.title ? ` · ${p.speaker.title}` : ""}
+                    </div>
+                  )}
+                  {p.description && (
+                    <div className="text-sm text-muted-foreground leading-snug line-clamp-3">{p.description}</div>
+                  )}
                 </div>
                 <div className="justify-self-start md:justify-self-end text-xs font-semibold uppercase tracking-wide text-muted-foreground/80 bg-white/[0.05] px-3.5 py-2 rounded-full">
                   {p.speaker ? "Доклад"
