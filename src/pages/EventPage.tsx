@@ -280,6 +280,7 @@ const EventPage: React.FC = () => {
   const numMatch = event.title.match(/#?\s*(\d+)/);
   const numStr = numMatch ? numMatch[1] : null;
   const priceLabel = event.price > 0 ? `${event.price} BYN` : "Бесплатно";
+  const talksCount = program.filter((p) => p.speaker).length;
   // заголовок без номера, разбитый на «ИИшница» для акцента
   const titleText = event.title.replace(/[#№]?\s*\d+\s*$/, "").trim();
   const titleTextParts = titleText.split(/(ИИшница)/g);
@@ -295,7 +296,7 @@ const EventPage: React.FC = () => {
   const metaCards = [
     { label: "Дата", value: formatDateShort(event.date), sub: `${formatWeekday(event.date)}, ${formatTime(event.date)}`, icon: CalendarIcon },
     { label: "Место", value: event.location_name || "Минск", sub: event.location_address || "уточняется", icon: MapPin },
-    { label: "Формат", value: "Офлайн", sub: program.length > 0 ? `${program.length} ${pluralRu(program.length, "доклад", "доклада", "докладов")} + Q&A` : "митап + Q&A", icon: Presentation },
+    { label: "Формат", value: "Офлайн", sub: talksCount > 0 ? `${talksCount} ${pluralRu(talksCount, "доклад", "доклада", "докладов")} + Q&A` : "митап + Q&A", icon: Presentation },
     { label: "Участие", value: priceLabel, sub: "по регистрации", icon: Ticket },
   ];
 
@@ -418,7 +419,7 @@ const EventPage: React.FC = () => {
       {/* PARTNERS MARQUEE */}
       <div className="relative z-[1] my-12 md:my-14 border-y border-white/[0.08] py-7 md:py-8 overflow-hidden">
         <div className="text-center text-[11px] md:text-xs uppercase tracking-[0.2em] text-muted-foreground/60 mb-5 md:mb-6">
-          Партнёры сообщества
+          Эксперты из топовых компаний
         </div>
         <div className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_7%,#000_93%,transparent)]">
           <div className="inline-flex items-center gap-10 md:gap-16 animate-marquee will-change-transform pr-10 md:pr-16">
