@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowUp, MapPin, Users, Calendar as CalendarIcon, Presentation, Ticket, Code2, Mic, Coffee, CalendarDays, Clock, Timer, Hourglass } from "lucide-react";
+import { ArrowRight, ArrowUp, MapPin, Users, Calendar as CalendarIcon, Presentation, Ticket, Code2, Mic, Coffee, CalendarDays, Clock, Timer, Hourglass, ChevronDown } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EventLocationMap from "@/components/EventLocationMap";
@@ -92,6 +92,14 @@ const EventPage: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number>(0);
   const [showTop, setShowTop] = useState(false);
   const [now, setNow] = useState<number>(() => Date.now());
+  const [expandedProg, setExpandedProg] = useState<Set<string>>(new Set());
+
+  const toggleProg = (pid: string) =>
+    setExpandedProg((prev) => {
+      const next = new Set(prev);
+      next.has(pid) ? next.delete(pid) : next.add(pid);
+      return next;
+    });
 
   useEffect(() => {
     if (id) fetchEvent(id);
@@ -513,7 +521,20 @@ const EventPage: React.FC = () => {
                     </div>
                   )}
                   {p.description && (
-                    <div className="text-sm text-muted-foreground leading-snug line-clamp-3">{p.description}</div>
+                    <>
+                      <div className={`text-sm text-muted-foreground leading-relaxed whitespace-pre-line ${expandedProg.has(p.id) ? "" : "line-clamp-3"}`}>
+                        {p.description}
+                      </div>
+                      {p.description.length > 140 && (
+                        <button
+                          onClick={() => toggleProg(p.id)}
+                          className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:text-lime-dark transition-colors"
+                        >
+                          {expandedProg.has(p.id) ? "Свернуть" : "Подробнее"}
+                          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${expandedProg.has(p.id) ? "rotate-180" : ""}`} />
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
                 <div className="justify-self-start md:justify-self-end text-xs font-semibold uppercase tracking-wide text-muted-foreground/80 bg-white/[0.05] px-3.5 py-2 rounded-full">
