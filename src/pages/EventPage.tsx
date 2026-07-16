@@ -390,7 +390,7 @@ const EventPage: React.FC = () => {
                   key={`${rep}-${i}`}
                   src={p.src}
                   alt={p.name}
-                  className="h-6 md:h-8 w-auto object-contain shrink-0 opacity-70 hover:opacity-100 transition-opacity"
+                  className="h-6 md:h-8 w-auto object-contain shrink-0 brightness-0 invert opacity-60 hover:opacity-100 transition-opacity"
                 />
               ))
             )}
