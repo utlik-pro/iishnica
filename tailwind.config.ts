@@ -22,6 +22,7 @@ export default {
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
 				heading: ['"Inter Tight"', 'Inter', 'sans-serif'],
+				display: ['"Unbounded"', '"Inter Tight"', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

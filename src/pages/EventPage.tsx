@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowUp, MapPin, Users, Calendar as CalendarIcon, Presentation, Ticket, Code2, Mic, Coffee } from "lucide-react";
+import { ArrowRight, ArrowUp, MapPin, Users, Calendar as CalendarIcon, Presentation, Ticket, Code2, Mic, Coffee, CalendarDays, Clock, Timer, Hourglass } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EventLocationMap from "@/components/EventLocationMap";
@@ -278,15 +278,18 @@ const EventPage: React.FC = () => {
 
   const cover = event.cover_image_url || getEventCover(event.slug);
   const numMatch = event.title.match(/#?\s*(\d+)/);
+  const numStr = numMatch ? numMatch[1] : null;
   const priceLabel = event.price > 0 ? `${event.price} BYN` : "Бесплатно";
-  const titleParts = event.title.split(/(ИИшница)/g);
+  // заголовок без номера, разбитый на «ИИшница» для акцента
+  const titleText = event.title.replace(/[#№]?\s*\d+\s*$/, "").trim();
+  const titleTextParts = titleText.split(/(ИИшница)/g);
 
   const msLeft = Math.max(0, new Date(event.date).getTime() - now);
   const countdown = [
-    { v: Math.floor(msLeft / 86400000), l: "дни" },
-    { v: Math.floor((msLeft % 86400000) / 3600000), l: "часы" },
-    { v: Math.floor((msLeft % 3600000) / 60000), l: "мин" },
-    { v: Math.floor((msLeft % 60000) / 1000), l: "сек" },
+    { v: Math.floor(msLeft / 86400000), l: "дни", icon: CalendarDays },
+    { v: Math.floor((msLeft % 86400000) / 3600000), l: "часы", icon: Clock },
+    { v: Math.floor((msLeft % 3600000) / 60000), l: "мин", icon: Timer },
+    { v: Math.floor((msLeft % 60000) / 1000), l: "сек", icon: Hourglass },
   ];
 
   const metaCards = [
@@ -317,62 +320,65 @@ const EventPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="max-w-[820px]">
-          <h1 className="font-heading font-black tracking-tight leading-[0.95] text-5xl sm:text-6xl md:text-7xl lg:text-[104px] mb-5 md:mb-6">
-            {titleParts.map((part, i) =>
-              part === "ИИшница"
-                ? <span key={i} className="gradient-text">{part}</span>
-                : <span key={i} className="text-foreground">{part}</span>
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8 lg:gap-12">
+          <div className="flex-1 min-w-0 max-w-[820px] order-2 lg:order-1">
+            <h1 className="font-heading font-black tracking-tight leading-[0.95] text-5xl sm:text-6xl md:text-7xl lg:text-[100px] mb-5 md:mb-6">
+              {titleTextParts.map((part, i) =>
+                part === "ИИшница"
+                  ? <span key={i} className="gradient-text">{part}</span>
+                  : <span key={i} className="text-foreground">{part}</span>
+              )}
+              {numStr && (
+                <span className="block sm:inline font-display gradient-text text-[0.82em] leading-none sm:ml-3 mt-2 sm:mt-0">
+                  #{numStr}
+                </span>
+              )}
+            </h1>
+            {event.description && (
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-[560px] mb-7 md:mb-9">
+                {event.description}
+              </p>
             )}
-          </h1>
-          {event.description && (
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-[560px] mb-6 md:mb-7">
-              {event.description}
-            </p>
-          )}
 
-          {/* countdown */}
-          {msLeft > 0 && (
-            <div className="mb-7 md:mb-8">
-              <div className="text-[11px] md:text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/70 mb-3">
-                До события осталось
+            {regCount !== null && regCount > 0 && (
+              <div className="flex items-baseline gap-3 mb-7 md:mb-9">
+                <span className="font-heading font-black text-6xl md:text-8xl text-primary tabular-nums leading-none tracking-tight">
+                  {regCount}
+                </span>
+                <span className="text-base md:text-xl text-muted-foreground font-medium">
+                  уже зарегистрировались
+                </span>
               </div>
-              <div className="flex gap-2.5 md:gap-3">
+            )}
+            <div className="flex flex-wrap gap-3.5 items-center">
+              <button
+                onClick={openBot}
+                className="inline-flex items-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base md:text-[17px] px-7 md:px-8 py-4 md:py-[17px] shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all"
+              >
+                Зарегистрироваться <ArrowRight className="w-[18px] h-[18px]" />
+              </button>
+            </div>
+          </div>
+
+          {/* countdown — справа, стеклянная плашка, без обводки у чисел */}
+          {msLeft > 0 && (
+            <div className="order-1 lg:order-2 shrink-0 self-start surface-card rounded-3xl px-6 py-5 md:px-8 md:py-7">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70 mb-4 md:mb-5 text-center">
+                До события
+              </div>
+              <div className="flex gap-5 md:gap-7 justify-center">
                 {countdown.map((u) => (
-                  <div
-                    key={u.l}
-                    className="flex-1 sm:flex-none sm:min-w-[82px] bg-card border border-white/[0.08] rounded-2xl px-2 py-3 md:px-4 md:py-4 text-center"
-                  >
-                    <div className="font-heading font-black text-2xl md:text-[40px] text-primary tabular-nums leading-none">
+                  <div key={u.l} className="text-center">
+                    <u.icon className="w-4 h-4 md:w-[18px] md:h-[18px] text-primary mx-auto mb-2 opacity-80" />
+                    <div className="font-heading font-black text-3xl md:text-[44px] text-foreground tabular-nums leading-none">
                       {String(u.v).padStart(2, "0")}
                     </div>
-                    <div className="text-[10px] md:text-[11px] uppercase tracking-[0.1em] text-muted-foreground mt-1.5 md:mt-2">
-                      {u.l}
-                    </div>
+                    <div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground mt-2">{u.l}</div>
                   </div>
                 ))}
               </div>
             </div>
           )}
-
-          {regCount !== null && regCount > 0 && (
-            <div className="flex items-baseline gap-3 mb-7 md:mb-8">
-              <span className="font-heading font-black text-5xl md:text-6xl text-primary tabular-nums leading-none tracking-tight">
-                {regCount}
-              </span>
-              <span className="text-base md:text-lg text-muted-foreground font-medium">
-                уже зарегистрировались
-              </span>
-            </div>
-          )}
-          <div className="flex flex-wrap gap-3.5 items-center">
-            <button
-              onClick={openBot}
-              className="inline-flex items-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base md:text-[17px] px-7 md:px-8 py-4 md:py-[17px] shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all"
-            >
-              Зарегистрироваться <ArrowRight className="w-[18px] h-[18px]" />
-            </button>
-          </div>
         </div>
 
         {/* speakers banner */}
@@ -400,16 +406,16 @@ const EventPage: React.FC = () => {
           {metaCards.map((m) => (
             <div
               key={m.label}
-              className="group relative overflow-hidden bg-card border border-white/[0.07] rounded-[22px] p-5 md:p-6 hover:border-primary/40 hover:-translate-y-1 transition-all duration-300"
+              className="group relative overflow-hidden bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-[22px] p-5 md:p-6 hover:border-primary/40 hover:bg-white/[0.06] hover:-translate-y-1 transition-all duration-300"
             >
               <div aria-hidden className="pointer-events-none absolute -top-10 -right-10 w-24 h-24 rounded-full bg-primary/[0.07] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative flex items-center justify-between mb-4 md:mb-5">
                 <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground/60">{m.label}</span>
-                <span className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <span className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
                   <m.icon className="w-[18px] h-[18px]" />
                 </span>
               </div>
-              <div className="relative font-heading font-bold text-lg md:text-[22px] leading-tight text-foreground">{m.value}</div>
+              <div className="relative font-heading font-black text-lg md:text-[22px] leading-tight text-foreground">{m.value}</div>
               <div className="relative text-[13px] md:text-sm text-muted-foreground mt-1.5 truncate">{m.sub}</div>
             </div>
           ))}
@@ -463,7 +469,7 @@ const EventPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {FEATURES.map((f) => (
                 <div key={f.title} className="flex gap-3.5 items-start group">
-                  <div className="flex-shrink-0 w-[42px] h-[42px] rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <div className="flex-shrink-0 w-[42px] h-[42px] rounded-xl bg-white/[0.06] border border-white/[0.1] backdrop-blur-md flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
                     <f.icon className="w-[18px] h-[18px]" />
                   </div>
                   <div>
@@ -501,7 +507,7 @@ const EventPage: React.FC = () => {
           </div>
           <div className="flex flex-col gap-3.5">
             {program.map((p) => (
-              <div key={p.id} className="grid grid-cols-1 md:grid-cols-[120px_1fr_auto] gap-3 md:gap-7 md:items-center bg-card border border-white/[0.07] rounded-[20px] p-6 md:px-7 md:py-6 hover:border-primary/35 transition-colors">
+              <div key={p.id} className="grid grid-cols-1 md:grid-cols-[120px_1fr_auto] gap-3 md:gap-7 md:items-center bg-white/[0.04] backdrop-blur-xl border border-white/[0.07] rounded-[20px] p-6 md:px-7 md:py-6 hover:border-primary/35 transition-colors">
                 <div className="font-heading font-bold text-xl md:text-2xl text-primary">
                   {formatProgramTime(p.time_start)}
                 </div>
@@ -531,7 +537,7 @@ const EventPage: React.FC = () => {
           <h2 className="font-heading font-bold tracking-tight text-3xl md:text-5xl text-foreground mb-11">Кто выступает</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {speakers.map((s) => (
-              <div key={s.speaker_id} className="bg-card border border-white/[0.07] rounded-[24px] overflow-hidden hover:border-primary/35 hover:-translate-y-1 transition-all duration-300">
+              <div key={s.speaker_id} className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.07] rounded-[24px] overflow-hidden hover:border-primary/35 hover:-translate-y-1 transition-all duration-300">
                 <div className="aspect-[4/5] relative bg-secondary">
                   {s.speaker.photo_url ? (
                     <img src={s.speaker.photo_url} alt={s.speaker.name} className="w-full h-full object-cover object-top" />
@@ -578,7 +584,7 @@ const EventPage: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl">
                     {generalPartners.map((s) => (
                       <a key={s.id} href={s.website_url || '#'} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center justify-center min-h-[100px] rounded-[20px] border border-primary/30 bg-card hover:border-primary/50 transition-colors p-6">
+                        className="flex items-center justify-center min-h-[100px] rounded-[20px] border border-primary/30 bg-white/[0.04] backdrop-blur-xl hover:border-primary/50 transition-colors p-6">
                         {s.logo_url ? <img src={s.logo_url} alt={s.name} className="max-h-20 max-w-full object-contain" /> : <span className="text-xl font-semibold text-foreground">{s.name}</span>}
                       </a>
                     ))}
@@ -591,7 +597,7 @@ const EventPage: React.FC = () => {
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {partners.map((s) => (
                       <a key={s.id} href={s.website_url || '#'} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center justify-center min-h-[80px] rounded-[18px] border border-white/[0.07] bg-card hover:border-primary/35 transition-colors p-5">
+                        className="flex items-center justify-center min-h-[80px] rounded-[18px] border border-white/[0.07] bg-white/[0.04] backdrop-blur-xl hover:border-primary/35 transition-colors p-5">
                         {s.logo_url ? <img src={s.logo_url} alt={s.name} className="max-h-14 max-w-full object-contain" /> : <span className="font-semibold text-foreground">{s.name}</span>}
                       </a>
                     ))}
@@ -617,7 +623,7 @@ const EventPage: React.FC = () => {
       {/* LOCATION */}
       {(event.location_name || event.location_address) && (
         <section id="location" className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-[72px]">
-          <div className="rounded-[28px] overflow-hidden border border-white/[0.07] bg-card grid md:grid-cols-[1fr_1.1fr]">
+          <div className="rounded-[28px] overflow-hidden border border-white/[0.07] bg-white/[0.04] backdrop-blur-xl grid md:grid-cols-[1fr_1.1fr]">
             <div className="p-8 md:p-12">
               <div className="text-[13px] md:text-sm font-bold uppercase tracking-widest text-primary mb-4">Место</div>
               <h2 className="font-heading font-bold tracking-tight text-3xl md:text-[38px] text-foreground mb-5">
@@ -674,7 +680,7 @@ const EventPage: React.FC = () => {
         <div className="flex flex-col gap-3">
           {FAQS.map((f, i) => (
             <div key={i} onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
-              className="bg-card border border-white/[0.07] rounded-[18px] px-6 py-5 cursor-pointer hover:border-primary/30 transition-colors">
+              className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.07] rounded-[18px] px-6 py-5 cursor-pointer hover:border-primary/30 transition-colors">
               <div className="flex justify-between items-center gap-4">
                 <span className="font-bold text-[17px] text-foreground">{f.q}</span>
                 <span className="text-primary text-2xl leading-none flex-shrink-0">{openFaq === i ? "−" : "+"}</span>
