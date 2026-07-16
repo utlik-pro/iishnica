@@ -170,19 +170,10 @@ const EventPage: React.FC = () => {
         `)
         .eq("event_id", eventData.id);
 
-      const eventSponsors = (eventSponsorsData || [])
+      // только реальные партнёры события (без общего фолбэка)
+      setSponsors((eventSponsorsData || [])
         .map((item: any) => item.sponsor ? { ...item.sponsor, effectiveTier: item.tier || item.sponsor.tier || 'sponsor' } : null)
-        .filter(Boolean) as Sponsor[];
-      if (eventSponsors.length > 0) {
-        setSponsors(eventSponsors);
-      } else {
-        // фолбэк: общие активные партнёры сообщества
-        const { data: genSp } = await supabase
-          .from("sponsors")
-          .select("id, name, logo_url, website_url, tier")
-          .eq("is_active", true);
-        setSponsors((genSp || []).map((s: any) => ({ ...s, effectiveTier: s.tier || 'sponsor' })));
-      }
+        .filter(Boolean) as Sponsor[]);
 
       const { data: programData } = await supabase
         .from("event_program")
@@ -299,9 +290,19 @@ const EventPage: React.FC = () => {
             )}
           </h1>
           {event.description && (
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-[560px] mb-8 md:mb-9">
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-[560px] mb-6 md:mb-7">
               {event.description}
             </p>
+          )}
+          {regCount !== null && regCount > 0 && (
+            <div className="inline-flex items-center gap-3.5 mb-7 md:mb-8 px-5 py-3 rounded-2xl border border-primary/25 bg-primary/[0.07]">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+              </span>
+              <span className="font-heading font-bold text-3xl md:text-4xl text-primary tabular-nums leading-none">{regCount}</span>
+              <span className="text-sm md:text-base text-muted-foreground leading-tight">человек<br className="hidden sm:block" /> уже зарегистрировались</span>
+            </div>
           )}
           <div className="flex flex-wrap gap-3.5 items-center">
             <button
@@ -310,17 +311,6 @@ const EventPage: React.FC = () => {
             >
               Зарегистрироваться <ArrowRight className="w-[18px] h-[18px]" />
             </button>
-            {regCount !== null && regCount > 0 && (
-              <div className="inline-flex items-center gap-3 px-5 md:px-6 py-3.5 md:py-4 rounded-full border border-white/[0.12] bg-white/[0.02]">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
-                </span>
-                <span className="text-sm md:text-[15px] font-medium text-muted-foreground whitespace-nowrap">
-                  Уже <span className="text-foreground font-semibold">{regCount}</span> зарегистрировались
-                </span>
-              </div>
-            )}
           </div>
         </div>
 
