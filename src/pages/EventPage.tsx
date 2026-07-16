@@ -321,7 +321,7 @@ const EventPage: React.FC = () => {
         </div>
 
         <div className="max-w-[900px]">
-          <h1 className="font-heading font-black tracking-tight leading-[0.95] text-5xl sm:text-6xl md:text-7xl lg:text-[100px] mb-5 md:mb-6">
+          <h1 className="font-heading font-black tracking-tight leading-[0.92] text-6xl sm:text-7xl md:text-8xl lg:text-[120px] mb-5 md:mb-6">
             {titleTextParts.map((part, i) =>
               part === "ИИшница"
                 ? <span key={i} className="gradient-text">{part}</span>
@@ -341,10 +341,10 @@ const EventPage: React.FC = () => {
 
           {regCount !== null && regCount > 0 && (
             <div className="flex items-baseline gap-3 mb-7 md:mb-8">
-              <span className="font-heading font-black text-6xl md:text-8xl text-primary tabular-nums leading-none tracking-tight">
+              <span className="font-heading font-black text-4xl md:text-5xl text-primary tabular-nums leading-none tracking-tight">
                 {regCount}
               </span>
-              <span className="text-base md:text-xl text-muted-foreground font-medium">
+              <span className="text-sm md:text-base text-muted-foreground font-medium">
                 уже зарегистрировались
               </span>
             </div>
