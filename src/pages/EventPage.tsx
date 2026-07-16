@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowUp, MapPin, Users } from "lucide-react";
+import { ArrowRight, ArrowUp, MapPin, Users, Calendar as CalendarIcon, Presentation, Ticket } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EventLocationMap from "@/components/EventLocationMap";
@@ -234,6 +234,12 @@ const EventPage: React.FC = () => {
   const getInitials = (name: string) =>
     name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
   const formatProgramTime = (t: string) => t.slice(0, 5);
+  const pluralRu = (n: number, one: string, few: string, many: string) => {
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+    return many;
+  };
 
   const openBot = () => {
     if (event) window.open(`https://telegram.me/maincomapp_bot?startapp=event_${event.id}`, "_blank");
@@ -273,10 +279,10 @@ const EventPage: React.FC = () => {
   const titleParts = event.title.split(/(ИИшница)/g);
 
   const metaCards = [
-    { label: "Дата", value: formatDateShort(event.date), sub: `${formatWeekday(event.date)}, ${formatTime(event.date)}` },
-    { label: "Место", value: event.location_name || "Минск", sub: event.location_address || "уточняется" },
-    { label: "Формат", value: "Офлайн", sub: program.length > 0 ? `${program.length} в программе` : "митап + Q&A" },
-    { label: "Участие", value: priceLabel, sub: "по регистрации" },
+    { label: "Дата", value: formatDateShort(event.date), sub: `${formatWeekday(event.date)}, ${formatTime(event.date)}`, icon: CalendarIcon },
+    { label: "Место", value: event.location_name || "Минск", sub: event.location_address || "уточняется", icon: MapPin },
+    { label: "Формат", value: "Офлайн", sub: program.length > 0 ? `${program.length} ${pluralRu(program.length, "доклад", "доклада", "докладов")} + Q&A` : "митап + Q&A", icon: Presentation },
+    { label: "Участие", value: priceLabel, sub: "по регистрации", icon: Ticket },
   ];
 
   return (
@@ -356,10 +362,19 @@ const EventPage: React.FC = () => {
         {/* meta strip */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-10 md:mt-14">
           {metaCards.map((m) => (
-            <div key={m.label} className="bg-card border border-white/[0.07] rounded-[20px] p-5 md:p-[22px] hover:border-primary/35 transition-colors">
-              <div className="text-[11px] md:text-[13px] font-bold uppercase tracking-wide text-muted-foreground/70 mb-2 md:mb-2.5">{m.label}</div>
-              <div className="font-heading font-semibold text-lg md:text-[22px] leading-tight text-foreground">{m.value}</div>
-              <div className="text-[13px] md:text-sm text-muted-foreground mt-1 truncate">{m.sub}</div>
+            <div
+              key={m.label}
+              className="group relative overflow-hidden bg-card border border-white/[0.07] rounded-[22px] p-5 md:p-6 hover:border-primary/40 hover:-translate-y-1 transition-all duration-300"
+            >
+              <div aria-hidden className="pointer-events-none absolute -top-10 -right-10 w-24 h-24 rounded-full bg-primary/[0.07] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center justify-between mb-4 md:mb-5">
+                <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground/60">{m.label}</span>
+                <span className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <m.icon className="w-[18px] h-[18px]" />
+                </span>
+              </div>
+              <div className="relative font-heading font-bold text-lg md:text-[22px] leading-tight text-foreground">{m.value}</div>
+              <div className="relative text-[13px] md:text-sm text-muted-foreground mt-1.5 truncate">{m.sub}</div>
             </div>
           ))}
         </div>
