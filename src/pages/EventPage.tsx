@@ -320,65 +320,58 @@ const EventPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8 lg:gap-12">
-          <div className="flex-1 min-w-0 max-w-[820px] order-2 lg:order-1">
-            <h1 className="font-heading font-black tracking-tight leading-[0.95] text-5xl sm:text-6xl md:text-7xl lg:text-[100px] mb-5 md:mb-6">
-              {titleTextParts.map((part, i) =>
-                part === "ИИшница"
-                  ? <span key={i} className="gradient-text">{part}</span>
-                  : <span key={i} className="text-foreground">{part}</span>
-              )}
-              {numStr && (
-                <span className="block sm:inline font-display gradient-text text-[0.82em] leading-none sm:ml-3 mt-2 sm:mt-0">
-                  #{numStr}
-                </span>
-              )}
-            </h1>
-            {event.description && (
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-[560px] mb-7 md:mb-9">
-                {event.description}
-              </p>
+        <div className="max-w-[900px]">
+          <h1 className="font-heading font-black tracking-tight leading-[0.95] text-5xl sm:text-6xl md:text-7xl lg:text-[100px] mb-5 md:mb-6">
+            {titleTextParts.map((part, i) =>
+              part === "ИИшница"
+                ? <span key={i} className="gradient-text">{part}</span>
+                : <span key={i} className="text-foreground">{part}</span>
             )}
+            {numStr && (
+              <span className="block sm:inline font-display gradient-text text-[0.82em] leading-none sm:ml-3 mt-2 sm:mt-0">
+                #{numStr}
+              </span>
+            )}
+          </h1>
+          {event.description && (
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-[560px] mb-6 md:mb-8">
+              {event.description}
+            </p>
+          )}
 
-            {regCount !== null && regCount > 0 && (
-              <div className="flex items-baseline gap-3 mb-7 md:mb-9">
-                <span className="font-heading font-black text-6xl md:text-8xl text-primary tabular-nums leading-none tracking-tight">
-                  {regCount}
-                </span>
-                <span className="text-base md:text-xl text-muted-foreground font-medium">
-                  уже зарегистрировались
-                </span>
-              </div>
-            )}
-            <div className="flex flex-wrap gap-3.5 items-center">
-              <button
-                onClick={openBot}
-                className="inline-flex items-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base md:text-[17px] px-7 md:px-8 py-4 md:py-[17px] shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all"
-              >
-                Зарегистрироваться <ArrowRight className="w-[18px] h-[18px]" />
-              </button>
+          {regCount !== null && regCount > 0 && (
+            <div className="flex items-baseline gap-3 mb-7 md:mb-8">
+              <span className="font-heading font-black text-6xl md:text-8xl text-primary tabular-nums leading-none tracking-tight">
+                {regCount}
+              </span>
+              <span className="text-base md:text-xl text-muted-foreground font-medium">
+                уже зарегистрировались
+              </span>
             </div>
-          </div>
+          )}
 
-          {/* countdown — справа, стеклянная плашка, без обводки у чисел */}
-          {msLeft > 0 && (
-            <div className="order-1 lg:order-2 shrink-0 self-start surface-card rounded-3xl px-6 py-5 md:px-8 md:py-7">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70 mb-4 md:mb-5 text-center">
-                До события
-              </div>
-              <div className="flex gap-5 md:gap-7 justify-center">
+          {/* кнопка + таймер в одну линию (десктоп); на мобиле таймер на всю ширину */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-9">
+            <button
+              onClick={openBot}
+              className="shrink-0 inline-flex items-center justify-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base md:text-[17px] px-7 md:px-8 py-4 md:py-[17px] shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all"
+            >
+              Зарегистрироваться <ArrowRight className="w-[18px] h-[18px]" />
+            </button>
+
+            {msLeft > 0 && (
+              <div className="flex items-center justify-between w-full sm:w-auto gap-4 sm:gap-9">
                 {countdown.map((u) => (
                   <div key={u.l} className="text-center">
-                    <u.icon className="w-4 h-4 md:w-[18px] md:h-[18px] text-primary mx-auto mb-2 opacity-80" />
-                    <div className="font-heading font-black text-3xl md:text-[44px] text-foreground tabular-nums leading-none">
+                    <div className="font-heading font-black text-3xl md:text-[42px] text-foreground tabular-nums leading-none">
                       {String(u.v).padStart(2, "0")}
                     </div>
-                    <div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground mt-2">{u.l}</div>
+                    <div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground mt-1.5">{u.l}</div>
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* speakers banner */}
