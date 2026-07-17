@@ -18,6 +18,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import { setupInitialData } from "./integrations/supabase/setup";
 import { TrackingPixels } from "./components/TrackingPixels";
+import SplashIntro from "./components/SplashIntro";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <SplashIntro />
           <Toaster />
           <Sonner />
           <BrowserRouter>
