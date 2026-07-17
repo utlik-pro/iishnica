@@ -38,10 +38,16 @@ const SplashIntro: React.FC = () => {
     document.body.style.overflow = "hidden";
 
     // страховка: если видео не запустится/зависнет — раскрываем сайт
-    const safety = window.setTimeout(dismiss, 12000);
+    const safety = window.setTimeout(dismiss, 8000);
 
-    // на всякий случай пробуем запустить воспроизведение
-    videoRef.current?.play?.().catch(() => {});
+    // Надёжный автоплей: принудительно ставим muted на DOM-уровне (иначе браузер
+    // может заблокировать autoplay) и запускаем воспроизведение
+    const vid = videoRef.current;
+    if (vid) {
+      vid.muted = true;
+      vid.defaultMuted = true;
+      vid.play?.().catch(() => {});
+    }
 
     return () => {
       document.body.style.overflow = prevOverflow;
@@ -54,6 +60,7 @@ const SplashIntro: React.FC = () => {
 
   return (
     <div
+      onClick={() => videoRef.current?.play?.().catch(() => {})}
       className={`fixed inset-0 z-[9999] bg-black flex items-center justify-center transition-opacity duration-500 ${
         fading ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
@@ -67,10 +74,6 @@ const SplashIntro: React.FC = () => {
         muted
         playsInline
         preload="auto"
-        onTimeUpdate={(e) => {
-          // раскрываем сайт в момент, когда лого собран (~10.5с)
-          if (e.currentTarget.currentTime >= 10.5) dismiss();
-        }}
         onEnded={dismiss}
         onError={dismiss}
       />
