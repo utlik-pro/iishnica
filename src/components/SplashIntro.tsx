@@ -37,8 +37,8 @@ const SplashIntro: React.FC = () => {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // страховка: если видео не доиграет/зависнет — раскрываем сайт
-    const safety = window.setTimeout(dismiss, 40000);
+    // страховка: если видео не запустится/зависнет — раскрываем сайт
+    const safety = window.setTimeout(dismiss, 12000);
 
     // на всякий случай пробуем запустить воспроизведение
     videoRef.current?.play?.().catch(() => {});
@@ -67,6 +67,10 @@ const SplashIntro: React.FC = () => {
         muted
         playsInline
         preload="auto"
+        onTimeUpdate={(e) => {
+          // раскрываем сайт в момент, когда лого собран (~10.5с)
+          if (e.currentTarget.currentTime >= 10.5) dismiss();
+        }}
         onEnded={dismiss}
         onError={dismiss}
       />
