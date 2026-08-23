@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import Calendar from "./pages/Calendar";
 import EventPage from "./pages/EventPage";
+import IishnicaV2 from "./pages/IishnicaV2";
 import EventDetail from "./pages/EventDetail";
 import EventGrodno from "./pages/EventGrodno";
 import EventDecember18 from "./pages/EventDecember18";
@@ -39,6 +40,10 @@ const App = () => {
             <TrackingPixels pageSlug="home" />
             <Routes>
               <Route path="/" element={<Index />} />
+              {/* Новая версия лендинга — сезон 2026/2027 + партнёрские пакеты.
+                  Старая версия остаётся на "/" без изменений. */}
+              <Route path="/v2" element={<IishnicaV2 />} />
+              <Route path="/season" element={<IishnicaV2 />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/blog" element={<Blog />} />
