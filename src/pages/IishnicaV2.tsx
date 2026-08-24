@@ -1,10 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { ArrowRight, ArrowUp, Check, Mail, Phone, Sparkles, Users } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUp,
+  Briefcase,
+  Check,
+  Cpu,
+  GraduationCap,
+  Mail,
+  Phone,
+  Rocket,
+  Sparkles,
+  TrendingUp,
+  UserCog,
+  Users,
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { PARTNER_LOGOS } from "@/lib/partners";
+import {
+  AUDIENCE_SEGMENTS,
+  AUDIENCE_STATS,
+  COMMUNITY_ABOUT,
+  COMMUNITY_GEO,
+  GALLERY,
+  SHOWCASE_SPEAKERS,
+  SPEAKER_CARD_BG,
+} from "@/lib/community";
 import {
   BIG_FORMAT_CAPACITY,
   PARTNER_PACKAGES,
@@ -18,6 +41,30 @@ import {
 const BOT_URL = "https://telegram.me/maincomapp_bot";
 const CONTACT_EMAIL = "admin@utlik.pro";
 const CONTACT_PHONE = "+375 44 755 4000";
+
+const SEGMENT_ICONS = {
+  briefcase: Briefcase,
+  userCog: UserCog,
+  trending: TrendingUp,
+  cpu: Cpu,
+  graduation: GraduationCap,
+  rocket: Rocket,
+} as const;
+
+/** Заголовок секции: лаймовый eyebrow + крупный H2 с акцентным словом. */
+const SectionHead: React.FC<{ eyebrow: string; title: string; accent?: string }> = ({
+  eyebrow,
+  title,
+  accent,
+}) => (
+  <>
+    <div className="text-[13px] md:text-sm font-bold uppercase tracking-widest text-primary mb-4">{eyebrow}</div>
+    <h2 className="font-heading font-bold tracking-tight leading-[1.02] text-3xl md:text-5xl text-foreground">
+      {title}
+      {accent && <span className="text-primary"> {accent}</span>}
+    </h2>
+  </>
+);
 
 const initials = (name: string) =>
   name
@@ -268,6 +315,82 @@ const IishnicaV2: React.FC = () => {
         </div>
       </div>
 
+      {/* О СООБЩЕСТВЕ */}
+      <section id="about" className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-16 scroll-mt-24">
+        <div className="grid gap-9 md:gap-14 lg:grid-cols-[1fr_0.85fr] lg:items-center">
+          <div>
+            <SectionHead
+              eyebrow={COMMUNITY_ABOUT.eyebrow}
+              title={COMMUNITY_ABOUT.title}
+              accent={COMMUNITY_ABOUT.titleAccent}
+            />
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mt-5 md:mt-6 max-w-[560px]">
+              {COMMUNITY_ABOUT.text}
+            </p>
+            <div className="flex flex-wrap gap-2.5 mt-7 md:mt-8">
+              {COMMUNITY_ABOUT.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-sm font-medium text-foreground"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative rounded-[26px] overflow-hidden border border-white/[0.08] shadow-card">
+            <img
+              src={COMMUNITY_ABOUT.photo}
+              alt="Участники комьюнити M.AI.N"
+              loading="lazy"
+              className="block w-full h-auto"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ГЕОГРАФИЯ */}
+      <section className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-16">
+        <div className="grid gap-9 md:gap-14 lg:grid-cols-[1fr_0.95fr] lg:items-center">
+          <div>
+            <SectionHead
+              eyebrow={COMMUNITY_GEO.eyebrow}
+              title={COMMUNITY_GEO.title}
+              accent={COMMUNITY_GEO.titleAccent}
+            />
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mt-5 md:mt-6 max-w-[520px]">
+              {COMMUNITY_GEO.text}
+            </p>
+            <div className="flex flex-wrap gap-2.5 mt-7 md:mt-8">
+              {COMMUNITY_GEO.places.map((p) => (
+                <span
+                  key={p.label}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-sm font-medium text-foreground"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                  <span aria-hidden>{p.flag}</span>
+                  {p.label}
+                </span>
+              ))}
+            </div>
+            <div className="font-heading font-black tracking-tight text-primary text-5xl md:text-7xl mt-8 md:mt-10">
+              {COMMUNITY_GEO.highlight}
+            </div>
+          </div>
+
+          <div className="relative rounded-[26px] overflow-hidden border border-white/[0.08] bg-white/[0.02] p-3 md:p-4">
+            <img
+              src={COMMUNITY_GEO.map}
+              alt="Карта присутствия M.AI.N: Беларусь, Москва, Баку"
+              loading="lazy"
+              className="block w-full h-auto rounded-[16px]"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* КАЛЕНДАРЬ СЕЗОНА */}
       <section id="events" className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-16">
         <div className="text-[13px] md:text-sm font-bold uppercase tracking-widest text-primary mb-4">
@@ -297,6 +420,93 @@ const IishnicaV2: React.FC = () => {
             </div>
           </div>
         ))}
+      </section>
+
+      {/* СПИКЕРЫ ПРОШЛЫХ ВЫПУСКОВ.
+          Карточки вырезаны из презентации вместе с фоном, поэтому фон секции
+          выставлен в тот же цвет — иначе вокруг них видны швы. */}
+      <section
+        id="speakers"
+        className="relative z-[1] py-14 md:py-20 scroll-mt-24"
+        style={{ backgroundColor: SPEAKER_CARD_BG }}
+      >
+        <div className="max-w-[1240px] mx-auto px-5 md:px-8">
+          <SectionHead eyebrow="Спикеры" title="На нашей сцене —" accent="лидеры рынка" />
+          <div className="grid gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-3 mt-9 md:mt-12">
+            {SHOWCASE_SPEAKERS.map((s) => (
+              <img
+                key={s.name}
+                src={s.card}
+                alt={`${s.name} — ${s.org}`}
+                loading="lazy"
+                className="block w-full h-auto hover:-translate-y-1 transition-transform duration-300"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* АУДИТОРИЯ */}
+      <section className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-12 md:py-20">
+        <SectionHead eyebrow="Аудитория" title="Кто будет" accent="в зале" />
+
+        <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3 mt-6 md:mt-8">
+          {[
+            { v: communityCount ? communityCount.toLocaleString("ru-RU") : "—", l: "в сообществе" },
+            { v: String(AUDIENCE_STATS.guests), l: "гостей события" },
+            { v: `≈${AUDIENCE_STATS.decisionMakers}`, l: "руководителей и ЛПР" },
+          ].map((s) => (
+            <div key={s.l} className="flex items-baseline gap-2.5">
+              <span className="font-heading font-black text-3xl md:text-[40px] text-primary tabular-nums leading-none">
+                {s.v}
+              </span>
+              <span className="text-sm md:text-base text-muted-foreground">{s.l}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-9 md:mt-12">
+          {AUDIENCE_SEGMENTS.map((seg) => {
+            const Icon = SEGMENT_ICONS[seg.icon as keyof typeof SEGMENT_ICONS];
+            return (
+              <div
+                key={seg.title}
+                className="group bg-white/[0.04] border border-white/[0.08] rounded-[22px] p-5 md:p-6 hover:border-primary/40 hover:bg-white/[0.06] hover:-translate-y-1 transition-all duration-300"
+              >
+                <span className="w-11 h-11 rounded-xl bg-primary/[0.12] border border-primary/25 flex items-center justify-center text-primary mb-5 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <Icon className="w-5 h-5" />
+                </span>
+                <div className="font-heading font-bold text-base md:text-[17px] text-foreground leading-snug">
+                  {seg.title}
+                </div>
+                <div className="text-[13px] md:text-sm text-muted-foreground mt-2">{seg.sub}</div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ФОТООТЧЁТ */}
+      <section className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-16">
+        <SectionHead eyebrow="Как это было" title="Атмосфера прошлых" accent="ИИшниц" />
+
+        <div className="grid gap-3 md:gap-4 md:grid-cols-2 mt-9 md:mt-12">
+          <div className="relative rounded-[22px] overflow-hidden border border-white/[0.08]">
+            <img
+              src={GALLERY[0].src}
+              alt={GALLERY[0].alt}
+              loading="lazy"
+              className="block w-full h-full object-cover"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
+            {GALLERY.slice(1).map((g) => (
+              <div key={g.src} className="relative rounded-[18px] overflow-hidden border border-white/[0.08]">
+                <img src={g.src} alt={g.alt} loading="lazy" className="block w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ПАРТНЁРСКИЕ ПАКЕТЫ */}
