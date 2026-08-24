@@ -9,9 +9,9 @@ import {
   ChevronRight,
   Cpu,
   GraduationCap,
-  Mail,
   Phone,
   Rocket,
+  Send,
   Sparkles,
   TrendingUp,
   UserCog,
@@ -27,6 +27,7 @@ import {
   COMMUNITY_ABOUT,
   COMMUNITY_GEO,
   GALLERY,
+  PARTNER_CONTACT,
   SHOWCASE_SPEAKERS,
   SPEAKER_CARD_BG,
 } from "@/lib/community";
@@ -41,8 +42,6 @@ import {
 } from "@/lib/season";
 
 const BOT_URL = "https://telegram.me/maincomapp_bot";
-const CONTACT_EMAIL = "admin@utlik.pro";
-const CONTACT_PHONE = "+375 44 755 4000";
 
 const SEGMENT_ICONS = {
   briefcase: Briefcase,
@@ -706,9 +705,9 @@ const IishnicaV2: React.FC = () => {
               {/* mt-auto прижимает кнопку к низу — карточки в ряду одной высоты */}
               <div className="relative mt-auto pt-8 md:pt-10">
                 <a
-                  href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-                    `Партнёрский пакет «${pkg.name}» — ИИшница 2026/2027`
-                  )}`}
+                  href={`https://t.me/${PARTNER_CONTACT.telegram}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={`w-full inline-flex items-center justify-center gap-2.5 rounded-full font-bold text-base px-7 py-4 transition-all hover:-translate-y-0.5 ${
                     pkg.featured
                       ? "bg-primary text-primary-foreground hover:bg-lime-dark shadow-lime"
@@ -725,31 +724,50 @@ const IishnicaV2: React.FC = () => {
 
       {/* КОНТАКТЫ */}
       <section id="register" className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-20">
-        <div className="relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.04] p-7 md:p-14 text-center">
+        <div className="relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-white/[0.04] p-6 md:p-12">
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full"
+            className="pointer-events-none absolute -top-32 left-1/4 w-[500px] h-[300px] rounded-full"
             style={{ background: "radial-gradient(ellipse at center, hsl(var(--primary)/0.16), transparent 70%)" }}
           />
-          <h2 className="relative font-heading font-bold tracking-tight leading-[1.05] text-3xl md:text-5xl text-foreground mb-4 md:mb-5">
-            Обсудим участие в сезоне?
-          </h2>
-          <p className="relative text-base md:text-lg text-muted-foreground max-w-[560px] mx-auto mb-8 md:mb-10">
-            Расскажем про аудиторию каждого мероприятия и подберём формат под ваши задачи.
-          </p>
-          <div className="relative flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base px-7 py-4 shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all"
-            >
-              <Mail className="w-[18px] h-[18px]" /> {CONTACT_EMAIL}
-            </a>
-            <a
-              href={`tel:${CONTACT_PHONE.replace(/[^+\d]/g, "")}`}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.04] text-foreground font-semibold text-base px-7 py-4 hover:bg-white/[0.08] hover:border-primary/40 transition-all"
-            >
-              <Phone className="w-[18px] h-[18px]" /> {CONTACT_PHONE}
-            </a>
+
+          <div className="relative">
+            <SectionHead eyebrow="Контакты" title="Обсудим" accent="партнёрство" />
+          </div>
+
+          <div className="relative grid gap-7 md:gap-12 md:grid-cols-[240px_1fr] md:items-center mt-8 md:mt-10">
+            <img
+              src={PARTNER_CONTACT.photo}
+              alt={PARTNER_CONTACT.name}
+              loading="lazy"
+              className="w-40 md:w-full h-auto rounded-[22px] border border-white/[0.08] object-cover"
+            />
+
+            <div>
+              <div className="font-heading font-black text-2xl md:text-4xl text-foreground">
+                {PARTNER_CONTACT.name}
+              </div>
+              <p className="text-sm md:text-base text-muted-foreground mt-2 md:mt-3 max-w-[420px] leading-relaxed">
+                {PARTNER_CONTACT.role}
+              </p>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 mt-7 md:mt-8">
+                <a
+                  href={`https://t.me/${PARTNER_CONTACT.telegram}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base px-7 py-4 shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all"
+                >
+                  <Send className="w-[18px] h-[18px]" /> @{PARTNER_CONTACT.telegram}
+                </a>
+                <a
+                  href={`tel:${PARTNER_CONTACT.phone.replace(/[^+\d]/g, "")}`}
+                  className="inline-flex items-center justify-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.04] text-foreground font-semibold text-base px-7 py-4 hover:bg-white/[0.08] hover:border-primary/40 transition-all"
+                >
+                  <Phone className="w-[18px] h-[18px]" /> {PARTNER_CONTACT.phone}
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

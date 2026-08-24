@@ -82,6 +82,15 @@ export const AUDIENCE_STATS = {
   costPerContact: 50,
 };
 
+/** Контакт по партнёрству — как на слайде «Обсудим партнёрство». */
+export const PARTNER_CONTACT = {
+  name: "Яна Мартыненко",
+  role: "Сооснователь M.AI.N Community · Директор по развитию сообщества",
+  telegram: "yana_martynen",
+  phone: "+375 29 178 51 52",
+  photo: "/v2/contact-person.webp",
+};
+
 export const GALLERY: { src: string; alt: string; caption?: string }[] = [
   { src: "/v2/gallery-1.webp", alt: "Полный зал на ИИшнице", caption: "Полный зал" },
   { src: "/v2/gallery-2.webp", alt: "Выступление на сцене ИИшницы" },
