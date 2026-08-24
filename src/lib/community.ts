@@ -18,9 +18,26 @@ export const COMMUNITY_ABOUT = {
     "M.AI.N объединяет предпринимателей, руководителей и специалистов вокруг искусственного " +
     "интеллекта. Мы делаем ИИ понятным и применимым — через события, обучение и живое комьюнити.",
   tags: ["Офлайн-события", "Обучение", "Нетворкинг ЛПР"],
-  photo: "/v2/community.webp",
+  /**
+   * Слайдшоу в блоке «О сообществе».
+   * Чтобы добавить кадр: положи файл в public/v2/ и допиши строку сюда —
+   * счётчик, точки и автопрокрутка подхватят его сами.
+   */
+  photos: [
+    // кадр вертикальный, люди в нижней части — смещаем кроп вниз, чтобы не срезать их
+    {
+      src: "/v2/community.webp",
+      alt: "Общее фото участников комьюнити M.AI.N",
+      caption: "Минск",
+      position: "center 72%",
+    },
+    { src: "/v2/gallery-1.webp", alt: "Полный зал на ИИшнице", caption: "Полный зал" },
+    { src: "/v2/gallery-3.webp", alt: "Зрители в зале на ИИшнице", caption: "Вечерняя ИИшница" },
+    { src: "/v2/gallery-4.webp", alt: "Участники ИИшницы аплодируют", caption: "После выступлений" },
+    { src: "/v2/gallery-2.webp", alt: "Выступление на сцене ИИшницы", caption: "На сцене" },
+    { src: "/v2/gallery-5.webp", alt: "Ведущие Вечерней ИИшницы", caption: "Ведущие" },
+  ] as { src: string; alt: string; caption: string; position?: string }[],
   photoBadge: "Комьюнити M.AI.N",
-  photoCaption: "Минск",
 };
 
 export const COMMUNITY_GEO = {
@@ -61,6 +78,8 @@ export const AUDIENCE_SEGMENTS: { title: string; sub: string; icon: string }[] =
 export const AUDIENCE_STATS = {
   guests: 500,
   decisionMakers: 235,
+  /** ≈50 BYN — стоимость одного B2B-контакта в пакете (слайд «Аудитория, которую видит партнёр») */
+  costPerContact: 50,
 };
 
 export const GALLERY: { src: string; alt: string; caption?: string }[] = [

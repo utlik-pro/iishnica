@@ -5,6 +5,8 @@ import {
   ArrowUp,
   Briefcase,
   Check,
+  ChevronLeft,
+  ChevronRight,
   Cpu,
   GraduationCap,
   Mail,
@@ -65,6 +67,104 @@ const SectionHead: React.FC<{ eyebrow: string; title: string; accent?: string }>
     </h2>
   </>
 );
+
+/** Слайдшоу с автопрокруткой: точки, стрелки, пауза при наведении. */
+const PhotoSlideshow: React.FC<{ photos: typeof COMMUNITY_ABOUT.photos; badge: string }> = ({
+  photos,
+  badge,
+}) => {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused || photos.length < 2) return;
+    // уважаем системную настройку «уменьшить движение»
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // index в зависимостях — чтобы после ручного переключения отсчёт начинался заново
+    const t = window.setTimeout(() => setIndex((i) => (i + 1) % photos.length), 4200);
+    return () => window.clearTimeout(t);
+  }, [paused, photos.length, index]);
+
+  const go = (dir: number) => setIndex((i) => (i + dir + photos.length) % photos.length);
+
+  return (
+    <div
+      className="relative rounded-[26px] overflow-hidden border border-white/[0.08] shadow-card group"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* единая пропорция для всех кадров — снимки и вертикальные, и горизонтальные */}
+      <div className="relative aspect-[4/3]">
+        {photos.map((p, i) => (
+          <img
+            key={p.src}
+            src={p.src}
+            alt={p.alt}
+            loading={i === 0 ? "eager" : "lazy"}
+            aria-hidden={i !== index}
+            style={{ objectPosition: p.position ?? "center" }}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out ${
+              i === index ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* затемнение под подписями */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/55 to-transparent pointer-events-none"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"
+      />
+
+      <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-background/60 backdrop-blur-md border border-primary/30 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+        {badge}
+      </span>
+
+      <span className="absolute bottom-4 left-4 inline-flex items-center gap-2 text-sm font-medium text-white drop-shadow">
+        <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+        {photos[index].caption}
+      </span>
+
+      {photos.length > 1 && (
+        <>
+          {/* стрелки — появляются при наведении, на тач-устройствах не нужны */}
+          <button
+            onClick={() => go(-1)}
+            aria-label="Предыдущее фото"
+            className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/60 backdrop-blur-md border border-white/[0.14] items-center justify-center text-foreground opacity-0 group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Следующее фото"
+            className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/60 backdrop-blur-md border border-white/[0.14] items-center justify-center text-foreground opacity-0 group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
+          <div className="absolute bottom-4 right-4 flex items-center gap-1.5">
+            {photos.map((p, i) => (
+              <button
+                key={p.src}
+                onClick={() => setIndex(i)}
+                aria-label={`Фото ${i + 1} из ${photos.length}`}
+                aria-current={i === index}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === index ? "w-6 bg-primary" : "w-1.5 bg-white/40 hover:bg-white/70"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 const initials = (name: string) =>
   name
@@ -205,13 +305,13 @@ const IishnicaV2: React.FC = () => {
   const years = Array.from(new Set(SEASON_EVENTS.map((e) => new Date(e.date).getFullYear())));
 
   const heroStats = [
-    { value: String(totals.events), label: "митапов в сезоне" },
+    { value: String(totals.events), label: "встреч за сезон" },
     {
       value: communityCount ? communityCount.toLocaleString("ru-RU") : "—",
-      label: "в комьюнити",
+      label: "в сообществе",
     },
-    { value: String(totals.maxCapacity), label: "максимум участников в зале" },
-    { value: String(totals.bigFormat), label: "встречи в большом формате" },
+    { value: `≈${AUDIENCE_STATS.decisionMakers}`, label: "руководителей и ЛПР в зале" },
+    { value: `≈${AUDIENCE_STATS.costPerContact}`, label: "BYN за один B2B-контакт" },
   ];
 
   return (
@@ -242,38 +342,38 @@ const IishnicaV2: React.FC = () => {
       <header className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 pt-24 md:pt-32 pb-6 md:pb-10">
         <div className="inline-flex items-center gap-3 mb-6 md:mb-7">
           <span className="px-3.5 py-1.5 rounded-full bg-primary text-primary-foreground text-[11px] md:text-xs font-bold uppercase tracking-[0.12em]">
-            Сезон 2026/2027
+            Партнёрам · Сезон 2026/2027
           </span>
           <span className="text-muted-foreground text-xs md:text-sm font-semibold uppercase tracking-[0.16em]">
             M.AI.N Community
           </span>
         </div>
 
-        <div className="max-w-[900px]">
-          <h1 className="font-heading font-black tracking-tight leading-[0.92] text-6xl sm:text-7xl md:text-8xl lg:text-[120px] mb-5 md:mb-6">
-            <span className="gradient-text">ИИшница</span>
-            <span className="block text-foreground text-[0.55em] leading-[1.05] mt-2 md:mt-4">
-              весь сезон целиком
-            </span>
+        <div className="max-w-[960px]">
+          <h1 className="font-heading font-black tracking-tight leading-[0.92] text-5xl sm:text-6xl md:text-7xl lg:text-[92px] mb-5 md:mb-7">
+            <span className="text-foreground">Ваш бренд — перед теми, </span>
+            <span className="gradient-text">кто принимает решения</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-[620px] mb-8 md:mb-10">
-            Десять встреч про искусственный интеллект — от практики внедрения в крупных компаниях
-            до опыта стартапов Кремниевой долины. Минск, офлайн, участие бесплатное.
+          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-[640px] mb-8 md:mb-10">
+            <span className="text-foreground font-semibold">ИИшница</span> — 10 офлайн-встреч за сезон
+            и до {totals.maxCapacity} человек в зале. Почти половина — собственники и руководители,
+            которые ищут, с кем внедрять ИИ. Партнёрство — от{" "}
+            {PARTNER_PACKAGES[0].price.toLocaleString("ru-RU")} BYN за мероприятие.
           </p>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <button
-              onClick={() => window.open(BOT_URL, "_blank")}
-              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base md:text-[17px] px-7 md:px-8 py-4 md:py-[17px] shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all"
-            >
-              Зарегистрироваться <ArrowRight className="w-[18px] h-[18px]" />
-            </button>
             <a
               href="#partners"
+              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary text-primary-foreground font-bold text-base md:text-[17px] px-7 md:px-8 py-4 md:py-[17px] shadow-lime hover:bg-lime-dark hover:-translate-y-0.5 transition-all"
+            >
+              Смотреть пакеты <ArrowRight className="w-[18px] h-[18px]" />
+            </a>
+            <a
+              href="#events"
               className="inline-flex items-center justify-center gap-2.5 rounded-full border border-white/[0.14] bg-white/[0.04] text-foreground font-semibold text-base md:text-[17px] px-7 md:px-8 py-4 md:py-[17px] hover:bg-white/[0.08] hover:border-primary/40 transition-all"
             >
-              Стать партнёром
+              Календарь сезона
             </a>
           </div>
         </div>
@@ -340,14 +440,7 @@ const IishnicaV2: React.FC = () => {
             </div>
           </div>
 
-          <div className="relative rounded-[26px] overflow-hidden border border-white/[0.08] shadow-card">
-            <img
-              src={COMMUNITY_ABOUT.photo}
-              alt="Участники комьюнити M.AI.N"
-              loading="lazy"
-              className="block w-full h-auto"
-            />
-          </div>
+          <PhotoSlideshow photos={COMMUNITY_ABOUT.photos} badge={COMMUNITY_ABOUT.photoBadge} />
         </div>
       </section>
 
@@ -420,6 +513,19 @@ const IishnicaV2: React.FC = () => {
             </div>
           </div>
         ))}
+
+        {/* страница партнёрская, но гостям тоже нужен вход */}
+        <p className="text-sm md:text-base text-muted-foreground mt-8 md:mt-10">
+          Хотите прийти как гость?{" "}
+          <a
+            href={BOT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary font-semibold hover:underline underline-offset-4"
+          >
+            Регистрация в телеграм-боте
+          </a>
+        </p>
       </section>
 
       {/* СПИКЕРЫ ПРОШЛЫХ ВЫПУСКОВ.
