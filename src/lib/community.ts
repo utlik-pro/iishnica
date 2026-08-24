@@ -31,11 +31,14 @@ export const COMMUNITY_ABOUT = {
       caption: "Минск",
       position: "center 72%",
     },
-    { src: "/v2/gallery-1.webp", alt: "Полный зал на ИИшнице", caption: "Полный зал" },
+    { src: "/v2/photos/hall-full.webp", alt: "Полный зал на Вечерней ИИшнице", caption: "Полный зал" },
     { src: "/v2/gallery-3.webp", alt: "Зрители в зале на ИИшнице", caption: "Вечерняя ИИшница" },
+    { src: "/v2/photos/group-column.webp", alt: "Групповое фото участников", caption: "Гости вечера" },
+    { src: "/v2/gallery-1.webp", alt: "Аудитория ИИшницы", caption: "Аудитория" },
+    { src: "/v2/photos/guests-smile.webp", alt: "Участницы ИИшницы", caption: "Нетворкинг" },
     { src: "/v2/gallery-4.webp", alt: "Участники ИИшницы аплодируют", caption: "После выступлений" },
+    { src: "/v2/photos/talk-screen.webp", alt: "Выступление и презентация на экране", caption: "Доклад" },
     { src: "/v2/gallery-2.webp", alt: "Выступление на сцене ИИшницы", caption: "На сцене" },
-    { src: "/v2/gallery-5.webp", alt: "Ведущие Вечерней ИИшницы", caption: "Ведущие" },
   ] as { src: string; alt: string; caption: string; position?: string }[],
   photoBadge: "Комьюнити M.AI.N",
 };
@@ -91,10 +94,30 @@ export const PARTNER_CONTACT = {
   photo: "/v2/contact-person.webp",
 };
 
-export const GALLERY: { src: string; alt: string; caption?: string }[] = [
-  { src: "/v2/gallery-1.webp", alt: "Полный зал на ИИшнице", caption: "Полный зал" },
-  { src: "/v2/gallery-2.webp", alt: "Выступление на сцене ИИшницы" },
-  { src: "/v2/gallery-3.webp", alt: "Зрители в зале" },
-  { src: "/v2/gallery-4.webp", alt: "Участники ИИшницы аплодируют" },
-  { src: "/v2/gallery-5.webp", alt: "Ведущие Вечерней ИИшницы" },
+/**
+ * Фотоотчёт. Кадры из /v2/photos/ сняты на Вечерней ИИшнице 31.07.2026,
+ * из /v2/gallery-*.webp — вырезаны из партнёрской презентации.
+ *
+ * `wide: true` — кадр занимает две колонки в мозаике (годится для общих планов).
+ * Чтобы добавить фото: положи файл в public/v2/photos/ и допиши строку —
+ * мозаика, счётчик и лайтбокс подхватят его сами.
+ */
+export const GALLERY: { src: string; alt: string; caption?: string; wide?: boolean }[] = [
+  { src: "/v2/photos/hall-full.webp", alt: "Полный зал на Вечерней ИИшнице", caption: "Полный зал", wide: true },
+  { src: "/v2/photos/brandwall-partners.webp", alt: "Заставка мероприятия с логотипами партнёров", caption: "Логотипы партнёров на заставке" },
+  { src: "/v2/gallery-1.webp", alt: "Зрители на ИИшнице", caption: "Аудитория" },
+  { src: "/v2/photos/talk-screen.webp", alt: "Выступление и презентация на экране", caption: "Доклад" },
+  { src: "/v2/photos/group-column.webp", alt: "Групповое фото участников ИИшницы", caption: "Гости вечера" },
+  { src: "/v2/photos/guests-smile.webp", alt: "Участницы ИИшницы", caption: "Нетворкинг" },
+  { src: "/v2/gallery-2.webp", alt: "Выступление на сцене ИИшницы", caption: "На сцене" },
+  { src: "/v2/photos/networking.webp", alt: "Общение участников до начала", caption: "До начала" },
+  { src: "/v2/photos/hall-seats.webp", alt: "Зал перед выступлениями", caption: "Зал наполняется" },
+  { src: "/v2/gallery-3.webp", alt: "Зрители в зале", caption: "Вечерняя ИИшница" },
+  { src: "/v2/photos/group-wall.webp", alt: "Групповое фото у стены", caption: "Все свои" },
+  { src: "/v2/photos/brandwall-duo.webp", alt: "Гости у фотозоны ИИшницы", caption: "Фотозона" },
+  { src: "/v2/gallery-4.webp", alt: "Участники ИИшницы аплодируют", caption: "После выступлений" },
+  { src: "/v2/photos/thumbs-up.webp", alt: "Участник ИИшницы показывает большой палец", caption: "Всё получилось" },
+  { src: "/v2/photos/brandwall-pair.webp", alt: "Гости у фотозоны", caption: "Фотозона" },
+  { src: "/v2/gallery-5.webp", alt: "Ведущие Вечерней ИИшницы", caption: "Ведущие" },
+  { src: "/v2/photos/venue-red.webp", alt: "Интерьер площадки с подсветкой", caption: "Площадка" },
 ];

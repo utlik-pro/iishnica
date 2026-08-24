@@ -16,6 +16,7 @@ import {
   TrendingUp,
   UserCog,
   Users,
+  X,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -66,6 +67,85 @@ const SectionHead: React.FC<{ eyebrow: string; title: string; accent?: string }>
     </h2>
   </>
 );
+
+/** Полноэкранный просмотр кадра: стрелки, Esc, клик по фону. */
+const Lightbox: React.FC<{
+  photos: typeof GALLERY;
+  index: number;
+  onClose: () => void;
+  onNav: (dir: number) => void;
+}> = ({ photos, index, onClose, onNav }) => {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onNav(1);
+      if (e.key === "ArrowLeft") onNav(-1);
+    };
+    window.addEventListener("keydown", onKey);
+    // пока открыт лайтбокс — страница под ним не скроллится
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [onClose, onNav]);
+
+  const photo = photos[index];
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] bg-black/92 backdrop-blur-sm flex items-center justify-center p-4 md:p-10"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={photo.alt}
+    >
+      <button
+        onClick={onClose}
+        aria-label="Закрыть"
+        className="absolute top-4 right-4 md:top-6 md:right-6 w-11 h-11 rounded-full bg-white/[0.08] border border-white/[0.16] flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onNav(-1);
+        }}
+        aria-label="Предыдущее фото"
+        className="absolute left-3 md:left-6 w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/[0.08] border border-white/[0.16] flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onNav(1);
+        }}
+        aria-label="Следующее фото"
+        className="absolute right-3 md:right-6 w-11 h-11 md:w-12 md:h-12 rounded-full bg-white/[0.08] border border-white/[0.16] flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
+
+      <figure className="max-w-full max-h-full flex flex-col items-center gap-4" onClick={(e) => e.stopPropagation()}>
+        <img
+          src={photo.src}
+          alt={photo.alt}
+          className="max-h-[78vh] md:max-h-[82vh] w-auto max-w-full rounded-2xl object-contain"
+        />
+        <figcaption className="text-sm md:text-base text-muted-foreground text-center">
+          {photo.caption && <span className="text-foreground font-medium">{photo.caption}</span>}
+          <span className="ml-3 tabular-nums text-muted-foreground/70">
+            {index + 1} / {photos.length}
+          </span>
+        </figcaption>
+      </figure>
+    </div>
+  );
+};
 
 /** Слайдшоу с автопрокруткой: точки, стрелки, пауза при наведении. */
 const PhotoSlideshow: React.FC<{ photos: typeof COMMUNITY_ABOUT.photos; badge: string }> = ({
@@ -279,6 +359,7 @@ const SeasonRow: React.FC<{ event: SeasonEvent; isNext: boolean }> = ({ event, i
 const IishnicaV2: React.FC = () => {
   const [communityCount, setCommunityCount] = useState<number | null>(null);
   const [showTop, setShowTop] = useState(false);
+  const [lightbox, setLightbox] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -593,26 +674,54 @@ const IishnicaV2: React.FC = () => {
 
       {/* ФОТООТЧЁТ */}
       <section className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-16">
-        <SectionHead eyebrow="Как это было" title="Атмосфера прошлых" accent="ИИшниц" />
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div>
+            <SectionHead eyebrow="Как это было" title="Атмосфера прошлых" accent="ИИшниц" />
+          </div>
+          <p className="text-sm md:text-base text-muted-foreground md:text-right">
+            {GALLERY.length} кадров с прошедших встреч.
+            <br className="hidden md:block" /> Нажмите на любой, чтобы открыть.
+          </p>
+        </div>
 
-        <div className="grid gap-3 md:gap-4 md:grid-cols-2 mt-9 md:mt-12">
-          <div className="relative rounded-[22px] overflow-hidden border border-white/[0.08]">
-            <img
-              src={GALLERY[0].src}
-              alt={GALLERY[0].alt}
-              loading="lazy"
-              className="block w-full h-full object-cover"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3 md:gap-4">
-            {GALLERY.slice(1).map((g) => (
-              <div key={g.src} className="relative rounded-[18px] overflow-hidden border border-white/[0.08]">
-                <img src={g.src} alt={g.alt} loading="lazy" className="block w-full h-full object-cover" />
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-4 mt-9 md:mt-12">
+          {GALLERY.map((g, i) => (
+            <button
+              key={g.src}
+              onClick={() => setLightbox(i)}
+              aria-label={`Открыть фото: ${g.alt}`}
+              className={`group relative overflow-hidden rounded-[18px] md:rounded-[22px] border border-white/[0.08] hover:border-primary/40 transition-colors ${
+                g.wide ? "col-span-2 aspect-[16/10]" : "aspect-[4/5]"
+              }`}
+            >
+              <img
+                src={g.src}
+                alt={g.alt}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+              />
+              <span
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              />
+              {g.caption && (
+                <span className="absolute bottom-3 left-3 right-3 text-left text-xs md:text-sm font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {g.caption}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
       </section>
+
+      {lightbox !== null && (
+        <Lightbox
+          photos={GALLERY}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+          onNav={(dir) => setLightbox((i) => (i === null ? i : (i + dir + GALLERY.length) % GALLERY.length))}
+        />
+      )}
 
       {/* ПАРТНЁРСКИЕ ПАКЕТЫ */}
       <section id="partners" className="relative z-[1] max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-16 scroll-mt-24">
