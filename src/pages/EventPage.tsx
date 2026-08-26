@@ -117,15 +117,12 @@ const EventPage: React.FC = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Размер сообщества (в приложении + чате) и логотипы партнёров — как в мини-аппе
+  // Размер сообщества (в приложении + чате). Считаем через RPC: bot_users
+  // закрыта от anon (там персданные), функция отдаёт наружу одно число.
   useEffect(() => {
     (async () => {
-      const [{ count: users }, settingRes] = await Promise.all([
-        supabase.from("bot_users").select("*", { count: "exact", head: true }),
-        supabase.from("app_settings").select("value").eq("key", "community_chat_members").maybeSingle(),
-      ]);
-      const chat = Number(settingRes.data?.value) || 0;
-      if (typeof users === "number") setCommunityCount(users + chat);
+      const { data, error } = await supabase.rpc("community_size");
+      if (!error && typeof data === "number") setCommunityCount(data);
     })();
   }, []);
 

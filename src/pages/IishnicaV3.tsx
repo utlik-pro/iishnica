@@ -439,14 +439,12 @@ const IishnicaV3: React.FC = () => {
 
   useReveal(rootRef);
 
+  // Считаем через RPC: bot_users закрыта от anon (там персданные), поэтому
+  // размер сообщества отдаёт SECURITY DEFINER функция одним числом.
   useEffect(() => {
     (async () => {
-      const [{ count: users }, settingRes] = await Promise.all([
-        supabase.from("bot_users").select("*", { count: "exact", head: true }),
-        supabase.from("app_settings").select("value").eq("key", "community_chat_members").maybeSingle(),
-      ]);
-      const chat = Number(settingRes.data?.value) || 0;
-      if (typeof users === "number") setCommunityCount(users + chat);
+      const { data, error } = await supabase.rpc("community_size");
+      if (!error && typeof data === "number") setCommunityCount(data);
     })();
   }, []);
 
@@ -493,6 +491,18 @@ const IishnicaV3: React.FC = () => {
 
       <Loader />
       <Cursor />
+
+      {/* Затемнение под шапкой: вордмарк и кнопка меню висят поверх контента,
+          и на светлых кадрах и лаймовых плитках они переставали читаться.
+          Появляется вместе с уходом героя. */}
+      <div
+        aria-hidden
+        className="fixed top-0 left-0 right-0 z-[44] pointer-events-none bg-gradient-to-b from-black via-black/60 to-transparent"
+        style={{
+          height: "calc(var(--v3-nav) + 24px)",
+          opacity: "calc(var(--hero-p, 0) * 1.4)",
+        }}
+      />
 
       {/* ---------------- плавающий вордмарк ---------------- */}
       <div className="v3-wordmark-layer" data-hidden={atFooter}>
@@ -650,23 +660,34 @@ const IishnicaV3: React.FC = () => {
                 style={{ "--delay": `${i * 70}ms` } as React.CSSProperties}
               >
                 <div
-                  className="aspect-square relative p-3 grow overflow-hidden"
+                  className="aspect-[3/2] sm:aspect-square relative p-3 grow overflow-hidden"
                   style={{ background: f.bg, color: f.fg }}
                 >
-                  {/* фото проявляется под курсором — как видео у референса */}
+                  {/* На десктопе фото проявляется под курсором, как видео у
+                      референса. На тач-устройствах ховера нет — там фото видно
+                      всегда, иначе плитка остаётся пустым цветным квадратом. */}
                   <img
                     src={f.photo}
                     alt=""
                     loading="lazy"
                     aria-hidden
-                    className="absolute inset-0 w-full h-full object-cover opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute inset-0 w-full h-full object-cover md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
                   />
+                  {/* цветное тонирование — только эффект ховера на десктопе;
+                      на мобиле оно бы просто испортило кадр */}
                   <span
                     aria-hidden
                     className="absolute inset-0 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 mix-blend-color"
                     style={{ background: f.bg }}
                   />
-                  <p className="relative v3-mono text-[11px] tabular-nums">{f.n}</p>
+                  {/* на мобиле номер лежит на фото — подкладываем под него тень */}
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/50 to-transparent md:hidden"
+                  />
+                  <p className="relative v3-mono text-[11px] tabular-nums text-white md:text-inherit">
+                    {f.n}
+                  </p>
                   <div
                     className="absolute bottom-0 left-0 w-full h-14 lg:h-16 px-3 flex items-center transition-colors duration-300 group-hover:!bg-transparent group-hover:!text-white"
                     style={{ background: f.bar, color: f.fg }}

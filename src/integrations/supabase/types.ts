@@ -700,6 +700,10 @@ export type Database = {
         Args: { lead_id: string }
         Returns: boolean
       }
+      community_size: {
+        Args: Record<string, never>
+        Returns: number
+      }
     }
     Enums: {
       lead_status:
