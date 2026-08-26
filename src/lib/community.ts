@@ -103,6 +103,45 @@ export const SOCIAL_LINKS: { label: string; href: string }[] = [
   { label: "Instagram", href: "https://www.instagram.com/maincomby/" },
 ];
 
+/**
+ * Отзывы партнёров.
+ *
+ * ПУСТО НАМЕРЕННО: настоящих отзывов пока не собрано, а выдуманные на сайте
+ * недопустимы. Пока массив пуст, блок отзывов на странице не рендерится
+ * вообще — вёрстка выглядит так, будто его нет.
+ *
+ * Чтобы блок появился, добавь сюда строки. Минимум — `quote`, `name`,
+ * `company`; чем больше заполнено, тем убедительнее:
+ *   quote   — сам отзыв, 1–3 предложения, лучше с конкретикой и цифрами
+ *   name    — имя и фамилия
+ *   role    — должность («Директор по маркетингу»)
+ *   company — компания
+ *   photo   — фото в public/v3/testimonials/, без него будут инициалы
+ *   href    — ссылка на профиль или сайт: её наличие сильно повышает доверие
+ *
+ * Пример:
+ *   {
+ *     quote: "За вечер собрали 40 целевых лидов — дешевле любой конференции.",
+ *     name: "Имя Фамилия",
+ *     role: "Директор по маркетингу",
+ *     company: "Компания",
+ *     photo: "/v3/testimonials/ivanov.webp",
+ *     href: "https://t.me/username",
+ *   }
+ *
+ * ВАЖНО: публиковать отзыв можно только с согласия автора.
+ */
+export type Testimonial = {
+  quote: string;
+  name: string;
+  role?: string;
+  company: string;
+  photo?: string;
+  href?: string;
+};
+
+export const TESTIMONIALS: Testimonial[] = [];
+
 /** Контакт по партнёрству — как на слайде «Обсудим партнёрство». */
 export const PARTNER_CONTACT = {
   name: "Яна Мартыненко",

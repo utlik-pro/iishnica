@@ -27,6 +27,7 @@ import {
   PARTNER_CONTACT,
   SHOWCASE_SPEAKERS,
   SOCIAL_LINKS,
+  TESTIMONIALS,
 } from "@/lib/community";
 import {
   BIG_FORMAT_CAPACITY,
@@ -134,6 +135,15 @@ function useReveal(root: React.RefObject<HTMLElement>) {
 /* ------------------------------------------------------------------ */
 /* Примитивы                                                           */
 /* ------------------------------------------------------------------ */
+
+/** Инициалы — подставляются вместо фото в карточке отзыва, если фото нет. */
+const initials = (name: string) =>
+  name
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0] ?? "")
+    .join("")
+    .toUpperCase();
 
 /** Детерминированные задержки для ячеек «color-grid» внутри кнопки. */
 const GRID_CELLS = Array.from({ length: 36 }, (_, i) => ((i * 37) % 11) * 22);
@@ -489,6 +499,19 @@ const IishnicaV3: React.FC = () => {
   /* превью для строк сезона — кадры с прошедших встреч */
   const rowPreviews = GALLERY.filter((g) => !g.wide).slice(0, SEASON_EVENTS.length);
 
+  /* Нумерация подписей 01, 02… считается от фактического набора секций:
+     блок отзывов появляется, только когда отзывы есть, и дырки в счёте быть не должно. */
+  const sectionNum = Object.fromEntries(
+    ["audience", "packages", ...(TESTIMONIALS.length ? ["testimonials"] : []), "season", "speakers", "gallery"].map(
+      (key, i) => [key, String(i + 1).padStart(2, "0")]
+    )
+  ) as Record<string, string>;
+
+  /* пункт «Отзывы» в меню — тоже только когда блок реально есть */
+  const menuLinks = TESTIMONIALS.length
+    ? [...MENU_LINKS.slice(0, 2), { label: "Отзывы", href: "#testimonials" }, ...MENU_LINKS.slice(2)]
+    : MENU_LINKS;
+
   /* на узком экране мозаика урезана до 9 кадров, остальные — по кнопке */
   const visibleGallery = isNarrow && !galleryExpanded ? GALLERY.slice(0, 9) : GALLERY;
 
@@ -571,7 +594,7 @@ const IishnicaV3: React.FC = () => {
           aria-label="Навигация"
         >
           <ul className="flex flex-col border-t border-black/15">
-            {MENU_LINKS.map((l, i) => (
+            {menuLinks.map((l, i) => (
               <li key={l.href} className="border-b border-black/15">
                 {/* py даёт строке ~56px — комфортная зона для пальца;
                     номер вынесен в свою колонку, раньше он висел на align-super
@@ -724,7 +747,7 @@ const IishnicaV3: React.FC = () => {
 
         <div className="relative grid lg:grid-cols-12 gap-6" data-reveal="">
           <div className="lg:col-span-4">
-            <Eyebrow num="01">Аудитория</Eyebrow>
+            <Eyebrow num={sectionNum.audience}>Аудитория</Eyebrow>
           </div>
           <div className="lg:col-span-8">
             <h3 className="v3-display v3-h3 text-white">Кто увидит ваш бренд</h3>
@@ -803,7 +826,7 @@ const IishnicaV3: React.FC = () => {
         <span className="v3-noise" aria-hidden />
         <div className="relative grid lg:grid-cols-12 gap-6 mb-7 md:mb-14" data-reveal="">
           <div className="lg:col-span-4">
-            <Eyebrow num="02">Партнёрам</Eyebrow>
+            <Eyebrow num={sectionNum.packages}>Партнёрам</Eyebrow>
           </div>
           <div className="lg:col-span-8">
             <h3 className="v3-display v3-h3 text-white">Два пакета участия</h3>
@@ -887,6 +910,69 @@ const IishnicaV3: React.FC = () => {
         </div>
 
       </section>
+
+      {/* ================= ОТЗЫВЫ =================
+          Рендерится только когда в TESTIMONIALS есть реальные отзывы.
+          Пока массив пуст, секции на странице нет вовсе. */}
+      {TESTIMONIALS.length > 0 && (
+        <section id="testimonials" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
+          <span className="v3-noise" aria-hidden />
+          <div className="relative mb-7 md:mb-14" data-reveal="">
+            <Eyebrow num={sectionNum.testimonials}>Отзывы</Eyebrow>
+            <h3 className="v3-display v3-h3 text-white mt-5 max-w-[16ch]">Что говорят партнёры</h3>
+          </div>
+
+          <div className="relative grid gap-3 md:gap-4 md:grid-cols-2 lg:grid-cols-3" data-reveal="">
+            {TESTIMONIALS.map((t, i) => (
+              <figure
+                key={`${t.name}-${i}`}
+                className="border border-white/12 p-6 md:p-7 flex flex-col v3-in"
+                style={{ "--delay": `${i * 90}ms` } as React.CSSProperties}
+              >
+                <blockquote className="text-[17px] md:text-[18px] leading-snug text-white">
+                  «{t.quote}»
+                </blockquote>
+
+                <figcaption className="flex items-center gap-4 mt-auto pt-7">
+                  {t.photo ? (
+                    <img
+                      src={t.photo}
+                      alt={t.name}
+                      loading="lazy"
+                      className="w-12 h-12 object-cover object-top border border-white/12 shrink-0"
+                    />
+                  ) : (
+                    <span className="w-12 h-12 border border-white/12 shrink-0 flex items-center justify-center v3-mono text-[12px] text-[#c8ff00]">
+                      {initials(t.name)}
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <div className="v3-mono text-[12px] text-white truncate">
+                      {/* ссылка на профиль — её наличие делает отзыв проверяемым */}
+                      {t.href ? (
+                        <a
+                          href={t.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="v3-link inline-flex items-center gap-1.5"
+                        >
+                          {t.name}
+                          <ArrowUpRight className="w-3 h-3 opacity-50" strokeWidth={1.5} />
+                        </a>
+                      ) : (
+                        t.name
+                      )}
+                    </div>
+                    <div className="v3-mono text-[10px] text-white/45 mt-1.5 truncate">
+                      {[t.role, t.company].filter(Boolean).join(" · ")}
+                    </div>
+                  </div>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ================= ФОРМАТЫ ================= */}
       <section id="formats" className="relative bg-black scroll-mt-0">
@@ -992,7 +1078,7 @@ const IishnicaV3: React.FC = () => {
 
         <div className="relative grid lg:grid-cols-12 gap-6 mb-7 md:mb-14" data-reveal="">
           <div className="lg:col-span-4">
-            <Eyebrow num="03">Календарь</Eyebrow>
+            <Eyebrow num={sectionNum.season}>Календарь</Eyebrow>
           </div>
           <div className="lg:col-span-8">
             <h3 className="v3-display v3-h3 text-[#c8ff00]">
@@ -1055,7 +1141,7 @@ const IishnicaV3: React.FC = () => {
         <span className="v3-noise" aria-hidden />
         <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-7 md:mb-14" data-reveal="">
           <div>
-            <Eyebrow num="04">Спикеры</Eyebrow>
+            <Eyebrow num={sectionNum.speakers}>Спикеры</Eyebrow>
             <h3 className="v3-display v3-h3 text-white mt-5 max-w-[14ch]">Ради кого приходят</h3>
           </div>
           <p className="text-white/55 text-base max-w-[32ch] sm:text-right">
@@ -1102,7 +1188,7 @@ const IishnicaV3: React.FC = () => {
         <span className="v3-noise" aria-hidden />
         <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-7 md:mb-14" data-reveal="">
           <div>
-            <Eyebrow num="05">Как это было</Eyebrow>
+            <Eyebrow num={sectionNum.gallery}>Как это было</Eyebrow>
             <h3 className="v3-display v3-h3 text-white mt-5">Атмосфера</h3>
           </div>
           <p className="v3-mono text-[11px] text-white/40 sm:text-right">
@@ -1251,7 +1337,7 @@ const IishnicaV3: React.FC = () => {
             <div>
               <div className="v3-mono text-[10px] text-white/35 mb-4">Разделы</div>
               <ul className="flex flex-col gap-2">
-                {MENU_LINKS.map((l) => (
+                {menuLinks.map((l) => (
                   <li key={l.href}>
                     <a
                       href={l.href}
