@@ -557,21 +557,24 @@ const IishnicaV3: React.FC = () => {
           style={{ paddingTop: "calc(var(--v3-nav) + 8px)" }}
           aria-label="Навигация"
         >
-          <ul className="flex flex-col gap-1">
+          <ul className="flex flex-col border-t border-black/15">
             {MENU_LINKS.map((l, i) => (
-              <li key={l.href}>
+              <li key={l.href} className="border-b border-black/15">
+                {/* py даёт строке ~56px — комфортная зона для пальца;
+                    номер вынесен в свою колонку, раньше он висел на align-super
+                    и лез в предыдущую строку */}
                 <a
                   href={l.href}
                   onClick={(e) => {
                     e.preventDefault();
                     jump(l.href);
                   }}
-                  className="v3-display text-[30px] sm:text-[34px] leading-[1.15] block hover:opacity-60 transition-opacity"
+                  className="flex items-center gap-4 py-3.5 hover:opacity-60 active:opacity-50 transition-opacity"
                 >
-                  <span className="v3-mono text-[11px] align-super mr-2 opacity-50 tabular-nums">
+                  <span className="v3-mono text-[11px] opacity-45 tabular-nums w-6 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  {l.label}
+                  <span className="v3-display v3-menu-item text-[28px] sm:text-[30px]">{l.label}</span>
                 </a>
               </li>
             ))}

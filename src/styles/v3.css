@@ -517,6 +517,13 @@
   transition: transform 0.5s cubic-bezier(0.4, 0, 0, 1);
 }
 
+/* Пункт меню. Свой line-height обязателен: у .v3-display он 0.83, и
+   утилита leading-* его не перебивает по специфичности — строки налезали
+   друг на друга. */
+.v3 .v3-menu-item {
+  line-height: 1;
+}
+
 .v3-tilt {
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
