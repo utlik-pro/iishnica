@@ -146,6 +146,19 @@ const initials = (name: string) =>
     .join("")
     .toUpperCase();
 
+/**
+ * Три бегущих ряда логотипов.
+ *
+ * В каждом ряду — весь набор, но со сдвигом начала: так ряды выглядят
+ * по-разному, а повтор одного бренда не попадает в кадр дважды. Если делить
+ * набор на три части, ряды получаются короткими и на широком экране рядом
+ * видны две копии одного логотипа.
+ */
+const logoRows = [0, 1, 2].map((r) => {
+  const shift = Math.round((PARTNER_LOGOS.length / 3) * r);
+  return [...PARTNER_LOGOS.slice(shift), ...PARTNER_LOGOS.slice(0, shift)];
+});
+
 /** Детерминированные задержки для ячеек «color-grid» внутри кнопки. */
 const GRID_CELLS = Array.from({ length: 36 }, (_, i) => ((i * 37) % 11) * 22);
 
@@ -739,23 +752,40 @@ const IishnicaV3: React.FC = () => {
       {/* ================= ЛОГОТИПЫ ПАРТНЁРОВ =================
           Соцдоказательство сразу после первого экрана: раньше эта строка
           лежала в самом низу блока пакетов, на 13-м экране прокрутки. */}
-      <div className="relative bg-black border-y border-white/10 py-6 md:py-7 overflow-hidden">
-        <div className="v3-container v3-mono text-[10px] text-white/35 mb-5">
-          Нас уже выбрали
+      <div className="relative bg-black border-y border-white/10 py-6 md:py-8 overflow-hidden">
+        <div className="v3-container v3-mono text-[10px] text-white/35 mb-5 md:mb-6">
+          С кем мы работаем
         </div>
-        <div className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
-          <div className="inline-flex items-center gap-12 md:gap-20 animate-marquee will-change-transform pr-12 md:pr-20">
-            {[0, 1].flatMap((rep) =>
-              PARTNER_LOGOS.map((p, i) => (
-                <img
-                  key={`${rep}-${i}`}
-                  src={p.src}
-                  alt={p.name}
-                  className="h-7 md:h-8 w-auto object-contain shrink-0 brightness-0 invert opacity-55 hover:opacity-100 transition-opacity"
-                />
-              ))
-            )}
-          </div>
+
+        {/* Три ряда вместо одной строки: за раз видно втрое больше брендов,
+            а сами логотипы стали крупнее. Соседние ряды едут навстречу,
+            скорости чуть разные — иначе читается как одна плоскость. */}
+        <div className="flex flex-col gap-5 md:gap-7">
+          {logoRows.map((row, r) => (
+            <div
+              key={r}
+              className="v3-marquee-row overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]"
+            >
+              <div
+                className={`v3-marquee inline-flex items-center gap-12 md:gap-20 pr-12 md:pr-20 ${
+                  r % 2 === 1 ? "v3-marquee--rev" : ""
+                }`}
+                style={{ "--speed": `${30 + r * 6}s` } as React.CSSProperties}
+              >
+                {/* дублируем ряд, чтобы прокрутка на -50% была бесшовной */}
+                {[0, 1].flatMap((rep) =>
+                  row.map((p, i) => (
+                    <img
+                      key={`${rep}-${i}`}
+                      src={p.src}
+                      alt={p.name}
+                      className="h-8 md:h-9 w-auto object-contain shrink-0 brightness-0 invert opacity-55 hover:opacity-100 transition-opacity"
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

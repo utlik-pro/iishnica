@@ -517,6 +517,40 @@
   transition: transform 0.5s cubic-bezier(0.4, 0, 0, 1);
 }
 
+/* ------------------------------------------------------------------ */
+/* Бегущие строки логотипов: соседние ряды едут навстречу друг другу    */
+/* ------------------------------------------------------------------ */
+
+@keyframes v3-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.v3-marquee {
+  animation: v3-marquee var(--speed, 34s) linear infinite;
+  will-change: transform;
+}
+
+/* тот же трек, но справа налево */
+.v3-marquee--rev {
+  animation-direction: reverse;
+}
+
+/* на паузе при наведении — чтобы можно было рассмотреть логотип */
+.v3-marquee-row:hover .v3-marquee {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-marquee {
+    animation: none;
+  }
+}
+
 /* Пункт меню. Свой line-height обязателен: у .v3-display он 0.83, и
    утилита leading-* его не перебивает по специфичности — строки налезали
    друг на друга. */
