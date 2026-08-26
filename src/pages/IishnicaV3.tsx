@@ -597,29 +597,18 @@ const IishnicaV3: React.FC = () => {
 
   return (
     <div ref={rootRef} className="v3 min-h-screen overflow-x-clip">
-      {/* Заголовок и описание — под аватара страницы (партнёр), а не общие
-          «про сообщество»: ссылку чаще всего шлют именно ему в личку. */}
+      {/*
+        Только title и description: их Helmet корректно подменяет при
+        клиентской навигации.
+
+        og/twitter-теги здесь НЕ дублируем — они приходят готовыми из
+        статического v3.html (см. scripts/og-routes.mjs). Helmet не заменяет
+        теги, которых не создавал, а добавляет свои рядом: получалось по две
+        пары og:image и og:title, и парсер брал произвольную.
+      */}
       <Helmet>
         <title>{OG.title}</title>
         <meta name="description" content={OG.description} />
-        <link rel="canonical" href={OG.url} />
-
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="ru_RU" />
-        <meta property="og:site_name" content="ИИшница · M.AI.N Community" />
-        <meta property="og:url" content={OG.url} />
-        <meta property="og:title" content={OG.title} />
-        <meta property="og:description" content={OG.description} />
-        {/* абсолютный URL обязателен: по относительному пути превью не соберётся */}
-        <meta property="og:image" content={OG.image} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content={OG.title} />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={OG.title} />
-        <meta name="twitter:description" content={OG.description} />
-        <meta name="twitter:image" content={OG.image} />
       </Helmet>
 
       <Loader />
