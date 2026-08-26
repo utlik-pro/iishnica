@@ -66,14 +66,27 @@
   text-transform: uppercase;
 }
 
+/* Нижние границы подняты: на 390px заголовки упирались в 30–34px и для
+   плакатного языка этой версии выглядели мелко. */
 .v3-h1 {
   font-size: clamp(2.75rem, 7vw + 0.2rem, 8.25rem);
 }
 .v3-h2 {
-  font-size: clamp(2.125rem, 4.5vw + 1rem, 6rem);
+  font-size: clamp(2.625rem, 4.5vw + 1rem, 6rem);
 }
 .v3-h3 {
-  font-size: clamp(1.875rem, 1.2rem + 2.9vw, 4rem);
+  font-size: clamp(2.375rem, 1.2rem + 2.9vw, 4rem);
+}
+
+/* Крупная цифра-акцент: на мобиле работает как плакат, на десктопе спокойнее */
+.v3-stat {
+  font-size: clamp(3.5rem, 12vw, 3.5rem);
+  line-height: 0.85;
+}
+@media (min-width: 768px) {
+  .v3-stat {
+    font-size: 3.5rem;
+  }
 }
 
 /* отменяет капс у .v3-display — специфичность tailwind-утилит тут не берёт */

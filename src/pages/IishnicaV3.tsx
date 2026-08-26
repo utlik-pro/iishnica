@@ -869,14 +869,12 @@ const IishnicaV3: React.FC = () => {
           ].map((s, i) => (
             <div
               key={s.l}
-              className="border-b border-white/10 sm:border-r last:border-r-0 py-7 pr-5 v3-in"
+              className="border-b border-white/10 sm:border-r last:border-r-0 py-6 md:py-7 pr-5 v3-in"
               data-reveal=""
               style={{ "--delay": `${i * 70}ms` } as React.CSSProperties}
             >
-              <div className="v3-display text-[#c8ff00] text-[44px] md:text-[56px] leading-none tabular-nums">
-                {s.v}
-              </div>
-              <div className="v3-mono text-[11px] text-white/45 mt-4">{s.l}</div>
+              <div className="v3-display v3-stat text-[#c8ff00] tabular-nums">{s.v}</div>
+              <div className="v3-mono text-[12px] md:text-[11px] text-white/55 mt-3.5">{s.l}</div>
             </div>
           ))}
         </div>
@@ -1002,19 +1000,23 @@ const IishnicaV3: React.FC = () => {
                 data-reveal=""
                 style={{ "--delay": `${i * 110}ms` } as React.CSSProperties}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="v3-mono text-[11px] opacity-50 tabular-nums">
-                      {String(i + 1).padStart(2, "0")}
-                    </div>
-                    <div className="v3-display text-[40px] md:text-[56px] leading-none mt-3">{pkg.name}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="v3-display text-[32px] md:text-[42px] leading-none tabular-nums">
-                      {pkg.price.toLocaleString("ru-RU")}
-                    </div>
-                    <div className="v3-mono text-[11px] opacity-50 mt-2">{pkg.currency} / ивент</div>
-                  </div>
+                {/* цена — главный акцент карточки, поэтому на мобиле она уходит
+                    на свою строку и становится крупнее названия */}
+                <div className="v3-mono text-[11px] opacity-50 tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <div className="v3-display text-[34px] md:text-[56px] leading-none mt-3">{pkg.name}</div>
+                <div className="flex items-baseline gap-3 mt-4 md:mt-5">
+                  <span
+                    className={`v3-display v3-stat tabular-nums ${
+                      gold ? "text-black" : "text-[#c8ff00]"
+                    }`}
+                  >
+                    {pkg.price.toLocaleString("ru-RU")}
+                  </span>
+                  <span className="v3-mono text-[11px] opacity-50 whitespace-nowrap">
+                    {pkg.currency} / ивент
+                  </span>
                 </div>
 
                 <p className={`text-base mt-6 max-w-[38ch] ${gold ? "text-black/65" : "text-white/55"}`}>
@@ -1302,42 +1304,55 @@ const SeasonRow: React.FC<{
       className="v3-grow-row border-b border-white/10 py-4 lg:py-0 flex items-center group cursor-default"
       onMouseEnter={onHover}
     >
-      {/* Дата и день недели живут в разных колонках: на ховере дата
-          увеличивается через scale, а scale не двигает соседей — стоя рядом
-          в одной ячейке, они налезали друг на друга. */}
-      <div className="grid grid-cols-12 items-center w-full gap-x-3 gap-y-1">
-        <div className="col-span-2 lg:col-span-1 v3-mono text-[11px] text-white/30 tabular-nums">
-          {String(index + 1).padStart(2, "0")}
+      {/*
+        Мобильная раскладка — две колонки: слева дата со спикерами, справа
+        крупное число мест. Двенадцатиколоночная сетка на 390px разносила
+        строку на четыре уровня и съедала левый край под номер.
+
+        Дата и день недели по-прежнему в разных ячейках: на ховере дата
+        увеличивается через scale, а scale не двигает соседей — рядом в одной
+        ячейке они налезали друг на друга.
+      */}
+      <div className="flex items-center justify-between gap-4 w-full lg:grid lg:grid-cols-12 lg:gap-x-3">
+        <div className="min-w-0 lg:contents">
+          <div className="hidden lg:block lg:col-span-1 v3-mono text-[11px] text-white/30 tabular-nums">
+            {String(index + 1).padStart(2, "0")}
+          </div>
+
+          <div className="lg:col-span-3 flex items-baseline gap-3 lg:block">
+            <span className="v3-grow-title inline-block text-[26px] md:text-[22px] leading-none text-white group-hover:text-[#c8ff00] transition-colors whitespace-nowrap">
+              {formatSeasonDate(event.date)}
+            </span>
+            <span className="v3-mono text-[10px] text-white/30 lg:hidden">
+              {formatSeasonWeekday(event.date)}
+            </span>
+          </div>
+
+          <div className="hidden lg:block lg:col-span-2 v3-mono text-[10px] text-white/30">
+            {formatSeasonWeekday(event.date)}
+          </div>
+
+          <div className="lg:col-span-3 v3-mono text-[11px] text-white/45 truncate mt-2 lg:mt-0">
+            {who}
+          </div>
         </div>
 
-        <div className="col-span-10 lg:col-span-3">
-          <span className="v3-grow-title inline-block text-[19px] md:text-[22px] text-white group-hover:text-[#c8ff00] transition-colors">
-            {formatSeasonDate(event.date)}
-          </span>
-        </div>
-
-        <div className="col-start-3 lg:col-start-5 col-span-10 lg:col-span-2 v3-mono text-[10px] text-white/30">
-          {formatSeasonWeekday(event.date)}
-        </div>
-
-        <div className="col-start-3 lg:col-start-7 col-span-10 lg:col-span-3 v3-mono text-[11px] text-white/45 truncate">
-          {who}
-        </div>
-
-        <div className="col-start-3 lg:col-start-10 col-span-10 lg:col-span-3 flex items-baseline gap-2.5 lg:justify-end">
+        <div className="shrink-0 lg:col-span-3 flex items-center gap-3 lg:justify-end">
           {isNext && (
-            <span className="v3-mono text-[10px] text-black bg-[#c8ff00] px-2 py-0.5 self-center">
+            <span className="v3-mono text-[10px] text-black bg-[#c8ff00] px-2 py-0.5 whitespace-nowrap">
               Ближайший
             </span>
           )}
-          <span
-            className={`v3-display text-[22px] md:text-[26px] leading-none tabular-nums ${
-              big ? "text-[#c8ff00]" : "text-white"
-            }`}
-          >
-            {event.capacity}
-          </span>
-          <span className="v3-mono text-[10px] text-white/30">мест</span>
+          <div className="text-right lg:flex lg:items-baseline lg:gap-2.5">
+            <span
+              className={`v3-display text-[40px] md:text-[26px] leading-none tabular-nums block lg:inline ${
+                big ? "text-[#c8ff00]" : "text-white"
+              }`}
+            >
+              {event.capacity}
+            </span>
+            <span className="v3-mono text-[10px] text-white/30 block lg:inline">мест</span>
+          </div>
         </div>
       </div>
     </div>
