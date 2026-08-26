@@ -42,6 +42,18 @@ import {
 } from "@/lib/season";
 import "@/styles/v3.css";
 
+/** Домен прода — краулерам соцсетей нужен абсолютный адрес картинки. */
+const SITE_URL = "https://iishnica.utlik.co";
+
+const OG = {
+  url: `${SITE_URL}/v3`,
+  image: `${SITE_URL}/v3/og-partners.jpg`,
+  title: "Партнёрство с ИИшницей — сезон 2026/2027",
+  description:
+    "Ваш бренд — перед 235 собственниками и руководителями за один вечер. " +
+    "10 офлайн-встреч за сезон, до 800 человек в зале. Пакеты от 2 000 BYN.",
+};
+
 const BOT_URL = "https://telegram.me/maincomapp_bot";
 const TG_URL = `https://t.me/${PARTNER_CONTACT.telegram}`;
 
@@ -585,12 +597,29 @@ const IishnicaV3: React.FC = () => {
 
   return (
     <div ref={rootRef} className="v3 min-h-screen overflow-x-clip">
+      {/* Заголовок и описание — под аватара страницы (партнёр), а не общие
+          «про сообщество»: ссылку чаще всего шлют именно ему в личку. */}
       <Helmet>
-        <title>ИИшница — сезон 2026/2027 | M.AI.N Community</title>
-        <meta
-          name="description"
-          content="ИИшница — офлайн-встречи про искусственный интеллект. Сезон 2026/2027: 10 встреч, до 800 человек в зале, партнёрские пакеты Partner и Gold."
-        />
+        <title>{OG.title}</title>
+        <meta name="description" content={OG.description} />
+        <link rel="canonical" href={OG.url} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="ru_RU" />
+        <meta property="og:site_name" content="ИИшница · M.AI.N Community" />
+        <meta property="og:url" content={OG.url} />
+        <meta property="og:title" content={OG.title} />
+        <meta property="og:description" content={OG.description} />
+        {/* абсолютный URL обязателен: по относительному пути превью не соберётся */}
+        <meta property="og:image" content={OG.image} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={OG.title} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={OG.title} />
+        <meta name="twitter:description" content={OG.description} />
+        <meta name="twitter:image" content={OG.image} />
       </Helmet>
 
       <Loader />
