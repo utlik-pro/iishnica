@@ -278,9 +278,25 @@
   z-index: 45;
   display: flex;
   flex-direction: column;
-  padding: 18px var(--v3-pad);
   pointer-events: none;
   --wm: calc(1 - var(--hero-p, 0));
+
+  /* размер вордмарка в «свёрнутом» состоянии — соразмерно пилюле меню */
+  --wm-size: 36px;
+
+  /*
+   * Верхний отступ выводится из высоты шапки, чтобы вордмарк встал по одной
+   * оси с кнопкой меню: та центрирована в полосе var(--v3-nav).
+   * 0.4 * size — половина высоты заглавных букв при line-height 0.74.
+   * Нижний отступ отдельный: в развёрнутом состоянии вордмарк прижат к низу.
+   */
+  padding: calc(var(--v3-nav) / 2 - var(--wm-size) * 0.4) var(--v3-pad) 18px;
+}
+
+@media (min-width: 768px) {
+  .v3-wordmark-layer {
+    --wm-size: 30px;
+  }
 }
 
 .v3-wordmark-spacer {
@@ -295,7 +311,8 @@
   width: fit-content;
   align-self: flex-start;
   color: var(--v3-lime);
-  font-size: calc(15px + (14.5vw - 15px) * var(--wm));
+  /* от размера «в шапке» до огромного в герое — по прогрессу --wm */
+  font-size: calc(var(--wm-size) + (14.5vw - var(--wm-size)) * var(--wm));
   line-height: 0.74;
   pointer-events: auto;
   transition: opacity 0.4s ease;
@@ -309,7 +326,7 @@
 
 @media (min-width: 768px) {
   .v3-wordmark {
-    font-size: calc(17px + (10.5vw - 17px) * var(--wm));
+    font-size: calc(var(--wm-size) + (10.5vw - var(--wm-size)) * var(--wm));
   }
 }
 
