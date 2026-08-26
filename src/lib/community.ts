@@ -94,14 +94,26 @@ export const AUDIENCE_STATS = {
 /**
  * Соцсети сообщества.
  *
- * Ссылки взяты из страниц событий (EventGrodno / EventDecember18).
- * TODO: не хватает телеграм-чата — как только будет ссылка, дописать строку
- * `{ label: "Телеграм-чат", href: "..." }`, футер подхватит её сам.
+ * t.me/maincomby — это ЧАТ сообщества (группа), а не канал: проверено по
+ * открытому превью, там «1 017 members». Отдельного телеграм-канала в проекте
+ * пока не заведено — если он есть, дописать строку сюда.
  */
 export const SOCIAL_LINKS: { label: string; href: string }[] = [
-  { label: "Телеграм-канал", href: "https://telegram.me/maincomby" },
+  { label: "Телеграм-чат", href: "https://telegram.me/maincomby" },
   { label: "Instagram", href: "https://www.instagram.com/maincomby/" },
 ];
+
+/**
+ * Охват сообщества помимо зала — то, что партнёр получает сверх события.
+ *
+ * Телеграм-чат и мини-апп считаются живьём (RPC community_size + app_settings),
+ * поэтому здесь их нет. Instagram приходится хранить руками: открытого API без
+ * токена у него нет.
+ *
+ * Проверено 26.08.2026 по открытому профилю instagram.com/maincomby.
+ * Обновлять раз в пару месяцев, иначе цифра поедет.
+ */
+export const INSTAGRAM_FOLLOWERS = 741;
 
 /**
  * Отзывы партнёров.

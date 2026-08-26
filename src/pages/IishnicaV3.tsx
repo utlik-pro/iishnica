@@ -28,6 +28,7 @@ import {
   SHOWCASE_SPEAKERS,
   SOCIAL_LINKS,
   TESTIMONIALS,
+  INSTAGRAM_FOLLOWERS,
 } from "@/lib/community";
 import {
   BIG_FORMAT_CAPACITY,
@@ -444,6 +445,7 @@ const IishnicaV3: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [communityCount, setCommunityCount] = useState<number | null>(null);
+  const [chatMembers, setChatMembers] = useState<number | null>(null);
   const [hoverRow, setHoverRow] = useState(0);
   const [atFooter, setAtFooter] = useState(false);
   const [galleryExpanded, setGalleryExpanded] = useState(false);
@@ -455,8 +457,15 @@ const IishnicaV3: React.FC = () => {
   // размер сообщества отдаёт SECURITY DEFINER функция одним числом.
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase.rpc("community_size");
+      const [{ data, error }, chatRes] = await Promise.all([
+        supabase.rpc("community_size"),
+        // размер чата лежит в app_settings и доступен анониму — берём его,
+        // чтобы показать охват в разбивке по каналам, а не одной суммой
+        supabase.from("app_settings").select("value").eq("key", "community_chat_members").maybeSingle(),
+      ]);
       if (!error && typeof data === "number") setCommunityCount(data);
+      const chat = Number(chatRes.data?.value);
+      if (Number.isFinite(chat) && chat > 0) setChatMembers(chat);
     })();
   }, []);
 
@@ -493,11 +502,20 @@ const IishnicaV3: React.FC = () => {
   const totals = seasonTotals();
   const today = new Date().setHours(0, 0, 0, 0);
   const nextEvent = SEASON_EVENTS.find((e) => new Date(e.date).getTime() >= today);
-  /** null, пока счётчик не приехал из Supabase — такие блоки просто не рисуем */
-  const membersLabel = communityCount ? communityCount.toLocaleString("ru-RU") : null;
 
   /* превью для строк сезона — кадры с прошедших встреч */
   const rowPreviews = GALLERY.filter((g) => !g.wide).slice(0, SEASON_EVENTS.length);
+
+  /* Разбивка охвата по каналам. Мини-апп = общий счётчик минус чат: RPC
+     отдаёт только сумму, а размер чата лежит отдельно в app_settings.
+     Показываем лишь то, что реально посчиталось — без прочерков. */
+  const miniapp = communityCount && chatMembers ? communityCount - chatMembers : null;
+  const reachChannels = [
+    ...(miniapp && miniapp > 0 ? [{ label: "в мини-аппе и боте", value: miniapp }] : []),
+    ...(chatMembers ? [{ label: "в телеграм-чате", value: chatMembers }] : []),
+    { label: "в instagram", value: INSTAGRAM_FOLLOWERS },
+  ];
+  const reachTotal = reachChannels.reduce((sum, c) => sum + c.value, 0);
 
   /* Нумерация подписей 01, 02… считается от фактического набора секций:
      блок отзывов появляется, только когда отзывы есть, и дырки в счёте быть не должно. */
@@ -754,15 +772,10 @@ const IishnicaV3: React.FC = () => {
           </div>
         </div>
 
-        {/* крупные цифры. Счётчик сообщества приходит из Supabase —
-            пока его нет, плитку не показываем, чтобы не висел голый прочерк */}
-        <div
-          className={`relative grid sm:grid-cols-2 border-t border-white/10 mt-7 md:mt-14 ${
-            membersLabel ? "lg:grid-cols-4" : "lg:grid-cols-3"
-          }`}
-        >
+        {/* Цифры про зал. Размер сообщества сюда не выносим: он дублировал бы
+            итог блока охвата ниже — там та же аудитория, только в разбивке. */}
+        <div className="relative grid sm:grid-cols-2 lg:grid-cols-3 border-t border-white/10 mt-7 md:mt-14">
           {[
-            ...(membersLabel ? [{ v: membersLabel, l: "в сообществе" }] : []),
             { v: String(AUDIENCE_STATS.guests), l: "гостей события" },
             { v: `≈${AUDIENCE_STATS.decisionMakers}`, l: "руководителей и ЛПР" },
             { v: `≈${AUDIENCE_STATS.costPerContact}`, l: "BYN за один B2B-контакт" },
@@ -778,6 +791,37 @@ const IishnicaV3: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {/* Охват помимо зала — актив, который партнёр получает сверх события:
+            логотип и упоминание живут в мини-аппе, чате и соцсетях.
+            Телеграм считается живьём, Instagram — из константы. */}
+        {reachChannels.length > 0 && (
+          <div className="relative mt-9 md:mt-14 border border-white/12 p-5 md:p-7">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+              <div className="v3-mono text-[10px] md:text-[11px] text-[#c8ff00]">Охват помимо зала</div>
+              <div className="v3-mono text-[10px] text-white/40">
+                логотип и упоминание партнёра — во всех каналах
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-6 mt-6">
+              {reachChannels.map((c) => (
+                <div key={c.label}>
+                  <div className="v3-display text-[30px] md:text-[38px] leading-none tabular-nums text-white">
+                    {c.value.toLocaleString("ru-RU")}
+                  </div>
+                  <div className="v3-mono text-[10px] text-white/45 mt-2.5">{c.label}</div>
+                </div>
+              ))}
+              <div className="border-l border-white/12 pl-5">
+                <div className="v3-display text-[30px] md:text-[38px] leading-none tabular-nums text-[#c8ff00]">
+                  {reachTotal.toLocaleString("ru-RU")}
+                </div>
+                <div className="v3-mono text-[10px] text-white/45 mt-2.5">всего подписчиков</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* сегменты списком */}
         <div className="relative mt-9 md:mt-16 grid lg:grid-cols-12 gap-6">
@@ -1413,14 +1457,12 @@ const IishnicaV3: React.FC = () => {
                 {totals.events}
               </div>
               <div className="v3-mono text-[10px] text-white/40 mt-3">встреч 2026/2027</div>
-              {membersLabel && (
-                <>
-                  <div className="v3-display text-white text-[44px] leading-none tabular-nums mt-6">
-                    {membersLabel}
-                  </div>
-                  <div className="v3-mono text-[10px] text-white/40 mt-3">в сообществе</div>
-                </>
-              )}
+              {/* та же цифра, что в блоке охвата — чтобы на странице не было
+                  двух разных «размеров сообщества» */}
+              <div className="v3-display text-white text-[44px] leading-none tabular-nums mt-6">
+                {reachTotal.toLocaleString("ru-RU")}
+              </div>
+              <div className="v3-mono text-[10px] text-white/40 mt-3">подписчиков</div>
             </div>
           </div>
 
