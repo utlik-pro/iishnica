@@ -592,7 +592,9 @@ const IishnicaV3: React.FC = () => {
       </div>
 
       {/* ================= ГЕРОЙ ================= */}
-      <div id="top" ref={heroRef} className="relative bg-black md:min-h-[280vh] min-h-[180vh]">
+      {/* Высота обёртки задаёт длину скролл-сцены героя: скраб идёт по
+          (высота − экран), то есть на мобиле все три кадра сменяются за 50vh. */}
+      <div id="top" ref={heroRef} className="relative bg-black md:min-h-[280vh] min-h-[150vh]">
         <section className="h-screen sticky top-0 overflow-hidden">
           <div className="v3-hero-stage">
             <div className="v3-hero-plate" data-plate="1">
