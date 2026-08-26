@@ -635,7 +635,7 @@ const IishnicaV3: React.FC = () => {
       {/* ================= ФОРМАТЫ ================= */}
       <section id="formats" className="relative bg-black scroll-mt-0">
         <span className="v3-noise" aria-hidden />
-        <div className="relative v3-container pt-[14vh] pb-[10vh]">
+        <div className="relative v3-container pt-[9vh] md:pt-[14vh] pb-[6vh] md:pb-[10vh]">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6" data-reveal="">
             <h2 className="v3-display v3-h2 text-white">Форматы</h2>
             <p className="text-white/55 text-base md:text-lg max-w-[34ch] md:text-right">
@@ -731,10 +731,10 @@ const IishnicaV3: React.FC = () => {
       </div>
 
       {/* ================= КАЛЕНДАРЬ СЕЗОНА ================= */}
-      <section id="season" className="relative bg-black v3-container py-[10vh] scroll-mt-0">
+      <section id="season" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
         <span className="v3-noise" aria-hidden />
 
-        <div className="relative grid lg:grid-cols-12 gap-6 mb-10 md:mb-14" data-reveal="">
+        <div className="relative grid lg:grid-cols-12 gap-6 mb-7 md:mb-14" data-reveal="">
           <div className="lg:col-span-4">
             <Eyebrow num="01">Календарь</Eyebrow>
           </div>
@@ -795,9 +795,9 @@ const IishnicaV3: React.FC = () => {
       </section>
 
       {/* ================= СПИКЕРЫ ================= */}
-      <section id="speakers" className="relative bg-black v3-container py-[10vh] scroll-mt-0">
+      <section id="speakers" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
         <span className="v3-noise" aria-hidden />
-        <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-10 md:mb-14" data-reveal="">
+        <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-7 md:mb-14" data-reveal="">
           <div>
             <Eyebrow num="02">Спикеры</Eyebrow>
             <h3 className="v3-display v3-h3 text-white mt-5 max-w-[14ch]">Ради кого приходят</h3>
@@ -842,7 +842,7 @@ const IishnicaV3: React.FC = () => {
       </section>
 
       {/* ================= АУДИТОРИЯ ================= */}
-      <section id="audience" className="relative bg-black v3-container py-[10vh] scroll-mt-0">
+      <section id="audience" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
         <span className="v3-noise" aria-hidden />
 
         <div className="relative grid lg:grid-cols-12 gap-6" data-reveal="">
@@ -857,7 +857,7 @@ const IishnicaV3: React.FC = () => {
         {/* крупные цифры. Счётчик сообщества приходит из Supabase —
             пока его нет, плитку не показываем, чтобы не висел голый прочерк */}
         <div
-          className={`relative grid sm:grid-cols-2 border-t border-white/10 mt-10 md:mt-14 ${
+          className={`relative grid sm:grid-cols-2 border-t border-white/10 mt-7 md:mt-14 ${
             membersLabel ? "lg:grid-cols-4" : "lg:grid-cols-3"
           }`}
         >
@@ -880,7 +880,7 @@ const IishnicaV3: React.FC = () => {
         </div>
 
         {/* сегменты списком */}
-        <div className="relative mt-12 md:mt-16 grid lg:grid-cols-12 gap-6">
+        <div className="relative mt-9 md:mt-16 grid lg:grid-cols-12 gap-6">
           <div className="lg:col-span-4">
             <p className="text-white/55 text-base max-w-[32ch]">
               {COMMUNITY_GEO.text} Уже {COMMUNITY_GEO.highlight.toLowerCase()} — и сообщество продолжает
@@ -922,9 +922,9 @@ const IishnicaV3: React.FC = () => {
       </section>
 
       {/* ================= ФОТООТЧЁТ ================= */}
-      <section id="gallery" className="relative bg-black v3-container py-[10vh] scroll-mt-0">
+      <section id="gallery" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
         <span className="v3-noise" aria-hidden />
-        <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-10 md:mb-14" data-reveal="">
+        <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-7 md:mb-14" data-reveal="">
           <div>
             <Eyebrow num="04">Как это было</Eyebrow>
             <h3 className="v3-display v3-h3 text-white mt-5">Атмосфера</h3>
@@ -974,9 +974,9 @@ const IishnicaV3: React.FC = () => {
       )}
 
       {/* ================= ПАРТНЁРСКИЕ ПАКЕТЫ ================= */}
-      <section id="packages" className="relative bg-black v3-container py-[10vh] scroll-mt-0">
+      <section id="packages" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
         <span className="v3-noise" aria-hidden />
-        <div className="relative grid lg:grid-cols-12 gap-6 mb-10 md:mb-14" data-reveal="">
+        <div className="relative grid lg:grid-cols-12 gap-6 mb-7 md:mb-14" data-reveal="">
           <div className="lg:col-span-4">
             <Eyebrow num="05">Партнёрам</Eyebrow>
           </div>
@@ -1062,7 +1062,7 @@ const IishnicaV3: React.FC = () => {
         </div>
 
         {/* партнёры сообщества — бегущая строка */}
-        <div className="relative mt-14 md:mt-20 border-y border-white/10 py-7 overflow-hidden">
+        <div className="relative mt-10 md:mt-20 border-y border-white/10 py-7 overflow-hidden">
           <div className="v3-mono text-[10px] text-white/35 mb-5">Эксперты и партнёры сообщества</div>
           <div className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
             <div className="inline-flex items-center gap-12 md:gap-20 animate-marquee will-change-transform pr-12 md:pr-20">
