@@ -18,6 +18,7 @@ import { Helmet } from "react-helmet-async";
 import { ArrowUpRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PARTNER_LOGOS } from "@/lib/partners";
+import { trackEvent } from "@/lib/analytics";
 import {
   AUDIENCE_SEGMENTS,
   AUDIENCE_STATS,
@@ -169,6 +170,9 @@ type BtnProps = {
   external?: boolean;
   className?: string;
   icon?: React.ReactNode;
+  /** имя события аналитики; без него клик не трекается */
+  event?: string;
+  eventParams?: Record<string, string | number | boolean | undefined>;
 };
 
 /**
@@ -177,7 +181,21 @@ type BtnProps = {
  * Цвет не выбирается вручную — он берётся от поверхности: на тёмном фоне
  * пилюля лаймовая, внутри блока с классом `v3-surface-lime` — чёрная.
  */
-const Btn: React.FC<BtnProps> = ({ label, href, onClick, external, className = "", icon }) => {
+const Btn: React.FC<BtnProps> = ({
+  label,
+  href,
+  onClick,
+  external,
+  className = "",
+  icon,
+  event,
+  eventParams,
+}) => {
+  const handleClick = () => {
+    if (event) trackEvent(event, { placement: label, ...eventParams });
+    onClick?.();
+  };
+
   const inner = (
     <>
       <span className="v3-btn-bg" aria-hidden>
@@ -203,6 +221,7 @@ const Btn: React.FC<BtnProps> = ({ label, href, onClick, external, className = "
       <a
         href={href}
         className={cls}
+        onClick={handleClick}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
         {inner}
@@ -210,7 +229,7 @@ const Btn: React.FC<BtnProps> = ({ label, href, onClick, external, className = "
     );
   }
   return (
-    <button type="button" onClick={onClick} className={cls}>
+    <button type="button" onClick={handleClick} className={cls}>
       {inner}
     </button>
   );
@@ -490,6 +509,24 @@ const IishnicaV3: React.FC = () => {
     return () => mq.removeEventListener("change", sync);
   }, []);
 
+  /* Ключевая метрика воронки: сколько людей вообще доскроллило до цен.
+     Без неё непонятно, кнопку не жмут или до неё просто не доходят. */
+  useEffect(() => {
+    const el = document.getElementById("packages");
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          trackEvent("PackagesViewed", { content_name: "packages" });
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // у футера прячем плавающий вордмарк — там свой большой логотип
   useEffect(() => {
     const el = document.getElementById("v3-footer");
@@ -728,6 +765,8 @@ const IishnicaV3: React.FC = () => {
                 <Btn
                   label={`ПАКЕТЫ ОТ ${PARTNER_PACKAGES[0].price.toLocaleString("ru-RU")} BYN`}
                   onClick={() => jump("#packages")}
+                  event="ViewContent"
+                  eventParams={{ content_name: "packages", source: "hero" }}
                 />
               </div>
             </div>
@@ -976,7 +1015,13 @@ const IishnicaV3: React.FC = () => {
 
                 <div className="mt-auto pt-9">
                   {/* на лаймовой плашке кнопка сама станет чёрной — см. v3-surface-lime */}
-                  <Btn label="ОБСУДИТЬ ПАКЕТ" href={TG_URL} external />
+                  <Btn
+                    label="ОБСУДИТЬ ПАКЕТ"
+                    href={TG_URL}
+                    external
+                    event="Lead"
+                    eventParams={{ content_name: pkg.name, value: pkg.price, currency: pkg.currency }}
+                  />
                 </div>
               </div>
             );
@@ -1142,7 +1187,13 @@ const IishnicaV3: React.FC = () => {
             <br />
             2026/2027
           </h2>
-          <Btn label="ТЕЛЕГРАМ-БОТ" href={BOT_URL} external />
+          <Btn
+            label="ТЕЛЕГРАМ-БОТ"
+            href={BOT_URL}
+            external
+            event="Subscribe"
+            eventParams={{ content_name: "bot", source: "season_cover" }}
+          />
         </div>
       </div>
 
@@ -1203,7 +1254,13 @@ const IishnicaV3: React.FC = () => {
             </div>
 
             <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-5">
-              <Btn label="ЗАРЕГИСТРИРОВАТЬСЯ" href={BOT_URL} external />
+              <Btn
+                label="ЗАРЕГИСТРИРОВАТЬСЯ"
+                href={BOT_URL}
+                external
+                event="CompleteRegistration"
+                eventParams={{ content_name: "bot", source: "season_list" }}
+              />
               <span className="v3-mono text-[11px] text-white/40">Вход для гостей — через бот</span>
             </div>
           </div>
@@ -1382,10 +1439,18 @@ const IishnicaV3: React.FC = () => {
                   </p>
 
                   <div className="flex flex-wrap gap-3 mt-7 md:mt-9">
-                    <Btn label={`@${PARTNER_CONTACT.telegram}`} href={TG_URL} external />
+                    <Btn
+                      label={`@${PARTNER_CONTACT.telegram}`}
+                      href={TG_URL}
+                      external
+                      event="Contact"
+                      eventParams={{ method: "telegram", source: "cta" }}
+                    />
                     <Btn
                       label={PARTNER_CONTACT.phone}
                       href={`tel:${PARTNER_CONTACT.phone.replace(/[^+\d]/g, "")}`}
+                      event="Contact"
+                      eventParams={{ method: "phone", source: "cta" }}
                     />
                   </div>
                 </div>
