@@ -57,14 +57,20 @@ export const COMMUNITY_GEO = {
   map: "/v2/geo-map.webp",
 };
 
-/** Карточки уже содержат имя, компанию и логотип — они вырезаны из презентации целиком. */
-export const SHOWCASE_SPEAKERS: { name: string; org: string; card: string }[] = [
-  { name: "Игорь Бичель", org: "МТБанк", card: "/v2/speakers/bichel.webp" },
-  { name: "Матвей Лисицкий", org: "1AK Group", card: "/v2/speakers/lisitsky.webp" },
-  { name: "Денис Бабицкий", org: "A-100 Девелопмент", card: "/v2/speakers/babitsky.webp" },
-  { name: "Александр Цалко", org: "BMW", card: "/v2/speakers/tsalko.webp" },
-  { name: "Эллина Дашук", org: "Сбер", card: "/v2/speakers/dashuk.webp" },
-  { name: "Вадим Владымцев", org: "StackLevel Group", card: "/v2/speakers/vladymtsev.webp" },
+/**
+ * Карточки уже содержат имя, компанию и логотип — они вырезаны из презентации целиком.
+ *
+ * `card` — исходник с серой подложкой #1d1d1d вокруг (её цвет должна повторять
+ * секция, иначе видны швы). `cardOnBlack` — та же карточка, но подложка залита
+ * чистым чёрным: нужна там, где фон страницы чёрный и подложка не нужна вовсе.
+ */
+export const SHOWCASE_SPEAKERS: { name: string; org: string; card: string; cardOnBlack: string }[] = [
+  { name: "Игорь Бичель", org: "МТБанк", card: "/v2/speakers/bichel.webp", cardOnBlack: "/v3/speakers/bichel.webp" },
+  { name: "Матвей Лисицкий", org: "1AK Group", card: "/v2/speakers/lisitsky.webp", cardOnBlack: "/v3/speakers/lisitsky.webp" },
+  { name: "Денис Бабицкий", org: "A-100 Девелопмент", card: "/v2/speakers/babitsky.webp", cardOnBlack: "/v3/speakers/babitsky.webp" },
+  { name: "Александр Цалко", org: "BMW", card: "/v2/speakers/tsalko.webp", cardOnBlack: "/v3/speakers/tsalko.webp" },
+  { name: "Эллина Дашук", org: "Сбер", card: "/v2/speakers/dashuk.webp", cardOnBlack: "/v3/speakers/dashuk.webp" },
+  { name: "Вадим Владымцев", org: "StackLevel Group", card: "/v2/speakers/vladymtsev.webp", cardOnBlack: "/v3/speakers/vladymtsev.webp" },
 ];
 
 /** Иконки задаются в компоненте — здесь только смысловая часть. */
@@ -84,6 +90,18 @@ export const AUDIENCE_STATS = {
   /** ≈50 BYN — стоимость одного B2B-контакта в пакете (слайд «Аудитория, которую видит партнёр») */
   costPerContact: 50,
 };
+
+/**
+ * Соцсети сообщества.
+ *
+ * Ссылки взяты из страниц событий (EventGrodno / EventDecember18).
+ * TODO: не хватает телеграм-чата — как только будет ссылка, дописать строку
+ * `{ label: "Телеграм-чат", href: "..." }`, футер подхватит её сам.
+ */
+export const SOCIAL_LINKS: { label: string; href: string }[] = [
+  { label: "Телеграм-канал", href: "https://telegram.me/maincomby" },
+  { label: "Instagram", href: "https://www.instagram.com/maincomby/" },
+];
 
 /** Контакт по партнёрству — как на слайде «Обсудим партнёрство». */
 export const PARTNER_CONTACT = {

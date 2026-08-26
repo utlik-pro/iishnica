@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import Calendar from "./pages/Calendar";
 import EventPage from "./pages/EventPage";
 import IishnicaV2 from "./pages/IishnicaV2";
+import IishnicaV3 from "./pages/IishnicaV3";
 import EventDetail from "./pages/EventDetail";
 import EventGrodno from "./pages/EventGrodno";
 import EventDecember18 from "./pages/EventDecember18";
@@ -44,6 +45,9 @@ const App = () => {
                   Старая версия остаётся на "/" без изменений. */}
               <Route path="/v2" element={<IishnicaV2 />} />
               <Route path="/season" element={<IishnicaV2 />} />
+              {/* Третья версия — отдельная, в стиле референса voltlites.com.
+                  «/» и «/v2» остаются как есть. */}
+              <Route path="/v3" element={<IishnicaV3 />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/blog" element={<Blog />} />

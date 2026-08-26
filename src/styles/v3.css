@@ -1,0 +1,531 @@
+/**
+ * Дизайн-система третьей версии лендинга (/v3) — по референсу voltlites.com.
+ *
+ * ВСЁ здесь заскоуплено под `.v3`, чтобы ничего не протекло на «/» и «/v2»:
+ * у тех версий свой тёмно-лаймовый стиль и он остаётся нетронутым.
+ *
+ * Ключевые приёмы референса, которые повторяем:
+ *   — чистый чёрный холст, кислотный лайм как единственный акцент;
+ *   — моноширинные капсы для служебных подписей и кнопок;
+ *   — огромный вордмарк, который на скролле уезжает из угла в угол;
+ *   — sticky-секции со скраб-анимациями (прогресс пишем в CSS-переменную --p);
+ *   — «веер» из вертикальных полос как переход между блоками;
+ *   — плёночный шум поверх всего.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap");
+
+.v3 {
+  /* палитра */
+  --v3-black: #000000;
+  --v3-brand: #0b0b0b;
+  --v3-lime: #c8ff00;
+  --v3-lime-deep: #a8d900;
+  /* лесенка зелёных для нумерованных плиток — как у референса */
+  --v3-g1: #c8ff00;
+  --v3-g2: #669a3a;
+  --v3-g3: #3f772c;
+  --v3-g4: #19551e;
+  --v3-g5: #12401e;
+
+  /* сетка и ритм */
+  --v3-pad: 16px;
+  --v3-nav: 74px;
+
+  background: var(--v3-black);
+  color: #fff;
+  font-family: "Inter Tight", Inter, sans-serif;
+  font-weight: 500;
+  line-height: 1.44;
+  text-wrap: pretty;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (min-width: 1024px) {
+  .v3 {
+    --v3-pad: 24px;
+    --v3-nav: 98px;
+  }
+}
+
+.v3-container {
+  padding-left: var(--v3-pad);
+  padding-right: var(--v3-pad);
+}
+
+/* ------------------------------------------------------------------ */
+/* Типографика                                                         */
+/* ------------------------------------------------------------------ */
+
+.v3 .v3-display {
+  font-family: "Inter Tight", Inter, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.83;
+  text-transform: uppercase;
+}
+
+.v3-h1 {
+  font-size: clamp(2.75rem, 7vw + 0.2rem, 8.25rem);
+}
+.v3-h2 {
+  font-size: clamp(2.125rem, 4.5vw + 1rem, 6rem);
+}
+.v3-h3 {
+  font-size: clamp(1.875rem, 1.2rem + 2.9vw, 4rem);
+}
+
+/* отменяет капс у .v3-display — специфичность tailwind-утилит тут не берёт */
+.v3 .v3-normal {
+  text-transform: none;
+}
+
+/* моноширинная служебная подпись */
+.v3-mono {
+  font-family: "Roboto Mono", ui-monospace, SFMono-Regular, monospace;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Плёночный шум — svg-турбулентность вместо гифки из референса         */
+/* ------------------------------------------------------------------ */
+
+.v3-noise {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  /* без blend-режима: overlay поверх чёрного даёт чёрное — зерна не видно */
+}
+
+/* ------------------------------------------------------------------ */
+/* Кнопка-пилюля: моно-капс, заливка «сеткой» и подмена текста          */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Тон пилюли НЕ задаётся руками у каждой кнопки, а наследуется от поверхности:
+ * на тёмном фоне пилюля лаймовая, внутри лаймовой плашки — чёрная. Раньше
+ * чёрная кнопка на почти чёрном фоне просто сливалась и её не было видно.
+ * Лаймовой поверхности достаточно повесить класс .v3-surface-lime.
+ */
+.v3-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  isolation: isolate;
+  border-radius: 3px;
+  height: 34px;
+  min-width: 116px;
+  max-width: 100%;
+  /* пилюля не должна ужиматься соседями по flex-строке: иначе лейбл
+     обрезается по ширине (у пилюли overflow: hidden) */
+  flex-shrink: 0;
+  font-size: 11px;
+  cursor: pointer;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+
+  /* поверхность тёмная — значит пилюля светлая */
+  --v3-pill: var(--v3-lime);
+  --v3-pill-ink: #000;
+  /* заливка на ховере одна для обоих случаев: белое читается и на чёрном, и на лайме */
+  --v3-fill: #fff;
+  --v3-fill-ink: #000;
+}
+
+.v3-surface-lime .v3-btn {
+  --v3-pill: #000;
+  --v3-pill-ink: #fff;
+}
+
+.v3-btn > .v3-btn-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--v3-pill);
+  /* поверхность может смениться на ходу (панель меню выезжает под кнопку) —
+     поэтому цвет пилюли переезжает плавно, а не скачком */
+  transition: background-color 0.45s ease;
+}
+
+/* «color-grid» из референса: ячейки разбегаются при наведении */
+.v3-btn-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+/* Заливку задаём переменной, а не currentColor: подложка кнопки — тоже span,
+   и любое правило вида `.v3-btn > span { color }` перекрашивало бы ячейки. */
+.v3-btn-grid i {
+  background: var(--v3-fill);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0, 1);
+  transition-delay: var(--d, 0ms);
+}
+
+.v3-btn:hover .v3-btn-grid i,
+.v3-btn:focus-visible .v3-btn-grid i {
+  transform: scaleY(1);
+}
+
+.v3-btn > .v3-btn-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  padding: 0 10px;
+  color: var(--v3-pill-ink);
+  transition: color 0.3s ease 0.05s;
+}
+
+.v3-btn:hover > .v3-btn-label,
+.v3-btn:focus-visible > .v3-btn-label {
+  color: var(--v3-fill-ink);
+}
+
+/* подмена лейбла: старый уезжает вверх, новый приходит снизу */
+.v3-swap {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1.6;
+  /* без nowrap лейблы с дефисом («ТЕЛЕГРАМ-БОТ») и пробелами (телефон)
+     ломаются на две строки, и вторая обрезается по высоте пилюли */
+  white-space: nowrap;
+}
+.v3-swap i,
+.v3-swap::after {
+  display: block;
+  font-style: normal;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0, 1);
+}
+.v3-swap::after {
+  content: attr(data-hover);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  white-space: nowrap;
+}
+.v3-btn:hover .v3-swap i,
+.v3-btn:hover .v3-swap::after,
+.v3-btn:focus-visible .v3-swap i,
+.v3-btn:focus-visible .v3-swap::after {
+  transform: translateY(-100%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Ссылка с подчёркиванием, которое выезжает слева                      */
+/* ------------------------------------------------------------------ */
+
+.v3-link {
+  position: relative;
+  display: inline-block;
+}
+.v3-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0, 1);
+}
+.v3-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ------------------------------------------------------------------ */
+/* Вордмарк: из огромного внизу слева — в маленький сверху слева        */
+/* Прогресс героя лежит в --hero-p на корне страницы, --wm = 1 - p.     */
+/* ------------------------------------------------------------------ */
+
+.v3-wordmark-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  padding: 18px var(--v3-pad);
+  pointer-events: none;
+  --wm: calc(1 - var(--hero-p, 0));
+}
+
+.v3-wordmark-spacer {
+  flex-grow: var(--wm);
+  min-height: 0;
+}
+
+.v3-wordmark {
+  display: block;
+  /* ширина по содержимому: растянутый на всю строку блок ловил бы клики
+     по контенту, который лежит под ним */
+  width: fit-content;
+  align-self: flex-start;
+  color: var(--v3-lime);
+  font-size: calc(15px + (14.5vw - 15px) * var(--wm));
+  line-height: 0.74;
+  pointer-events: auto;
+  transition: opacity 0.4s ease;
+  white-space: nowrap;
+}
+
+/* когда вордмарк скрыт (у футера) — он не должен ловить клики */
+.v3-wordmark-layer[data-hidden="true"] .v3-wordmark {
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .v3-wordmark {
+    font-size: calc(17px + (10.5vw - 17px) * var(--wm));
+  }
+}
+
+/* слоган в правом нижнем углу героя */
+.v3-tagline {
+  font-size: clamp(1.25rem, 2.6vw, 2.75rem);
+  line-height: 1.06;
+}
+
+/* у футера прячем — там свой большой логотип */
+.v3-wordmark-layer[data-hidden="true"] .v3-wordmark {
+  opacity: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Герой: слои картинок с клипом и масштабом                            */
+/* ------------------------------------------------------------------ */
+
+.v3-hero-stage {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  overflow: hidden;
+  /* от края экрана к «карточке» с зазором — как clip-path inset у референса */
+  clip-path: inset(calc(var(--hero-p, 0) * 16px));
+}
+
+.v3-hero-plate {
+  position: absolute;
+  inset: 0;
+}
+
+.v3-hero-plate img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* кадр «отъезжает» по мере скролла, как у референса */
+  transform: scale(calc(1.3 - 0.3 * var(--hero-p, 0)));
+  opacity: 0.6;
+}
+
+/* Три кадра сменяют друг друга по прогрессу героя.
+   Значения opacity вне 0–1 браузер зажимает сам — поэтому линейные рампы. */
+.v3-hero-plate[data-plate="1"] {
+  opacity: calc((0.45 - var(--hero-p, 0)) * 5);
+}
+.v3-hero-plate[data-plate="2"] {
+  opacity: calc(min((var(--hero-p, 0) - 0.25) * 5, (0.8 - var(--hero-p, 0)) * 5));
+}
+.v3-hero-plate[data-plate="3"] {
+  opacity: calc((var(--hero-p, 0) - 0.6) * 5);
+}
+
+/* ------------------------------------------------------------------ */
+/* «Веер»: лаймовая штора из горизонтальных полос, которая расходится   */
+/* ------------------------------------------------------------------ */
+
+.v3-fan {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.v3-fan > i {
+  display: block;
+  flex-grow: var(--g);
+  background: var(--v3-lime);
+  transform-origin: bottom;
+  /*
+   * Блок появляется закрытым лаймом и расшторивается по мере скролла.
+   * У каждой полосы свой сдвиг по прогрессу (--i): без него все они
+   * схлопываются одновременно и это читается как жалюзи, а не как переход.
+   * Референс делает то же самое через stagger 0.05.
+   */
+  --sp: max(0, min(1, calc((var(--p, 0) - var(--i, 0) * 0.05) / 0.5)));
+  transform: scaleY(calc(1.06 * (1 - var(--sp))));
+  will-change: transform;
+}
+
+/* ------------------------------------------------------------------ */
+/* Список-«гармошка»: строка расширяется под курсором                   */
+/* ------------------------------------------------------------------ */
+
+@media (min-width: 1024px) {
+  .v3-grow-list {
+    display: flex;
+    flex-direction: column;
+    height: 620px;
+  }
+  .v3-grow-row {
+    flex: 1 1 0;
+    min-height: 0;
+    transition: flex-grow 0.35s cubic-bezier(0.4, 0, 0, 1);
+  }
+  .v3-grow-row:hover {
+    flex-grow: 4;
+  }
+  .v3-grow-row:hover .v3-grow-title {
+    transform: scale(1.18);
+  }
+}
+
+.v3-grow-title {
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0, 1);
+}
+
+/* ------------------------------------------------------------------ */
+/* Появление блоков при въезде во вьюпорт                               */
+/* ------------------------------------------------------------------ */
+
+.v3-in {
+  opacity: 0;
+  transform: translateY(38px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+}
+.v3-in.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Шторка снизу вверх — для карточек-картинок.
+   Наблюдать надо РОДИТЕЛЯ с [data-reveal]: у самого элемента clip-path
+   обнуляет площадь, и IntersectionObserver для него уже не срабатывает —
+   иначе шторка так и не открывается. */
+.v3-clip {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--delay, 0ms);
+}
+[data-reveal].is-in .v3-clip {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ------------------------------------------------------------------ */
+/* Курсор-рамка (только мышь)                                           */
+/* ------------------------------------------------------------------ */
+
+.v3-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  width: 34px;
+  height: 25px;
+  margin: -12px 0 0 -17px;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.12s ease-out;
+}
+.v3-cursor.is-on {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .v3-cursor {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Загрузчик: сетка плиток, разъезжающаяся вверх                        */
+/* ------------------------------------------------------------------ */
+
+.v3-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  /* без явной строки колонки схлопываются по содержимому — заставка не видна */
+  grid-template-rows: 100%;
+}
+.v3-loader i {
+  display: block;
+  height: 100%;
+  background: var(--v3-lime);
+  transform-origin: top;
+  transform: scaleY(1);
+  transition: transform 0.65s cubic-bezier(0.7, 0, 0.3, 1);
+  transition-delay: var(--d, 0ms);
+}
+.v3-loader.is-done i {
+  transform: scaleY(0);
+}
+.v3-loader.is-gone {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Мелочи                                                              */
+/* ------------------------------------------------------------------ */
+
+.v3-hairline {
+  border-color: rgb(255 255 255 / 0.12);
+}
+
+.v3-menu-panel {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0, 1);
+}
+
+.v3-tilt {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.v3-tilt:hover {
+  transform: translateY(-6px);
+}
+
+/* Уважаем системную настройку «меньше движения» */
+@media (prefers-reduced-motion: reduce) {
+  .v3 *,
+  .v3 *::before,
+  .v3 *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .v3-in,
+  .v3-clip {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+  .v3-loader {
+    display: none;
+  }
+}
