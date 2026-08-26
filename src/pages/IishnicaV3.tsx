@@ -336,12 +336,12 @@ const [contactFirstName, ...contactRest] = PARTNER_CONTACT.name.split(" ");
 const contactLastName = contactRest.join(" ");
 
 const MENU_LINKS = [
+  { label: "Аудитория", href: "#audience" },
+  { label: "Партнёрам", href: "#packages" },
   { label: "Форматы", href: "#formats" },
   { label: "Сезон 2026/2027", href: "#season" },
   { label: "Спикеры", href: "#speakers" },
-  { label: "Аудитория", href: "#audience" },
   { label: "Фотоотчёт", href: "#gallery" },
-  { label: "Партнёрам", href: "#packages" },
   { label: "Контакты", href: "#contact" },
 ];
 
@@ -436,6 +436,8 @@ const IishnicaV3: React.FC = () => {
   const [communityCount, setCommunityCount] = useState<number | null>(null);
   const [hoverRow, setHoverRow] = useState(0);
   const [atFooter, setAtFooter] = useState(false);
+  const [galleryExpanded, setGalleryExpanded] = useState(false);
+  const [isNarrow, setIsNarrow] = useState(false);
 
   useReveal(rootRef);
 
@@ -446,6 +448,14 @@ const IishnicaV3: React.FC = () => {
       const { data, error } = await supabase.rpc("community_size");
       if (!error && typeof data === "number") setCommunityCount(data);
     })();
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsNarrow(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
   }, []);
 
   // у футера прячем плавающий вордмарк — там свой большой логотип
@@ -478,6 +488,9 @@ const IishnicaV3: React.FC = () => {
 
   /* превью для строк сезона — кадры с прошедших встреч */
   const rowPreviews = GALLERY.filter((g) => !g.wide).slice(0, SEASON_EVENTS.length);
+
+  /* на узком экране мозаика урезана до 9 кадров, остальные — по кнопке */
+  const visibleGallery = isNarrow && !galleryExpanded ? GALLERY.slice(0, 9) : GALLERY;
 
   return (
     <div ref={rootRef} className="v3 min-h-screen overflow-x-clip">
@@ -647,21 +660,31 @@ const IishnicaV3: React.FC = () => {
           </div>
           <span className="v3-noise" aria-hidden />
 
-          {/* вводный абзац — по центру, как у референса */}
-          <div className="absolute inset-0 flex items-center justify-center v3-container pointer-events-none">
-            <p className="text-center text-white text-[17px] sm:text-xl md:text-2xl leading-snug max-w-[24ch] sm:max-w-[34ch] -translate-y-[8vh] md:translate-y-0">
-              — первое AI-сообщество Беларуси. {totals.events} офлайн-встреч за сезон, до{" "}
-              {totals.maxCapacity} человек в зале и ≈{AUDIENCE_STATS.decisionMakers} собственников
-              и руководителей на одном событии.
-            </p>
+          {/* Первый экран продаёт партнёрство, а не рассказывает о сообществе:
+              что предлагаем, кому и почём — плюс кнопка сразу к пакетам. */}
+          <div className="absolute inset-0 flex items-center justify-center v3-container">
+            <div className="text-center -translate-y-[6vh] md:translate-y-0 max-w-[30ch]">
+              <p className="v3-mono text-[10px] md:text-[11px] text-[#c8ff00]">Партнёрам · сезон 2026/2027</p>
+              <p className="text-white text-[19px] sm:text-xl md:text-2xl leading-snug mt-4">
+                Ваш бренд — перед {AUDIENCE_STATS.decisionMakers} собственниками и руководителями
+                за один вечер. {totals.events} встреч за сезон, до {totals.maxCapacity} человек
+                в зале.
+              </p>
+              <div className="flex justify-center mt-7">
+                <Btn
+                  label={`ПАКЕТЫ ОТ ${PARTNER_PACKAGES[0].price.toLocaleString("ru-RU")} BYN`}
+                  onClick={() => jump("#packages")}
+                />
+              </div>
+            </div>
           </div>
 
           {/* слоган — правый нижний угол. На узких экранах поднимаем над
               вордмарком, иначе они накладываются друг на друга */}
           <div className="absolute bottom-0 right-0 v3-container pb-[104px] sm:pb-[18px] pointer-events-none">
             <div className="v3-tagline v3-display v3-normal text-right max-w-[13ch]">
-              <span className="text-white/45">Сообщество</span>{" "}
-              <span className="text-white">тех, кто уже внедряет ИИ</span>
+              <span className="text-white/45">Первое</span>{" "}
+              <span className="text-white">AI-сообщество Беларуси</span>
             </div>
           </div>
 
@@ -671,6 +694,199 @@ const IishnicaV3: React.FC = () => {
           </div>
         </section>
       </div>
+
+      {/* ================= ЛОГОТИПЫ ПАРТНЁРОВ =================
+          Соцдоказательство сразу после первого экрана: раньше эта строка
+          лежала в самом низу блока пакетов, на 13-м экране прокрутки. */}
+      <div className="relative bg-black border-y border-white/10 py-6 md:py-7 overflow-hidden">
+        <div className="v3-container v3-mono text-[10px] text-white/35 mb-5">
+          Нас уже выбрали
+        </div>
+        <div className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
+          <div className="inline-flex items-center gap-12 md:gap-20 animate-marquee will-change-transform pr-12 md:pr-20">
+            {[0, 1].flatMap((rep) =>
+              PARTNER_LOGOS.map((p, i) => (
+                <img
+                  key={`${rep}-${i}`}
+                  src={p.src}
+                  alt={p.name}
+                  className="h-7 md:h-8 w-auto object-contain shrink-0 brightness-0 invert opacity-55 hover:opacity-100 transition-opacity"
+                />
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ================= АУДИТОРИЯ ================= */}
+      <section id="audience" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
+        <span className="v3-noise" aria-hidden />
+
+        <div className="relative grid lg:grid-cols-12 gap-6" data-reveal="">
+          <div className="lg:col-span-4">
+            <Eyebrow num="01">Аудитория</Eyebrow>
+          </div>
+          <div className="lg:col-span-8">
+            <h3 className="v3-display v3-h3 text-white">Кто увидит ваш бренд</h3>
+          </div>
+        </div>
+
+        {/* крупные цифры. Счётчик сообщества приходит из Supabase —
+            пока его нет, плитку не показываем, чтобы не висел голый прочерк */}
+        <div
+          className={`relative grid sm:grid-cols-2 border-t border-white/10 mt-7 md:mt-14 ${
+            membersLabel ? "lg:grid-cols-4" : "lg:grid-cols-3"
+          }`}
+        >
+          {[
+            ...(membersLabel ? [{ v: membersLabel, l: "в сообществе" }] : []),
+            { v: String(AUDIENCE_STATS.guests), l: "гостей события" },
+            { v: `≈${AUDIENCE_STATS.decisionMakers}`, l: "руководителей и ЛПР" },
+            { v: `≈${AUDIENCE_STATS.costPerContact}`, l: "BYN за один B2B-контакт" },
+          ].map((s, i) => (
+            <div
+              key={s.l}
+              className="border-b border-white/10 sm:border-r last:border-r-0 py-6 md:py-7 pr-5 v3-in"
+              data-reveal=""
+              style={{ "--delay": `${i * 70}ms` } as React.CSSProperties}
+            >
+              <div className="v3-display v3-stat text-[#c8ff00] tabular-nums">{s.v}</div>
+              <div className="v3-mono text-[12px] md:text-[11px] text-white/55 mt-3.5">{s.l}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* сегменты списком */}
+        <div className="relative mt-9 md:mt-16 grid lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-4">
+            <p className="text-white/55 text-base max-w-[32ch]">
+              {COMMUNITY_GEO.text} Уже {COMMUNITY_GEO.highlight.toLowerCase()} — и сообщество продолжает
+              расти.
+            </p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2 mt-6">
+              {COMMUNITY_GEO.places.map((p) => (
+                <span key={p.label} className="v3-mono text-[11px] text-white/45">
+                  <span aria-hidden className="mr-1.5">
+                    {p.flag}
+                  </span>
+                  {p.label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <ul className="lg:col-span-8 border-t border-white/10">
+            {AUDIENCE_SEGMENTS.map((seg, i) => (
+              <li
+                key={seg.title}
+                className="border-b border-white/10 py-5 grid grid-cols-12 items-baseline gap-3 group v3-in"
+                data-reveal=""
+                style={{ "--delay": `${i * 50}ms` } as React.CSSProperties}
+              >
+                <span className="col-span-2 sm:col-span-1 v3-mono text-[11px] text-white/30 tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="col-span-10 sm:col-span-6 text-[17px] md:text-xl text-white group-hover:text-[#c8ff00] transition-colors">
+                  {seg.title}
+                </span>
+                <span className="col-start-3 sm:col-start-8 col-span-10 sm:col-span-5 v3-mono text-[11px] text-white/40">
+                  {seg.sub}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ================= ПАРТНЁРСКИЕ ПАКЕТЫ ================= */}
+      <section id="packages" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
+        <span className="v3-noise" aria-hidden />
+        <div className="relative grid lg:grid-cols-12 gap-6 mb-7 md:mb-14" data-reveal="">
+          <div className="lg:col-span-4">
+            <Eyebrow num="02">Партнёрам</Eyebrow>
+          </div>
+          <div className="lg:col-span-8">
+            <h3 className="v3-display v3-h3 text-white">Два пакета участия</h3>
+            <p className="text-white/55 text-base md:text-lg max-w-[46ch] mt-6">
+              Стоимость — за одно мероприятие. Пакет на весь сезон считаем отдельно.
+            </p>
+          </div>
+        </div>
+
+        <div className="relative grid gap-3 lg:grid-cols-2">
+          {PARTNER_PACKAGES.map((pkg, i) => {
+            const gold = !!pkg.featured;
+            return (
+              <div
+                key={pkg.id}
+                className={`relative p-6 md:p-9 flex flex-col v3-in ${
+                  gold ? "v3-surface-lime bg-[#c8ff00] text-black" : "border border-white/12 text-white"
+                }`}
+                data-reveal=""
+                style={{ "--delay": `${i * 110}ms` } as React.CSSProperties}
+              >
+                {/* цена — главный акцент карточки, поэтому на мобиле она уходит
+                    на свою строку и становится крупнее названия */}
+                <div className="v3-mono text-[11px] opacity-50 tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <div className="v3-display text-[34px] md:text-[56px] leading-none mt-3">{pkg.name}</div>
+                <div className="flex items-baseline gap-3 mt-4 md:mt-5">
+                  <span
+                    className={`v3-display v3-stat tabular-nums ${
+                      gold ? "text-black" : "text-[#c8ff00]"
+                    }`}
+                  >
+                    {pkg.price.toLocaleString("ru-RU")}
+                  </span>
+                  <span className="v3-mono text-[11px] opacity-50 whitespace-nowrap">
+                    {pkg.currency} / ивент
+                  </span>
+                </div>
+
+                <p className={`text-base mt-6 max-w-[38ch] ${gold ? "text-black/65" : "text-white/55"}`}>
+                  {pkg.tagline}
+                </p>
+
+                <ul className={`mt-8 border-t ${gold ? "border-black/15" : "border-white/10"}`}>
+                  {pkg.perks.map((perk) => (
+                    <li
+                      key={perk}
+                      className={`py-3 border-b text-[15px] leading-snug ${
+                        gold ? "border-black/15 text-black/80" : "border-white/10 text-white/70"
+                      }`}
+                    >
+                      {perk}
+                    </li>
+                  ))}
+                </ul>
+
+                {pkg.extraPerks && (
+                  <>
+                    <div className="v3-mono text-[11px] mt-8 mb-1 flex items-center gap-3">
+                      <span>И сверх того</span>
+                      <span className="h-px flex-1 bg-black/25" />
+                    </div>
+                    <ul className="border-t border-black/15">
+                      {pkg.extraPerks.map((perk) => (
+                        <li key={perk} className="py-3 border-b border-black/15 text-[15px] leading-snug text-black">
+                          {perk}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
+                <div className="mt-auto pt-9">
+                  {/* на лаймовой плашке кнопка сама станет чёрной — см. v3-surface-lime */}
+                  <Btn label="ОБСУДИТЬ ПАКЕТ" href={TG_URL} external />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+      </section>
 
       {/* ================= ФОРМАТЫ ================= */}
       <section id="formats" className="relative bg-black scroll-mt-0">
@@ -776,7 +992,7 @@ const IishnicaV3: React.FC = () => {
 
         <div className="relative grid lg:grid-cols-12 gap-6 mb-7 md:mb-14" data-reveal="">
           <div className="lg:col-span-4">
-            <Eyebrow num="01">Календарь</Eyebrow>
+            <Eyebrow num="03">Календарь</Eyebrow>
           </div>
           <div className="lg:col-span-8">
             <h3 className="v3-display v3-h3 text-[#c8ff00]">
@@ -839,7 +1055,7 @@ const IishnicaV3: React.FC = () => {
         <span className="v3-noise" aria-hidden />
         <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-7 md:mb-14" data-reveal="">
           <div>
-            <Eyebrow num="02">Спикеры</Eyebrow>
+            <Eyebrow num="04">Спикеры</Eyebrow>
             <h3 className="v3-display v3-h3 text-white mt-5 max-w-[14ch]">Ради кого приходят</h3>
           </div>
           <p className="text-white/55 text-base max-w-[32ch] sm:text-right">
@@ -881,92 +1097,12 @@ const IishnicaV3: React.FC = () => {
         </div>
       </section>
 
-      {/* ================= АУДИТОРИЯ ================= */}
-      <section id="audience" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
-        <span className="v3-noise" aria-hidden />
-
-        <div className="relative grid lg:grid-cols-12 gap-6" data-reveal="">
-          <div className="lg:col-span-4">
-            <Eyebrow num="03">Аудитория</Eyebrow>
-          </div>
-          <div className="lg:col-span-8">
-            <h3 className="v3-display v3-h3 text-white">Кто увидит ваш бренд</h3>
-          </div>
-        </div>
-
-        {/* крупные цифры. Счётчик сообщества приходит из Supabase —
-            пока его нет, плитку не показываем, чтобы не висел голый прочерк */}
-        <div
-          className={`relative grid sm:grid-cols-2 border-t border-white/10 mt-7 md:mt-14 ${
-            membersLabel ? "lg:grid-cols-4" : "lg:grid-cols-3"
-          }`}
-        >
-          {[
-            ...(membersLabel ? [{ v: membersLabel, l: "в сообществе" }] : []),
-            { v: String(AUDIENCE_STATS.guests), l: "гостей события" },
-            { v: `≈${AUDIENCE_STATS.decisionMakers}`, l: "руководителей и ЛПР" },
-            { v: `≈${AUDIENCE_STATS.costPerContact}`, l: "BYN за один B2B-контакт" },
-          ].map((s, i) => (
-            <div
-              key={s.l}
-              className="border-b border-white/10 sm:border-r last:border-r-0 py-6 md:py-7 pr-5 v3-in"
-              data-reveal=""
-              style={{ "--delay": `${i * 70}ms` } as React.CSSProperties}
-            >
-              <div className="v3-display v3-stat text-[#c8ff00] tabular-nums">{s.v}</div>
-              <div className="v3-mono text-[12px] md:text-[11px] text-white/55 mt-3.5">{s.l}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* сегменты списком */}
-        <div className="relative mt-9 md:mt-16 grid lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-4">
-            <p className="text-white/55 text-base max-w-[32ch]">
-              {COMMUNITY_GEO.text} Уже {COMMUNITY_GEO.highlight.toLowerCase()} — и сообщество продолжает
-              расти.
-            </p>
-            <div className="flex flex-wrap gap-x-5 gap-y-2 mt-6">
-              {COMMUNITY_GEO.places.map((p) => (
-                <span key={p.label} className="v3-mono text-[11px] text-white/45">
-                  <span aria-hidden className="mr-1.5">
-                    {p.flag}
-                  </span>
-                  {p.label}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <ul className="lg:col-span-8 border-t border-white/10">
-            {AUDIENCE_SEGMENTS.map((seg, i) => (
-              <li
-                key={seg.title}
-                className="border-b border-white/10 py-5 grid grid-cols-12 items-baseline gap-3 group v3-in"
-                data-reveal=""
-                style={{ "--delay": `${i * 50}ms` } as React.CSSProperties}
-              >
-                <span className="col-span-2 sm:col-span-1 v3-mono text-[11px] text-white/30 tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="col-span-10 sm:col-span-6 text-[17px] md:text-xl text-white group-hover:text-[#c8ff00] transition-colors">
-                  {seg.title}
-                </span>
-                <span className="col-start-3 sm:col-start-8 col-span-10 sm:col-span-5 v3-mono text-[11px] text-white/40">
-                  {seg.sub}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       {/* ================= ФОТООТЧЁТ ================= */}
       <section id="gallery" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
         <span className="v3-noise" aria-hidden />
         <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-7 md:mb-14" data-reveal="">
           <div>
-            <Eyebrow num="04">Как это было</Eyebrow>
+            <Eyebrow num="05">Как это было</Eyebrow>
             <h3 className="v3-display v3-h3 text-white mt-5">Атмосфера</h3>
           </div>
           <p className="v3-mono text-[11px] text-white/40 sm:text-right">
@@ -975,7 +1111,7 @@ const IishnicaV3: React.FC = () => {
         </div>
 
         <div className="relative grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3" data-reveal="">
-          {GALLERY.map((g, i) => (
+          {visibleGallery.map((g, i) => (
             <button
               key={g.src}
               onClick={() => setLightbox(i)}
@@ -1003,6 +1139,14 @@ const IishnicaV3: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {/* На мобиле показываем половину: фотоотчёт был самым длинным блоком
+            страницы, а для партнёра он не главный аргумент. */}
+        {visibleGallery.length < GALLERY.length && (
+          <div className="flex justify-center mt-6 md:hidden">
+            <Btn label={`ЕЩЁ ${GALLERY.length - visibleGallery.length} КАДРОВ`} onClick={() => setGalleryExpanded(true)} />
+          </div>
+        )}
       </section>
 
       {lightbox !== null && (
@@ -1012,115 +1156,6 @@ const IishnicaV3: React.FC = () => {
           onNav={(d) => setLightbox((i) => (i === null ? i : (i + d + GALLERY.length) % GALLERY.length))}
         />
       )}
-
-      {/* ================= ПАРТНЁРСКИЕ ПАКЕТЫ ================= */}
-      <section id="packages" className="relative bg-black v3-container py-[6vh] md:py-[10vh] scroll-mt-0">
-        <span className="v3-noise" aria-hidden />
-        <div className="relative grid lg:grid-cols-12 gap-6 mb-7 md:mb-14" data-reveal="">
-          <div className="lg:col-span-4">
-            <Eyebrow num="05">Партнёрам</Eyebrow>
-          </div>
-          <div className="lg:col-span-8">
-            <h3 className="v3-display v3-h3 text-white">Два пакета участия</h3>
-            <p className="text-white/55 text-base md:text-lg max-w-[46ch] mt-6">
-              Стоимость — за одно мероприятие. Пакет на весь сезон считаем отдельно.
-            </p>
-          </div>
-        </div>
-
-        <div className="relative grid gap-3 lg:grid-cols-2">
-          {PARTNER_PACKAGES.map((pkg, i) => {
-            const gold = !!pkg.featured;
-            return (
-              <div
-                key={pkg.id}
-                className={`relative p-6 md:p-9 flex flex-col v3-in ${
-                  gold ? "v3-surface-lime bg-[#c8ff00] text-black" : "border border-white/12 text-white"
-                }`}
-                data-reveal=""
-                style={{ "--delay": `${i * 110}ms` } as React.CSSProperties}
-              >
-                {/* цена — главный акцент карточки, поэтому на мобиле она уходит
-                    на свою строку и становится крупнее названия */}
-                <div className="v3-mono text-[11px] opacity-50 tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <div className="v3-display text-[34px] md:text-[56px] leading-none mt-3">{pkg.name}</div>
-                <div className="flex items-baseline gap-3 mt-4 md:mt-5">
-                  <span
-                    className={`v3-display v3-stat tabular-nums ${
-                      gold ? "text-black" : "text-[#c8ff00]"
-                    }`}
-                  >
-                    {pkg.price.toLocaleString("ru-RU")}
-                  </span>
-                  <span className="v3-mono text-[11px] opacity-50 whitespace-nowrap">
-                    {pkg.currency} / ивент
-                  </span>
-                </div>
-
-                <p className={`text-base mt-6 max-w-[38ch] ${gold ? "text-black/65" : "text-white/55"}`}>
-                  {pkg.tagline}
-                </p>
-
-                <ul className={`mt-8 border-t ${gold ? "border-black/15" : "border-white/10"}`}>
-                  {pkg.perks.map((perk) => (
-                    <li
-                      key={perk}
-                      className={`py-3 border-b text-[15px] leading-snug ${
-                        gold ? "border-black/15 text-black/80" : "border-white/10 text-white/70"
-                      }`}
-                    >
-                      {perk}
-                    </li>
-                  ))}
-                </ul>
-
-                {pkg.extraPerks && (
-                  <>
-                    <div className="v3-mono text-[11px] mt-8 mb-1 flex items-center gap-3">
-                      <span>И сверх того</span>
-                      <span className="h-px flex-1 bg-black/25" />
-                    </div>
-                    <ul className="border-t border-black/15">
-                      {pkg.extraPerks.map((perk) => (
-                        <li key={perk} className="py-3 border-b border-black/15 text-[15px] leading-snug text-black">
-                          {perk}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-
-                <div className="mt-auto pt-9">
-                  {/* на лаймовой плашке кнопка сама станет чёрной — см. v3-surface-lime */}
-                  <Btn label="ОБСУДИТЬ ПАКЕТ" href={TG_URL} external />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* партнёры сообщества — бегущая строка */}
-        <div className="relative mt-10 md:mt-20 border-y border-white/10 py-7 overflow-hidden">
-          <div className="v3-mono text-[10px] text-white/35 mb-5">Эксперты и партнёры сообщества</div>
-          <div className="overflow-hidden whitespace-nowrap [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
-            <div className="inline-flex items-center gap-12 md:gap-20 animate-marquee will-change-transform pr-12 md:pr-20">
-              {[0, 1].flatMap((rep) =>
-                PARTNER_LOGOS.map((p, i) => (
-                  <img
-                    key={`${rep}-${i}`}
-                    src={p.src}
-                    alt={p.name}
-                    loading="lazy"
-                    className="h-6 md:h-8 w-auto object-contain shrink-0 brightness-0 invert opacity-45 hover:opacity-100 transition-opacity"
-                  />
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ================= CTA-СЦЕНА ================= */}
       <div ref={ctaRef} className="relative bg-black min-h-[220vh] overflow-clip">
