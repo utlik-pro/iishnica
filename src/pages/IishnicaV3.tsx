@@ -580,16 +580,50 @@ const IishnicaV3: React.FC = () => {
             ))}
           </ul>
 
-          <div className="flex flex-col gap-4 border-t border-black/20 pt-6">
-            <a href={BOT_URL} target="_blank" rel="noopener noreferrer" className="v3-mono text-[12px] v3-link">
-              Регистрация в телеграм-боте
-            </a>
-            <a href={TG_URL} target="_blank" rel="noopener noreferrer" className="v3-mono text-[12px] v3-link">
-              По партнёрству — @{PARTNER_CONTACT.telegram}
-            </a>
-            <a href="/" className="v3-mono text-[12px] v3-link opacity-60">
-              Основная версия сайта
-            </a>
+          <div className="pt-6">
+            <div className="v3-mono text-[10px] opacity-45 mb-1">Соцсети</div>
+            <ul className="flex flex-col">
+              {SOCIAL_LINKS.map((s) => (
+                <li key={s.href}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="v3-mono text-[13px] flex items-center justify-between gap-4 py-2.5 hover:opacity-60 active:opacity-50 transition-opacity"
+                  >
+                    {s.label}
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-50 shrink-0" strokeWidth={1.5} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <div className="border-t border-black/20 mt-4 pt-4 flex flex-col">
+              <a
+                href={BOT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="v3-mono text-[12px] flex items-center justify-between gap-4 py-2 hover:opacity-60 active:opacity-50 transition-opacity"
+              >
+                Регистрация в телеграм-боте
+                <ArrowUpRight className="w-3.5 h-3.5 opacity-50 shrink-0" strokeWidth={1.5} />
+              </a>
+              <a
+                href={TG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="v3-mono text-[12px] flex items-center justify-between gap-4 py-2 hover:opacity-60 active:opacity-50 transition-opacity"
+              >
+                По партнёрству — @{PARTNER_CONTACT.telegram}
+                <ArrowUpRight className="w-3.5 h-3.5 opacity-50 shrink-0" strokeWidth={1.5} />
+              </a>
+              <a
+                href="/"
+                className="v3-mono text-[12px] py-2 opacity-60 hover:opacity-100 transition-opacity"
+              >
+                Основная версия сайта
+              </a>
+            </div>
           </div>
         </nav>
       </div>
