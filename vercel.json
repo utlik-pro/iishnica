@@ -9,6 +9,14 @@
       "destination": "/v3.html"
     },
     {
+      "source": "/v1",
+      "destination": "/v1.html"
+    },
+    {
+      "source": "/v2",
+      "destination": "/v2.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }

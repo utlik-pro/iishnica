@@ -19,6 +19,7 @@ import { ArrowUpRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PARTNER_LOGOS } from "@/lib/partners";
 import { trackEvent } from "@/lib/analytics";
+import { useDocumentTitle } from "@/lib/use-document-title";
 import {
   AUDIENCE_SEGMENTS,
   AUDIENCE_STATS,
@@ -46,7 +47,7 @@ import "@/styles/v3.css";
 const SITE_URL = "https://iishnica.utlik.co";
 
 const OG = {
-  url: `${SITE_URL}/v3`,
+  url: SITE_URL,
   image: `${SITE_URL}/v3/og-partners.jpg`,
   title: "Партнёрство с ИИшницей — сезон 2026/2027",
   description:
@@ -488,6 +489,7 @@ const IishnicaV3: React.FC = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  useDocumentTitle(OG.title);
   const [communityCount, setCommunityCount] = useState<number | null>(null);
   const [chatMembers, setChatMembers] = useState<number | null>(null);
   const [hoverRow, setHoverRow] = useState(0);
@@ -746,10 +748,10 @@ const IishnicaV3: React.FC = () => {
                 <ArrowUpRight className="w-3.5 h-3.5 opacity-50 shrink-0" strokeWidth={1.5} />
               </a>
               <a
-                href="/"
+                href="/v1"
                 className="v3-mono text-[12px] py-2 opacity-60 hover:opacity-100 transition-opacity"
               >
-                Основная версия сайта
+                Первая версия сайта
               </a>
             </div>
           </div>
@@ -1596,8 +1598,8 @@ const IishnicaV3: React.FC = () => {
           <hr className="border-white/12" />
           <div className="flex flex-wrap justify-between gap-4 pt-4 v3-mono text-[10px] text-white/35">
             <span>© {new Date().getFullYear()} ИИшница · M.AI.N Community</span>
-            <a href="/" className="v3-link">
-              Основная версия сайта
+            <a href="/v1" className="v3-link">
+              Первая версия сайта
             </a>
           </div>
         </div>

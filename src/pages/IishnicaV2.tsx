@@ -21,6 +21,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { useDocumentTitle } from "@/lib/use-document-title";
 import { PARTNER_LOGOS } from "@/lib/partners";
 import {
   AUDIENCE_SEGMENTS,
@@ -357,6 +358,7 @@ const SeasonRow: React.FC<{ event: SeasonEvent; isNext: boolean }> = ({ event, i
 };
 
 const IishnicaV2: React.FC = () => {
+  useDocumentTitle("ИИшница — сезон 2026/2027 | M.AI.N Community");
   const [communityCount, setCommunityCount] = useState<number | null>(null);
   const [showTop, setShowTop] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);

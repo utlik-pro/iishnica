@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
+import { useDocumentTitle } from "@/lib/use-document-title";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -24,6 +26,7 @@ import {
 } from "@/types/pageBuilder";
 
 const Index = () => {
+  useDocumentTitle("ИИшница — мероприятия от M.AI.N Community");
   const [sections, setSections] = useState<PageSection[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -105,6 +108,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Своя мета: раньше эта страница была на «/» и брала теги из
+          index.html, а теперь там партнёрский лендинг. */}
+      <Helmet>
+        <title>ИИшница — мероприятия от M.AI.N Community</title>
+        <meta
+          name="description"
+          content="Практические митапы и встречи по искусственному интеллекту от M.AI.N Community."
+        />
+      </Helmet>
+
       {/* Navbar always at top */}
       {renderSection('navbar')}
 

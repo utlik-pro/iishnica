@@ -40,14 +40,16 @@ const App = () => {
             <TopProgressBar />
             <TrackingPixels pageSlug="home" />
             <Routes>
-              <Route path="/" element={<Index />} />
-              {/* Новая версия лендинга — сезон 2026/2027 + партнёрские пакеты.
-                  Старая версия остаётся на "/" без изменений. */}
+              {/* Основная версия — партнёрский лендинг сезона 2026/2027
+                  в стиле voltlites.com. Прежние версии никуда не делись
+                  и открываются по своим адресам. */}
+              <Route path="/" element={<IishnicaV3 />} />
+              <Route path="/v3" element={<IishnicaV3 />} />
+              {/* Первая версия — та, что раньше была на "/" */}
+              <Route path="/v1" element={<Index />} />
+              {/* Вторая версия — сезон 2026/2027 и партнёрские пакеты */}
               <Route path="/v2" element={<IishnicaV2 />} />
               <Route path="/season" element={<IishnicaV2 />} />
-              {/* Третья версия — отдельная, в стиле референса voltlites.com.
-                  «/» и «/v2» остаются как есть. */}
-              <Route path="/v3" element={<IishnicaV3 />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/blog" element={<Blog />} />

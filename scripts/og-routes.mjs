@@ -21,10 +21,24 @@ import { join } from "node:path";
 const SITE = "https://iishnica.utlik.co";
 const DIST = "dist";
 
+/*
+ * Партнёрский лендинг теперь на «/», и его теги лежат прямо в index.html.
+ * Здесь остались прежние версии сайта: без своих записей они унаследовали бы
+ * партнёрское превью, хотя рассказывают про сообщество.
+ */
+const COMMUNITY = {
+  title: "ИИшница — мероприятия от M.AI.N Community",
+  description:
+    "Практические митапы и встречи по искусственному интеллекту от M.AI.N Community.",
+  image: `${SITE}/og-image.png`,
+};
+
 const ROUTES = [
+  { file: "v1.html", url: `${SITE}/v1`, ...COMMUNITY },
+  { file: "v2.html", url: `${SITE}/v2`, ...COMMUNITY },
   {
     file: "v3.html",
-    url: `${SITE}/v3`,
+    url: SITE,
     title: "Партнёрство с ИИшницей — сезон 2026/2027",
     description:
       "Ваш бренд — перед 235 собственниками и руководителями за один вечер. " +
