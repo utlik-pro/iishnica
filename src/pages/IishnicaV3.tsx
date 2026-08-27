@@ -626,20 +626,31 @@ const IishnicaV3: React.FC = () => {
         }}
       />
 
-      {/* ---------------- плавающий вордмарк ---------------- */}
+      {/* ---------------- плавающий вордмарк ----------------
+          M.AI.N — зонтичный бренд, ИИшница — его продукт. В герое вордмарк
+          огромный и знак рядом с ним смотрелся бы чужеродно, поэтому знак
+          проявляется, когда вордмарк сворачивается в шапку. */}
       <div className="v3-wordmark-layer" data-hidden={atFooter}>
         <div className="v3-wordmark-spacer" />
-        <a
-          href="#top"
-          onClick={(e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: reduceMotion() ? "auto" : "smooth" });
-          }}
-          className="v3-wordmark v3-display"
-          aria-label="ИИшница — наверх"
-        >
-          ИИШНИЦА
-        </a>
+        <div className="v3-wordmark-row">
+          <img
+            src="/v3/main-mark.webp"
+            alt=""
+            aria-hidden
+            className="v3-main-mark"
+          />
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: reduceMotion() ? "auto" : "smooth" });
+            }}
+            className="v3-wordmark v3-display"
+            aria-label="ИИшница — проект M.AI.N Community, наверх"
+          >
+            ИИШНИЦА
+          </a>
+        </div>
       </div>
 
       {/* ---------------- кнопка меню ----------------
@@ -1484,10 +1495,18 @@ const IishnicaV3: React.FC = () => {
 
         <div className="relative v3-container pb-6">
           <div
-            className="v3-display text-[#c8ff00] leading-[0.78] mb-10 md:mb-16"
+            className="v3-display text-[#c8ff00] leading-[0.78]"
             style={{ fontSize: "clamp(3rem, 15.5vw, 15rem)" }}
           >
             ИИШНИЦА
+          </div>
+
+          {/* иерархия брендов: ИИшница — продукт зонтичного M.AI.N */}
+          <div className="flex items-center gap-3 mt-5 mb-10 md:mb-16">
+            <img src="/v3/main-mark.webp" alt="M.AI.N" className="h-7 md:h-8 w-auto" />
+            <span className="v3-mono text-[10px] md:text-[11px] text-white/45">
+              Проект M.AI.N Community
+            </span>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 mb-12">

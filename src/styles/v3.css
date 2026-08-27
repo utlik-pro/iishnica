@@ -281,8 +281,9 @@
   pointer-events: none;
   --wm: calc(1 - var(--hero-p, 0));
 
-  /* размер вордмарка в «свёрнутом» состоянии — соразмерно пилюле меню */
-  --wm-size: 36px;
+  /* Размер вордмарка в «свёрнутом» состоянии. Подобран так, чтобы вместе
+     со знаком M.AI.N строка влезала рядом с кнопкой меню даже на 360px. */
+  --wm-size: 30px;
 
   /*
    * Верхний отступ выводится из высоты шапки, чтобы вордмарк встал по одной
@@ -302,6 +303,32 @@
 .v3-wordmark-spacer {
   flex-grow: var(--wm);
   min-height: 0;
+}
+
+/* знак M.AI.N + вордмарк ИИшницы в одной строке */
+.v3-wordmark-row {
+  display: flex;
+  align-items: center;
+  gap: calc(8px * var(--hero-p, 0));
+  width: fit-content;
+}
+
+/*
+ * Знак зонтичного бренда проявляется во второй половине скролла героя —
+ * ровно тогда, когда вордмарк сворачивается в шапку. Ширина анимируется
+ * вместе с прозрачностью, иначе он занимал бы место ещё невидимым и
+ * сдвигал вордмарк вправо.
+ */
+.v3-main-mark {
+  --show: max(0, min(1, calc((var(--hero-p, 0) - 0.55) * 3)));
+  height: calc(var(--wm-size) * 0.92);
+  width: auto;
+  max-width: calc(var(--wm-size) * 1.2 * var(--show));
+  opacity: var(--show);
+  object-fit: contain;
+  object-position: left center;
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .v3-wordmark {
