@@ -312,11 +312,14 @@
   gap: calc(8px * var(--hero-p, 0));
   width: fit-content;
   pointer-events: auto;
+
+  /* текущий кегль слова: от него считается и сам текст, и высота знака */
+  --wm-font: calc(var(--wm-size) + (14.5vw - var(--wm-size)) * var(--wm));
 }
 
 @media (min-width: 768px) {
-  .v3-wordmark {
-    font-size: calc(var(--wm-size) + (10.5vw - var(--wm-size)) * var(--wm));
+  .v3-wordmark-row {
+    --wm-font: calc(var(--wm-size) + (10.5vw - var(--wm-size)) * var(--wm));
   }
 }
 
@@ -336,10 +339,22 @@
     padding-top: calc(var(--v3-nav) / 2 - 17px);
   }
 
+  /*
+   * Слово тут скрыто, поэтому кегль поднят: знак считается от него как
+   * cap-height (0.727), и при 47px выходит ровно 34px — высота кнопки меню.
+   * Ширина слова при этом не мешает: оно схлопнуто.
+   */
+  .v3 .v3-wordmark-layer {
+    --wm-size: 47px;
+  }
+
   /* селекторы с .v3 — базовые правила ниже по файлу иначе перебивают их */
   .v3 .v3-wordmark {
     --keep: max(0, min(1, calc((0.7 - var(--hero-p, 0)) * 5)));
     max-width: calc(5.2em * var(--keep));
+    /* высоту схлопываем тоже: иначе бокс слова остаётся и задаёт высоту
+       строки, а знак центрируется в нём и уезжает ниже кнопки меню */
+    max-height: calc(1.2em * var(--keep));
     opacity: var(--keep);
     overflow: hidden;
     /* без перехода: ширина и прозрачность должны идти синхронно со скроллом */
@@ -347,8 +362,7 @@
   }
 
   .v3 .v3-main-mark {
-    height: 34px;
-    max-width: calc(44px * var(--show));
+    max-width: calc(50px * var(--show));
   }
 }
 
@@ -360,9 +374,15 @@
  */
 .v3-main-mark {
   --show: max(0, min(1, calc((var(--hero-p, 0) - 0.55) * 3)));
-  height: calc(var(--wm-size) * 0.92);
+  /*
+   * 0.727 — рост заглавных букв (cap-height) этого шрифта, замерено через
+   * canvas. Именно по нему глаз сравнивает знак со словом: бокс текста выше,
+   * потому что у «Ц» есть нижний хвостик, и равнять по боксу — значит
+   * сделать знак заметно крупнее букв.
+   */
+  height: calc(var(--wm-font) * 0.727);
   width: auto;
-  max-width: calc(var(--wm-size) * 1.2 * var(--show));
+  max-width: calc(var(--wm-font) * var(--show));
   opacity: var(--show);
   object-fit: contain;
   object-position: left center;
@@ -378,7 +398,7 @@
   align-self: flex-start;
   color: var(--v3-lime);
   /* от размера «в шапке» до огромного в герое — по прогрессу --wm */
-  font-size: calc(var(--wm-size) + (14.5vw - var(--wm-size)) * var(--wm));
+  font-size: var(--wm-font);
   line-height: 0.74;
   pointer-events: auto;
   transition: opacity 0.4s ease;
