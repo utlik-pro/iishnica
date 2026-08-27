@@ -632,25 +632,20 @@ const IishnicaV3: React.FC = () => {
           проявляется, когда вордмарк сворачивается в шапку. */}
       <div className="v3-wordmark-layer" data-hidden={atFooter}>
         <div className="v3-wordmark-spacer" />
-        <div className="v3-wordmark-row">
-          <img
-            src="/v3/main-mark.webp"
-            alt=""
-            aria-hidden
-            className="v3-main-mark"
-          />
-          <a
-            href="#top"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: reduceMotion() ? "auto" : "smooth" });
-            }}
-            className="v3-wordmark v3-display"
-            aria-label="ИИшница — проект M.AI.N Community, наверх"
-          >
-            ИИШНИЦА
-          </a>
-        </div>
+        {/* Ссылка оборачивает знак и слово целиком: на узких экранах слово
+            схлопывается, и кликабельным должен оставаться сам знак. */}
+        <a
+          href="#top"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: reduceMotion() ? "auto" : "smooth" });
+          }}
+          className="v3-wordmark-row"
+          aria-label="ИИшница — проект M.AI.N Community, наверх"
+        >
+          <img src="/v3/main-mark.webp" alt="" aria-hidden className="v3-main-mark" />
+          <span className="v3-wordmark v3-display">ИИШНИЦА</span>
+        </a>
       </div>
 
       {/* ---------------- кнопка меню ----------------

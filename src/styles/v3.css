@@ -311,6 +311,45 @@
   align-items: center;
   gap: calc(8px * var(--hero-p, 0));
   width: fit-content;
+  pointer-events: auto;
+}
+
+@media (min-width: 768px) {
+  .v3-wordmark {
+    font-size: calc(var(--wm-size) + (10.5vw - var(--wm-size)) * var(--wm));
+  }
+}
+
+/*
+ * На узких экранах в свёрнутом состоянии слово уступает место знаку: втроём
+ * (знак + «ИИШНИЦА» + кнопка меню) строка не помещалась, приходилось жать
+ * лого. Теперь слово схлопывается, а знак становится крупным — по высоте
+ * с кнопкой меню.
+ *
+ * max-width считается в em, то есть от текущего размера самого слова:
+ * в герое оно огромное, и фиксированный предел в пикселях обрезал бы его.
+ */
+@media (max-width: 480px) {
+  /* отступ считается от высоты знака (34px), а не слова: в свёрнутом
+     состоянии на узких экранах видно именно его */
+  .v3 .v3-wordmark-layer {
+    padding-top: calc(var(--v3-nav) / 2 - 17px);
+  }
+
+  /* селекторы с .v3 — базовые правила ниже по файлу иначе перебивают их */
+  .v3 .v3-wordmark {
+    --keep: max(0, min(1, calc((0.7 - var(--hero-p, 0)) * 5)));
+    max-width: calc(5.2em * var(--keep));
+    opacity: var(--keep);
+    overflow: hidden;
+    /* без перехода: ширина и прозрачность должны идти синхронно со скроллом */
+    transition: none;
+  }
+
+  .v3 .v3-main-mark {
+    height: 34px;
+    max-width: calc(44px * var(--show));
+  }
 }
 
 /*
@@ -351,20 +390,15 @@
   pointer-events: none;
 }
 
-@media (min-width: 768px) {
-  .v3-wordmark {
-    font-size: calc(var(--wm-size) + (10.5vw - var(--wm-size)) * var(--wm));
-  }
-}
-
 /* слоган в правом нижнем углу героя */
 .v3-tagline {
   font-size: clamp(1.25rem, 2.6vw, 2.75rem);
   line-height: 1.06;
 }
 
-/* у футера прячем — там свой большой логотип */
-.v3-wordmark-layer[data-hidden="true"] .v3-wordmark {
+/* у футера прячем весь локап — там свой большой логотип */
+.v3-wordmark-layer[data-hidden="true"] .v3-wordmark,
+.v3-wordmark-layer[data-hidden="true"] .v3-main-mark {
   opacity: 0;
 }
 
