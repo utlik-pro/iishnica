@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { setPanelAuth } from "@/integrations/supabase/adminClient";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -26,15 +26,16 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
     setError(null);
 
     try {
-      // Проверяем логин и пароль
-      const { data, error } = await supabase
-        .from("admins")
-        .select()
-        .eq("username", username)
-        .eq("password", password)
-        .single();
+      // Логин и пароль проверяет сервер (/api/admin-login): раньше проверка
+      // шла SELECT'ом из браузера, из-за чего таблица admins была публично
+      // читаемой. Теперь публичное чтение admins отозвано.
+      const response = await fetch("/api/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-      if (error || !data) {
+      if (!response.ok) {
         setError("Неверное имя пользователя или пароль");
         return;
       }
@@ -45,7 +46,9 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
         description: `Добро пожаловать, ${username}!`,
       });
 
-      // Устанавливаем JWT с username
+      // Реквизиты для серверного прокси записи (/api/admin-db)
+      setPanelAuth(username, password);
+
       const token = await generateJWT(username);
       localStorage.setItem("admin_token", token);
 

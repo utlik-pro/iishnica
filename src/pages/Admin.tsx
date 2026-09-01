@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 import AdminLogin from "@/components/admin/AdminLogin";
+import { hasPanelAuth, clearPanelAuth } from "@/integrations/supabase/adminClient";
 import EventsManager from "@/components/admin/EventsManager";
 import SponsorsManager from "@/components/admin/SponsorsManager";
 import LeadsManager from "@/components/admin/LeadsManager";
@@ -146,7 +147,9 @@ const Admin = () => {
     const checkAuth = () => {
       try {
         const token = localStorage.getItem("admin_token");
-        if (token) {
+        // panel_auth нужен серверному прокси записи (/api/admin-db): старый
+        // вход без него бесполезен — просим авторизоваться заново
+        if (token && hasPanelAuth()) {
           const userData = JSON.parse(token);
           if (userData && userData.username) {
             setIsAuthenticated(true);
@@ -171,6 +174,7 @@ const Admin = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("admin_token");
+    clearPanelAuth();
     setIsAuthenticated(false);
     setUsername("");
   };

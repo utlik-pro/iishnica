@@ -5,6 +5,10 @@
       "destination": "/api/blog/[slug]"
     },
     {
+      "source": "/api/admin-db/:path*",
+      "destination": "/api/admin-db/[...path]"
+    },
+    {
       "source": "/v3",
       "destination": "/v3.html"
     },
@@ -23,7 +27,7 @@
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/blog/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

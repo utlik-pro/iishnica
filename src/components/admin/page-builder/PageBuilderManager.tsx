@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { adminDb as supabase } from "@/integrations/supabase/adminClient";
 import { ExternalLink, Save, Loader2 } from "lucide-react";
 import {
   PageSection,
