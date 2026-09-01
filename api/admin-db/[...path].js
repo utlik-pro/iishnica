@@ -102,12 +102,20 @@ export default async function handler(req, res) {
   }
 
   // req.url: /api/admin-db/rest/v1/<table>?<postgrest query>
-  const rawPath = (req.url || '').replace(/^\/api\/admin-db\//, '');
-  if (!rawPath.startsWith('rest/v1/')) {
+  const rawUrl = (req.url || '').replace(/^\/api\/admin-db\//, '');
+  if (!rawUrl.startsWith('rest/v1/')) {
     return res.status(404).json({ error: 'Not found' });
   }
 
-  const [pathPart] = rawPath.split('?');
+  // Реврайт Vercel (/api/admin-db/:path* -> /api/admin-db/[...path]) подмешивает
+  // сматченный маршрут в query как `path=` — PostgREST принимает его за фильтр
+  // по несуществующей колонке и роняет запрос. Вырезаем служебный параметр.
+  const qIndex = rawUrl.indexOf('?');
+  const pathPart = qIndex === -1 ? rawUrl : rawUrl.slice(0, qIndex);
+  const query = new URLSearchParams(qIndex === -1 ? '' : rawUrl.slice(qIndex + 1));
+  query.delete('path');
+  const qs = query.toString();
+  const rawPath = qs ? `${pathPart}?${qs}` : pathPart;
   const segments = pathPart.split('/').filter(Boolean); // ['rest','v1','speakers'] или ['rest','v1','rpc','send_ticket']
   const target = segments[2];
 
